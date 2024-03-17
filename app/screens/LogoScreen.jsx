@@ -3,14 +3,14 @@ import { StyleSheet, Text, SafeAreaView, Image, Button } from 'react-native';
 export default function LogoScreen({ navigation }) {
   const appLogo = require('../assets/homies-logo-with-app-name.png');
   return (
-    <Button onPress={() => navigation.navigate()}>
-      <SafeAreaView style={styles.container}>
-        <Image
-          style={styles.icon}
-          source={appLogo}
-        />
-      </SafeAreaView>
-    </Button>
+    // <Button onPress={() => navigation.navigate()}>
+    <SafeAreaView style={styles.container}>
+      <Image
+        style={styles.icon}
+        source={appLogo}
+      />
+    </SafeAreaView>
+    // </Button>
   );
 }
 
