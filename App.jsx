@@ -1,21 +1,9 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, SafeAreaView } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import LogoScreen from './app/screens/LogoScreen';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-const Stack = createNativeStackNavigator();
+import { StyleSheet } from 'react-native';
+import NavBarRenters from './app/components/NavBarRenters'
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name='Start'
-          component={LogoScreen}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <NavBarRenters></NavBarRenters>
   );
 }
 
