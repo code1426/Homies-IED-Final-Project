@@ -1,10 +1,11 @@
 import React from 'react';
 import { Text, SafeAreaView } from 'react-native';
+import HeaderComponent from '../components/HeaderComponent';
 
 function SettingsScreen(props) {
   return (
     <SafeAreaView>
-      <Text>Settings Screen</Text>
+      <HeaderComponent title='Settings' />
     </SafeAreaView>
   );
 }

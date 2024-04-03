@@ -1,10 +1,12 @@
 import React from 'react';
 import { Text, SafeAreaView } from 'react-native';
 
+import HeaderComponent from '../components/HeaderComponent';
+
 function AppliedScreen(props) {
   return (
     <SafeAreaView>
-      <Text>Applied Screen</Text>
+      <HeaderComponent title='Applied'/>
     </SafeAreaView>
   );
 }

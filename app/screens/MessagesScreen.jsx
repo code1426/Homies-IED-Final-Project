@@ -1,11 +1,14 @@
 import React from 'react';
-import Messages from '../components/Messages';
-import { Text, SafeAreaView, Image, StyleSheet } from 'react-native';
+import Messages from '../components/Messages.jsx';
+import { View, Text, SafeAreaView, Image, StyleSheet, Platform } from 'react-native';
+
+import HeaderComponent from '../components/HeaderComponent';
 
 function MessagesScreen(props) {
   return (
     <SafeAreaView style={styles.screen}>
-      <Text style={styles.title}>Messages</Text>
+      <HeaderComponent title='Messages' />
+
       <Messages
         profilePic={require('../assets/icon.png')}
         name='Yay Me Yao'
@@ -18,21 +21,15 @@ function MessagesScreen(props) {
         latestMessage='Wassup bro'
         time = '8:15 AM'
       />
+      
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  title: {
-    fontSize: 21,
-    fontWeight: 'bold',
-    alignSelf: 'center',
-    marginBottom: 45,
-    marginTop: 15
-  },
   screen: {
     flex: 1,
-    backgroundColor: '#ECEFF6',
+    // backgroundColor: '#ECEFF6',
   },
 });
 

@@ -12,6 +12,8 @@ import MessagesScreen from '../screens/MessagesScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import AppliedScreen from '../screens/AppliedScreen';
 
+import AddPropertyScreen from '../screens/AddPropertyScreen';
+
 const Tab = createBottomTabNavigator();
 
 // Screen Names Renters View
@@ -100,7 +102,7 @@ function NavBarRenters() {
         />
         <Tab.Screen
           name={applied}
-          component={AppliedScreen}
+          component={AddPropertyScreen} //For testing purposes. This should be applied screen.
         />
         <Tab.Screen
           name={messages}
@@ -128,7 +130,7 @@ const styles = StyleSheet.create({
   midIcon: {
     backgroundColor: 'white',
     padding: 15,
-    borderRadius: '100%',
+    borderRadius: 100,
     bottom: 10,
   },
   styleMiddleIcon: {
