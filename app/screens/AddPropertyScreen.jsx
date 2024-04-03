@@ -122,7 +122,7 @@ let result = await ImagePicker.launchImageLibraryAsync({
       const storageRef = ref(storage, 'ownerPosts/'+Date.now()+'.jpg');
 
       uploadBytes(storageRef, blob).then((snapshot) => {
-        console.log('Uploaded a blob or file!', snapshot);
+        console.log('Uploaded a blob or file!');
       }).then((resp) => {
         getDownloadURL(storageRef)
         .then( async (downloadUrl) => {
@@ -156,9 +156,6 @@ let result = await ImagePicker.launchImageLibraryAsync({
   }
 
   const handleInputError = (values) => {
-    console.log(values, isSubmitted)
-    if (isSubmitted) return
-    
 
     if (!values.title) {
       setTitleStyle({ ...styles.titleInput, borderBottomWidth: 2, borderColor: '#FF2525' })
