@@ -1,5 +1,5 @@
 import React from 'react';
-import Messages from '../components/Messages.jsx';
+import Message from '../components/Message.jsx';
 import { View, Text, SafeAreaView, Image, StyleSheet, Platform } from 'react-native';
 
 import HeaderComponent from '../components/HeaderComponent';
@@ -9,13 +9,13 @@ function MessagesScreen(props) {
     <SafeAreaView style={styles.screen}>
       <HeaderComponent title='Messages' />
 
-      <Messages
+      <Message
         profilePic={require('../assets/icon.png')}
         name='Yay Me Yao'
         latestMessage='Hello, how are you?'
         time = '8:15 PM'
       />
-      <Messages
+      <Message
         profilePic={require('../assets/icon.png')}
         name='Wansapanataym'
         latestMessage='Wassup bro'
