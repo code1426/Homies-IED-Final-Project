@@ -23,6 +23,7 @@ import { SafeAreaView } from 'react-native'
 import React from 'react'
 
 import * as ImagePicker from 'expo-image-picker';
+import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
 
 import HeaderComponent from '../components/HeaderComponent';
 
@@ -40,11 +41,16 @@ function AddPropertyScreen ({ navigation }) {
   const [rentStyle, setRentStyle] = useState({...styles.rentInput})
   const [regStyle, setRegStyle] = useState({...styles.regInput})
   const [imgStyle, setImgStyle] = useState({...styles.image})
+  const [featureStyle, setFeatureStyle] = useState({...styles.featuresContainer})
 
   const [loading, setLoading] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
 
-  const propertyTypes = ['Apartment', 'Boarding House', 'Dorm']
+  const propertyTypes = [
+    { label: 'Apartment', value: 'Apartment'},
+    { label: 'Boarding House', value: 'Boarding House'},
+    { label: 'Dormitory', value: 'Dormitory'},
+  ]
 
   // useEffect(() => {
   //   getPropertyList()
@@ -85,7 +91,8 @@ let result = await ImagePicker.launchImageLibraryAsync({
   const onSubmitMethod = async (values, Method) => {
     handleInputError(values)
     let isAllInputFilled;
-    // console.log(image)
+    console.log(values)
+    // console.log(selected)
 
     for (let [key, val] of Object.entries(values)) {
       if (!val && key !== 'image') {
@@ -191,7 +198,9 @@ let result = await ImagePicker.launchImageLibraryAsync({
     }
     if (isNaN(values.registrationPrice)) {
       setRegStyle({ ...styles.regInput, borderWidth: 2, borderColor: '#FF2525' })
-    }
+    } if (!values.features[0]) {
+      setFeatureStyle({ ...styles.featuresContainer, borderWidth: 2, borderColor: '#FF2525' })
+    } else setFeatureStyle({ ...styles.featuresContainer})
   } 
 
   const formInitialValues = {
@@ -200,8 +209,26 @@ let result = await ImagePicker.launchImageLibraryAsync({
     rentPrice:"", 
     propertyType:null, 
     registrationPrice:"",
-    image:null
+    image:null,
+    features:[]
   }
+
+  const data = [
+    { label: 'Bed Space', value: 'Bed Space' },
+    { label: 'Room', value: 'Room' },
+    { label: 'Shared Room', value: 'Shared Room'},
+    { label: 'Air Conditioned', value: 'Air Conditioned' },
+  ];
+
+  const [selected, setSelected] = useState([]);
+
+  const renderItem = item => {
+    return (
+      <View style={{borderRadius: 20}}>
+        <Text style={{backgroundColor: 'red'}}>{item.label}</Text>
+      </View>
+    );
+  };
 
   return (
     <SafeAreaView>
@@ -275,23 +302,48 @@ let result = await ImagePicker.launchImageLibraryAsync({
                     autoCapitalize='sentences'
                   />
                 </View>
+                
+                {/* Property Type */}
+                <View style={{ marginBottom: 18 }}>
+                  <Text style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 12 }}>Property Type</Text>
+                  <Dropdown 
+                    style={propertyStyle}
+                    containerStyle={{borderRadius: 10}}
+                    activeColor='#E8E8E8'
+                    data={propertyTypes}
+                    search={false}
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="Select"
+                    value={values?.propertyType}
+                    onChange={item => {
+                      setFieldValue('propertyType', item.value)}}
+                  />
+                </View>
 
-                {/* property type container */}
-                <View>
-                  <Text style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 12}}>Property Type</Text>
-                  <View style={propertyStyle}>
-                    <Picker
-                      style={styles.picker}
-                      selectedValue={values?.propertyType}
-                      onValueChange={itemvalue => setFieldValue('propertyType', itemvalue)}
-                      
-                      >
-                        <Picker.Item type='number' key={0} label={'Select'} value={null} />
-                        {propertyTypes&&propertyTypes.map((type, index) => (
-                          <Picker.Item key={index} label={type} value={type} />
-                        ))}
-                    </Picker>
-                  </View >
+                {/* Key Features */}
+                <View style={{ marginBottom: 20 }}>
+                  <Text style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 12 }}>Key Features</Text>
+                  <View >
+                    <MultiSelect
+                      style={featureStyle}
+                      containerStyle={{ borderRadius: 10 }}
+                      selectedStyle={{ marginHorizontal: 2, marginTop: 2, borderRadius: 14, backgroundColor: '#00A4FF' }}
+                      selectedTextStyle={{color:'white'}} 
+                      activeColor='#E8E8E8'
+                      search={false}
+                      data={data}
+                      labelField="label"
+                      valueField="value"
+                      placeholder="Select"
+                      value={values?.features}
+                      onChange={item => {
+                        setFieldValue('features', item);
+                      }}
+                    />
+                  </View>
+                  
                 </View>
 
                 {/* rent price container */}
@@ -362,7 +414,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderBottomWidth: 1,
     alignSelf: 'center',
-    marginBottom: 20,
+    marginBottom: 40,
   },
   description: {
     fontSize: 22,
@@ -377,18 +429,22 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderRadius: 10,
     alignSelf: 'center',
-    marginBottom: 20,
+    marginBottom: 40,
     padding: 12,
     textAlignVertical: 'top'
   },
-  pickerContainer: {
-    backgroundColor: "#DBDBDB",
+  pickerContainer: { 
+    borderWidth: 1, 
+    padding: 8, 
     borderRadius: 10,
-    marginBottom: 12,
-    
+    marginBottom: 20
   },
-  picker: {
-    
+  featuresContainer: {
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 8,
+    marginBottom: 4,
+    marginBottom: 4
   },
   addPropertybutton: {
     flex: 1,
@@ -438,16 +494,15 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     borderRadius: 10,
-    // resizeMode: 'contain'
+    resizeMode: 'contain'
   },
   addIconContainer: {
     postion: 'absolute',
     width: 46,
     height: 46,
-    top: -186,
+    top: -188,
     alignSelf: 'center',
     marginBottom: -46
-
   },
   addIcon: {
     width: '100%',

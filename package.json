@@ -21,6 +21,7 @@
     "formik": "^2.4.5",
     "react": "18.2.0",
     "react-native": "0.72.10",
+    "react-native-element-dropdown": "^2.10.4",
     "react-native-root-toast": "^3.5.1"
   },
   "devDependencies": {
