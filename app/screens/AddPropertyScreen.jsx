@@ -53,7 +53,7 @@ function AddPropertyScreen ({ navigation }) {
   const propertyTypes = [
     { label: 'Apartment', value: 'Apartment'},
     { label: 'Boarding House', value: 'Boarding House'},
-    { label: 'Dormitory', value: 'Dormitory'},
+    { label: 'Dormitory', value: 'Dorm'},
   ]
 
   // useEffect(() => {
