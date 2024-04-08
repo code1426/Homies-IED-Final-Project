@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import NavBarRenters from './app/components/NavBarRenters'
+import NavBarOwners from './app/components/NavBarOwners';
 
 export default function App() {
   return (

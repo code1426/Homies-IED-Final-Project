@@ -1,13 +1,12 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
 
-const CategoryButton = ({ value, selectedValue, setSelectedValue, getList, getAllList, setName }) => {
+const CategoryButton = ({ value, selectedValue, setSelectedValue, getList, getAllList }) => {
 
   return (
     <TouchableOpacity
       style={[styles.button, selectedValue === value && styles.selected]}
       onPress={() => {
-        setName(value)
         setSelectedValue(value)
         if (value === 'All') {
           getAllList();

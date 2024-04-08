@@ -13,11 +13,12 @@ import SettingsScreen from '../screens/SettingsScreen';
 import AppliedScreen from '../screens/AppliedScreen';
 
 import AddPropertyScreen from '../screens/AddPropertyScreen';
+import HomeStackNav from '../screens/navigations/HomeStackNav';
 
 const Tab = createBottomTabNavigator();
 
 // Screen Names Renters View
-const home = 'Home';
+const home = 'HomeStackNav';
 const pinned = 'Pinned';
 const messages = 'Messages';
 const settings = 'Settings';
@@ -46,7 +47,7 @@ function NavBarRenters() {
         screenOptions={({ route }) => ({
           tabBarShowLabel: false,
           headerShown: false,
-          tabBarStyle: { paddingHorizontal: 7 },
+          // tabBarStyle: { paddingHorizontal: 7 },
           tabBarIcon: ({ focused }) => {
             let iconName;
             let styleType;
@@ -94,7 +95,7 @@ function NavBarRenters() {
         })}>
         <Tab.Screen
           name={home}
-          component={HomeScreen}
+          component={HomeStackNav}
         />
         <Tab.Screen
           name={pinned}
@@ -130,12 +131,13 @@ const styles = StyleSheet.create({
   midIcon: {
     backgroundColor: 'white',
     padding: 15,
-    borderRadius: 100,
+    borderRadius: 60,
     bottom: 10,
   },
   styleMiddleIcon: {
     width: 60,
     height: 60,
+    alignSelf: 'center',
   },
   midIconShadow: {
     shadowColor: '#7F5DF0',

@@ -5,10 +5,17 @@ Image,
 Text,
  } from "react-native";
 
+import { useNavigation } from '@react-navigation/native';
+
 function PostCard ({ data, address='Jaro, Iloilo City'}) {
 
+    const navigation = useNavigation()
+
     return (
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.push('postDetails',
+        {
+            data: data
+        })}>
             <View style={styles.container}>
 
                 <Image 
