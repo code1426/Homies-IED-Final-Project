@@ -12,14 +12,22 @@ import { useRoute } from "@react-navigation/native";
 
 import { ImageSlider } from "react-native-image-slider-aws-s3";
 
-const PostDetailScreen = ({}) => {
+const PostDetailScreen = ({navigation}) => {
   const { params } = useRoute();
   const data = params.data;
   let address = "Jaro, Iloilo City"; // for testing purposes
 
   useEffect(() => {
-    console.log(params.data);
-  }, []);
+    // console.log(params.data);
+    navigation.getParent()?.setOptions({
+      tabBarStyle: {
+        display: "none"
+      }
+    });
+    return () => navigation.getParent()?.setOptions({
+      tabBarStyle: undefined
+    });
+  }, [navigation]);
 
   const features = [data.propertyType, ...data.features];
 
@@ -86,7 +94,18 @@ const PostDetailScreen = ({}) => {
               <Text style={styles.applicant}>APPLICANTS: 0</Text>
             </View>
 
-            <View style={styles.footerContainer}>
+            
+          </View>
+        }
+        showsVerticalScrollIndicator={false}
+        data={features}
+        numColumns={3}
+        renderItem={({ item, index }) => (
+          <FeaturesComponent key={index} title={item} />
+        )}
+      />
+
+<View style={styles.footerContainer}>
               <TouchableOpacity style={styles.pinnedButton}>
                 <Image
                   style={{ width: 23, height: 23 }}
@@ -117,15 +136,6 @@ const PostDetailScreen = ({}) => {
                 </Text>
               </TouchableOpacity>
             </View>
-          </View>
-        }
-        showsVerticalScrollIndicator={false}
-        data={features}
-        numColumns={3}
-        renderItem={({ item, index }) => (
-          <FeaturesComponent key={index} title={item} />
-        )}
-      />
     </View>
   );
 };
@@ -222,7 +232,7 @@ const styles = StyleSheet.create({
   },
   footerContainer: {
     flexDirection: "row",
-    marginBottom: 50,
+    // marginBottom: 50,
     height: 78,
     // marginHorizontal: -10
   },
