@@ -162,8 +162,9 @@ function HomeScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
+    // paddingTop: 26,
     paddingHorizontal: 30,
-    paddingBottom: 150,
+    marginBottom: 30,
     width: "100%",
   },
   header: {
@@ -201,7 +202,7 @@ const styles = StyleSheet.create({
   },
   searchbarContainer: {
     height: 55,
-    width: "55%",
+    width: "60%",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",

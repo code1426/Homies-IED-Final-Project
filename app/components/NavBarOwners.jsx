@@ -12,11 +12,12 @@ import ListingScreen from '../screens/ListingScreen';
 import MessagesScreen from '../screens/MessagesScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import AddPropertyScreen from '../screens/AddPropertyScreen';
+import HomeStackNav from '../screens/navigations/HomeStackNav';
 
 const Tab = createBottomTabNavigator();
 
 // Screen Names Renters View
-const home = 'Home';
+const home = 'HomeStackNav';
 const listing = 'Listing';
 const messages = 'Messages';
 const settings = 'Settings';
@@ -30,7 +31,7 @@ const settingsIcon = require('../assets/navigationBarIcons/nonactiveSettings.png
 
 // Active Icon Images
 const activeHomeIcon = require('../assets/navigationBarIcons/activeHome.png');
-const activePinnedIcon = require('../assets/navigationBarIcons/activePin.png');
+const activePinnedIcon = require('../assets/navigationBarIcons/activePin.png'); // to be changed the icon to activeList
 const activeMessagesIcon = require('../assets/navigationBarIcons/activeMessages.png');
 const activeSettingsIcon = require('../assets/navigationBarIcons/activeSettings.png');
 
@@ -45,7 +46,7 @@ function NavBarOwners() {
         screenOptions={({ route }) => ({
           tabBarShowLabel: false,
           headerShown: false,
-          tabBarStyle: { paddingHorizontal: 7 },
+          tabBarStyle: { paddingHorizontal: 0 },
           tabBarIcon: ({ focused }) => {
             let iconName;
             let styleType;
@@ -93,7 +94,7 @@ function NavBarOwners() {
         })}>
         <Tab.Screen
           name={home}
-          component={HomeScreen}
+          component={HomeStackNav}
         />
         <Tab.Screen
           name={listing}
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
   styleSmallIcons: {
     width: 25,
     height: 25,
-    top: 7,
+    top: Platform.OS === 'ios' ? 7 : 0,
   },
   midIcon: {
     backgroundColor: 'white',

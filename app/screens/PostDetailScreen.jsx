@@ -12,7 +12,7 @@ import { useRoute } from "@react-navigation/native";
 
 import { ImageSlider } from "react-native-image-slider-aws-s3";
 
-const PostDetailScreen = ({navigation}) => {
+const PostDetailScreen = ({ navigation }) => {
   const { params } = useRoute();
   const data = params.data;
   let address = "Jaro, Iloilo City"; // for testing purposes
@@ -21,12 +21,13 @@ const PostDetailScreen = ({navigation}) => {
     // console.log(params.data);
     navigation.getParent()?.setOptions({
       tabBarStyle: {
-        display: "none"
-      }
+        display: "none",
+      },
     });
-    return () => navigation.getParent()?.setOptions({
-      tabBarStyle: undefined
-    });
+    return () =>
+      navigation.getParent()?.setOptions({
+        tabBarStyle: undefined,
+      });
   }, [navigation]);
 
   const features = [data.propertyType, ...data.features];
@@ -93,8 +94,6 @@ const PostDetailScreen = ({navigation}) => {
             <View style={styles.applicantContainer}>
               <Text style={styles.applicant}>APPLICANTS: 0</Text>
             </View>
-
-            
           </View>
         }
         showsVerticalScrollIndicator={false}
@@ -105,37 +104,33 @@ const PostDetailScreen = ({navigation}) => {
         )}
       />
 
-<View style={styles.footerContainer}>
-              <TouchableOpacity style={styles.pinnedButton}>
-                <Image
-                  style={{ width: 23, height: 23 }}
-                  source={require("./../../app/assets/navigationBarIcons/nonactivePin.png")}
-                />
-                <Text>Pin</Text>
-              </TouchableOpacity>
+      <View style={styles.footerContainer}>
+        <TouchableOpacity style={styles.pinnedButton}>
+          <Image
+            style={{ width: 23, height: 23 }}
+            source={require("./../../app/assets/navigationBarIcons/nonactivePin.png")}
+          />
+          <Text>Pin</Text>
+        </TouchableOpacity>
 
-              <TouchableOpacity style={styles.reserveButton}>
-                <Image
-                  style={{ width: 25, height: 25 }}
-                  source={require("./../../app/assets/reserveIcon.png")}
-                />
-                <Text>Reservation</Text>
-                <Text style={{ fontSize: 10 }}>{`(Php ${parseInt(
-                  parseFloat(data.registrationPrice) * 1.01
-                )}.00)`}</Text>
-              </TouchableOpacity>
+        <TouchableOpacity style={styles.reserveButton}>
+          <Image
+            style={{ width: 25, height: 25 }}
+            source={require("./../../app/assets/reserveIcon.png")}
+          />
+          <Text>Reservation</Text>
+          <Text style={{ fontSize: 10 }}>{`(Php ${parseInt(
+            parseFloat(data.registrationPrice) * 1.01
+          )}.00)`}</Text>
+        </TouchableOpacity>
 
-              <TouchableOpacity style={styles.applyButton}>
-                <Text
-                  style={{ color: "white", fontWeight: "bold", fontSize: 18 }}
-                >
-                  APPLY NOW!
-                </Text>
-                <Text style={{ color: "white", fontSize: 10 }}>
-                  Watch an AD
-                </Text>
-              </TouchableOpacity>
-            </View>
+        <TouchableOpacity style={styles.applyButton}>
+          <Text style={{ color: "white", fontWeight: "bold", fontSize: 18 }}>
+            APPLY NOW!
+          </Text>
+          <Text style={{ color: "white", fontSize: 10 }}>Watch an AD</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -170,7 +165,7 @@ const styles = StyleSheet.create({
     // paddingHorizontal: 10
   },
   imageSliderContainer: {
-    display: "absolute",
+    // display: "absolute",
     borderRadius: 10,
     // marginHorizontal: -20,
     marginVertical: 8,

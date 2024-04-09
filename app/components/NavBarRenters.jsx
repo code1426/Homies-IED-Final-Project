@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
-import { Image, View, StyleSheet } from 'react-native';
+import { Image, View, StyleSheet, Platform } from 'react-native';
 
 // import
 
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
   styleSmallIcons: {
     width: 25,
     height: 25,
-    top: 7,
+    top: Platform.OS === 'ios' ? 7 : 0,
   },
   midIcon: {
     backgroundColor: 'white',
