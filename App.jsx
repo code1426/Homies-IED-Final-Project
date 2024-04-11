@@ -4,7 +4,8 @@ import NavBarOwners from './app/components/NavBarOwners';
 
 export default function App() {
   return (
-    <NavBarRenters></NavBarRenters>
+    // <NavBarRenters></NavBarRenters>
+    <NavBarOwners />
   );
 }
 

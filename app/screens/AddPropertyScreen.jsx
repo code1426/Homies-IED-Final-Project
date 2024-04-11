@@ -48,6 +48,7 @@ function AddPropertyScreen({ navigation }) {
   const [featureStyle, setFeatureStyle] = useState({
     ...styles.featuresContainer,
   });
+  const [addressStyle, setAddressStyle] = useState({ ...styles.addressInput})
   const [image1Style, setImage1Style] = useState({ ...styles.image1 });
   const [image2Style, setImage2Style] = useState({ ...styles.image2 });
   const [image3Style, setImage3Style] = useState({ ...styles.image3 });
@@ -317,7 +318,6 @@ function AddPropertyScreen({ navigation }) {
     } catch (error) {
       console.log(error.message, "main");
       setLoading(false);
-      // ToastAndroid.show('Thumbnail is Required', ToastAndroid.SHORT)
     }
   };
 
@@ -385,7 +385,6 @@ function AddPropertyScreen({ navigation }) {
         borderWidth: 2,
         borderColor: "#FF2525",
       });
-      console.log("thumbnail is required");
     } else {
       setImgStyle({ ...styles.thumbnail });
     }
@@ -438,6 +437,14 @@ function AddPropertyScreen({ navigation }) {
       });
     } else {
       setImage3Style({ ...styles.image3 });
+    } if (!values.address) {
+      setAddressStyle({
+        ...styles.addressInput,
+        borderWidth: 2,
+        borderColor: "#FF2525",
+      });
+    } else {
+      setAddressStyle({ ...styles.addressInput });
     }
   };
 
@@ -454,6 +461,7 @@ function AddPropertyScreen({ navigation }) {
       image3: null,
     },
     features: [],
+    address: null,
   };
 
   const data = [
@@ -461,6 +469,17 @@ function AddPropertyScreen({ navigation }) {
     { label: "Room", value: "Room" },
     { label: "Shared Room", value: "Shared Room" },
     { label: "Air Conditioned", value: "Air Conditioned" },
+    { label: "CCTV Monitored", value: "CCTV Monitored" },
+    { label: "Common Laundry Area", value: "Common Laundry Area" },
+    { label: "Common Kitchen Area", value: "Common Kitchen Area" },
+    { label: "Piso Wi-Fi", value: "Piso Wi-Fi" },
+    { label: "Own Sub-meter", value: "Own Sub-meter" },
+    { label: "2 BedRooms", value: "2 BedRooms" },
+    { label: "3 BedRooms", value: "3 BedRooms" },
+    { label: "4 BedRooms", value: "4 BedRooms" },
+    { label: "Fire Alarm System", value: "Fire Alarm System" },
+    { label: "Free Water", value: "Free Water" },
+    { label: "Metered Electricity", value: "Metered Electricity" },
   ];
 
   return (
@@ -676,7 +695,7 @@ function AddPropertyScreen({ navigation }) {
                       marginBottom: 12,
                     }}
                   >
-                    Key Features / Amenities
+                    Features / Amenities
                   </Text>
                   <View>
                     <MultiSelect
@@ -701,6 +720,26 @@ function AddPropertyScreen({ navigation }) {
                       }}
                     />
                   </View>
+                </View>
+
+                <View>
+                  <Text style={{ fontSize: 22,
+                      fontWeight: "bold",
+                      marginBottom: 8, 
+                    }}
+                  >
+                      Address
+                  </Text>
+                  <TextInput
+                    style={addressStyle}
+                    placeholder="Enter Address"
+                    value={values?.address}
+                    onChangeText={handleChange("address")}
+                    multiline={true}
+                    numberOfLines={2}
+                    maxLength={100}
+                    autoCapitalize="sentences"
+                  />
                 </View>
 
                 {/* rent price container */}
@@ -770,7 +809,6 @@ export default AddPropertyScreen;
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: 'red',
     padding: 30,
     paddingBottom: 130,
     height: "100%",
@@ -867,7 +905,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     borderRadius: 10,
-    // resizeMode: 'contain'
   },
   addIconContainer: {
     postion: "absolute",
@@ -884,7 +921,6 @@ const styles = StyleSheet.create({
   imageContainer: {
     postion: "relative",
     justifyContent: "center",
-    // alignSelf: 'center',
     width: 100,
     height: 100,
     marginBottom: 20,
@@ -895,21 +931,18 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     borderRadius: 10,
-    // resizeMode: 'contain',
   },
   image2: {
     flex: 1,
     width: "100%",
     height: "100%",
     borderRadius: 10,
-    // resizeMode: 'contain',
   },
   image3: {
     flex: 1,
     width: "100%",
     height: "100%",
     borderRadius: 10,
-    // resizeMode: 'contain',
   },
   imageAddIconContainer: {
     postion: "absolute",
@@ -919,4 +952,14 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginBottom: -20,
   },
+  addressInput: {
+    fontSize: 16,
+    borderWidth: 1,
+    height: 50,
+    width: '100%',
+    justifyContent: "center",
+    borderRadius: 8,
+    padding: 8,
+    marginBottom: 20,
+  }
 });

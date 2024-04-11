@@ -4,6 +4,7 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import PostDetailScreen from "../PostDetailScreen.jsx";
 import HomeScreen from "../HomeScreen";
+import NotificationScreen from "../NotificationScreen.jsx";
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +27,9 @@ const HomeStackNav = () => {
           headerTitle: "Detail",
         }}
       />
+
+      <Stack.Screen name='Notifications' component={NotificationScreen}/>
+      
     </Stack.Navigator>
   );
 };

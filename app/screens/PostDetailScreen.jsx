@@ -46,7 +46,7 @@ const PostDetailScreen = ({ navigation }) => {
                   { uri: data.images.image3 },
                 ]}
                 autoPlay={false}
-                onItemChanged={(item) => console.log("item", item)}
+                // onItemChanged={(item) => console.log("item", item)}
                 closeIconColor="#fff"
               />
             </View>

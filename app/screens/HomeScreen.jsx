@@ -87,7 +87,7 @@ function HomeScreen({ navigation }) {
                 source={require("../assets/profile.jpg")}
               />
               <TouchableOpacity
-                onPress={() => console.log("notification pressed")}
+                onPress={() => navigation.navigate('Notifications')}
               >
                 <Image
                   style={{

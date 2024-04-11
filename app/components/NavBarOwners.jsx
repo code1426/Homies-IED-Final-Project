@@ -6,21 +6,21 @@ import { Image, View, StyleSheet } from 'react-native';
 // import
 
 // Screens
-import HomeScreen from '../screens/HomeScreen';
-// import PinnedScreen from '../screens/PinnedScreen';
-import ListingScreen from '../screens/ListingScreen';
-import MessagesScreen from '../screens/MessagesScreen';
-import SettingsScreen from '../screens/SettingsScreen';
 import AddPropertyScreen from '../screens/AddPropertyScreen';
+
+// StackNav Screens
 import HomeStackNav from '../screens/navigations/HomeStackNav';
+import ListingStackNav from '../screens/navigations/ListingStackNav';
+import MessageStackNav from '../screens/navigations/MessageStackNav';
+import SettingStackNav from '../screens/navigations/SettingStackNav';
 
 const Tab = createBottomTabNavigator();
 
 // Screen Names Renters View
-const home = 'HomeStackNav';
-const listing = 'Listing';
-const messages = 'Messages';
-const settings = 'Settings';
+const home = 'HomeStackNav'; // changed to stack nav
+const listing = 'ListingStackNav'; // changed to stack nav
+const messages = 'MessagesStackNav'; // changed to stack nav
+const settings = 'SettingsStackNav'; // changed to stack nav
 const addProperty = 'AddProperty';
 
 // Deactive Icon Images
@@ -46,7 +46,6 @@ function NavBarOwners() {
         screenOptions={({ route }) => ({
           tabBarShowLabel: false,
           headerShown: false,
-          tabBarStyle: { paddingHorizontal: 0 },
           tabBarIcon: ({ focused }) => {
             let iconName;
             let styleType;
@@ -94,11 +93,11 @@ function NavBarOwners() {
         })}>
         <Tab.Screen
           name={home}
-          component={HomeStackNav}
+          component={HomeStackNav} // changed all components to stackNav
         />
         <Tab.Screen
           name={listing}
-          component={ListingScreen}
+          component={ListingStackNav}
         />
         <Tab.Screen
           name={addProperty}
@@ -106,11 +105,11 @@ function NavBarOwners() {
         />
         <Tab.Screen
           name={messages}
-          component={MessagesScreen}
+          component={MessageStackNav}
         />
         <Tab.Screen
           name={settings}
-          component={SettingsScreen}
+          component={SettingStackNav}
         />
       </Tab.Navigator>
     </NavigationContainer>

@@ -1,20 +1,30 @@
-import React from 'react';
-import { TouchableOpacity, View, Text, StyleSheet, Image } from 'react-native';
+import React from "react";
+import { TouchableOpacity, View, Text, StyleSheet, Image } from "react-native";
+
+import { useNavigation } from "@react-navigation/native";
 
 function Button({ settingName, settingIcon, tailIcon }) {
+  const navigation = useNavigation();
+
+  const handleClick = () => {
+    //write conditions to trigger navigation
+    if (settingName === 'Notifications' || settingName === 'Log Out') { // temporarily disable
+      console.log(settingName)
+    } else {
+      navigation.navigate(settingName) 
+    }
+  };
+
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity
+      onPress={() => handleClick()}
+      style={styles.container}
+    >
       <View style={styles.content}>
-        <Image
-          style={styles.icon}
-          source={settingIcon}
-        />
+        <Image style={styles.icon} source={settingIcon} />
         <Text style={styles.settingTitle}>{settingName}</Text>
         <View style={styles.arrowContainer}>
-          <Image
-            style={styles.arrow}
-            source={tailIcon}
-          />
+          <Image style={styles.arrow} source={tailIcon} />
         </View>
       </View>
     </TouchableOpacity>
@@ -23,9 +33,9 @@ function Button({ settingName, settingIcon, tailIcon }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     // alignItems: 'stretch',
-    justifyContent: 'center',
+    justifyContent: "center",
     width: "100%",
     height: 42,
     borderRadius: 25,
@@ -35,20 +45,20 @@ const styles = StyleSheet.create({
   },
   content: {
     // height: 'auto',
-    width: '100%',
-    flexDirection: 'row',
+    width: "100%",
+    flexDirection: "row",
     left: 36,
   },
   settingTitle: {
     left: 10,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   icon: {
     width: 18,
     height: 18,
   },
   arrowContainer: {
-    position: 'absolute',
+    position: "absolute",
     right: 53,
   },
   arrow: {

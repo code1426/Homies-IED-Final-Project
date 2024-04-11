@@ -5,24 +5,21 @@ import { Image, View, StyleSheet, Platform } from 'react-native';
 
 // import
 
-// Screens
-import HomeScreen from '../screens/HomeScreen';
-import PinnedScreen from '../screens/PinnedScreen';
-import MessagesScreen from '../screens/MessagesScreen';
-import SettingsScreen from '../screens/SettingsScreen';
-import AppliedScreen from '../screens/AppliedScreen';
-
-import AddPropertyScreen from '../screens/AddPropertyScreen';
+// StackNav Screens
 import HomeStackNav from '../screens/navigations/HomeStackNav';
+import PinnedStackNav from '../screens/navigations/PinnedStackNav';
+import AppliedStackNav from '../screens/navigations/AppliedStackNav';
+import MessageStackNav from '../screens/navigations/MessageStackNav';
+import SettingStackNav from '../screens/navigations/SettingStackNav';
 
 const Tab = createBottomTabNavigator();
 
 // Screen Names Renters View
-const home = 'HomeStackNav';
-const pinned = 'Pinned';
-const messages = 'Messages';
-const settings = 'Settings';
-const applied = 'Applied';
+const home = 'HomeStackNav'; // changed to stack nav
+const pinned = 'PinnedStackNav'; // changed to stack nav
+const messages = 'MessagesStackNav'; // changed to stack nav
+const settings = 'SettingsStackNav'; // changed to stack nav
+const applied = 'AppliedStackNav'; // changed to stack nav
 
 // Deactive Icon Images
 const homeIcon = require('../assets/navigationBarIcons/nonactiveHome.png');
@@ -47,7 +44,6 @@ function NavBarRenters() {
         screenOptions={({ route }) => ({
           tabBarShowLabel: false,
           headerShown: false,
-          // tabBarStyle: { paddingHorizontal: 7 },
           tabBarIcon: ({ focused }) => {
             let iconName;
             let styleType;
@@ -95,23 +91,23 @@ function NavBarRenters() {
         })}>
         <Tab.Screen
           name={home}
-          component={HomeStackNav}
+          component={HomeStackNav} // changed each component to stackNav
         />
         <Tab.Screen
           name={pinned}
-          component={PinnedScreen}
+          component={PinnedStackNav}
         />
         <Tab.Screen
           name={applied}
-          component={AddPropertyScreen} //For testing purposes. This should be applied screen.
+          component={AppliedStackNav}
         />
         <Tab.Screen
           name={messages}
-          component={MessagesScreen}
+          component={MessageStackNav}
         />
         <Tab.Screen
           name={settings}
-          component={SettingsScreen}
+          component={SettingStackNav}
         />
       </Tab.Navigator>
     </NavigationContainer>
