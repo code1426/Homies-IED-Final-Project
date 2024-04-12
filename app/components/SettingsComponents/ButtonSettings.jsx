@@ -29,7 +29,7 @@ function ButtonSettings({
 
       // notifications should be manipulated here -----------------------------------------------------------------------
     }
-    if (settingName === 'Log Out') {
+    else if (settingName === 'Log Out') {
       // temporarily disabled
     } else {
       navigation.navigate(settingName);
