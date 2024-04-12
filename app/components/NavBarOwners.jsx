@@ -31,7 +31,7 @@ const settingsIcon = require('../assets/navigationBarIcons/nonactiveSettings.png
 
 // Active Icon Images
 const activeHomeIcon = require('../assets/navigationBarIcons/activeHome.png');
-const activePinnedIcon = require('../assets/navigationBarIcons/activePin.png'); // to be changed the icon to activeList
+const activeListIcon = require('../assets/navigationBarIcons/activeList.png'); // to be changed the icon to activeList
 const activeMessagesIcon = require('../assets/navigationBarIcons/activeMessages.png');
 const activeSettingsIcon = require('../assets/navigationBarIcons/activeSettings.png');
 
@@ -55,7 +55,7 @@ function NavBarOwners() {
               iconName = focused ? activeHomeIcon : homeIcon;
               styleType = styles.styleSmallIcons;
             } else if (routeName === listing) {
-              iconName = focused ? activePinnedIcon : listIcon;
+              iconName = focused ? activeListIcon : listIcon;
               styleType = styles.styleSmallIcons;
             } else if (routeName === messages) {
               iconName = focused ? activeMessagesIcon : messagesIcon;

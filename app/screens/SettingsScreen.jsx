@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, SafeAreaView, View, Image, StyleSheet } from 'react-native';
 import HeaderComponent from '../components/HeaderComponent';
-import Button from '../components/SettingsComponents/Button';
+import ButtonSettings from '../components/SettingsComponents/ButtonSettings';
 
 const userName = 'Username'; // should be change to fetching
 const email = 'Email@gmail.com'; // should be changed to fetching
@@ -32,20 +32,21 @@ function SettingsScreen(props) {
           </View>
         </View>
 
-        <Button
+        <ButtonSettings
           settingName='Privacy'
           settingIcon={require('../assets/settingsIcons/privacyIcon.png')}
         />
-        <Button
+        <ButtonSettings
           settingName='Roles'
           settingIcon={require('../assets/settingsIcons/roleChangeIcon.png')}
         />
-        <Button
+        <ButtonSettings
           settingName='Notifications'
           settingIcon={require('../assets/settingsIcons/notificationIcon.png')}
-          tailIcon={require('../assets/settingsIcons/arrowHead.png')}
+          tailIcon={require('../assets/switchOff.png')}
+          tailIconActive={require('../assets/switchOn.png')}
         />
-        <Button
+        <ButtonSettings
           settingName='Log Out'
           settingIcon={require('../assets/settingsIcons/logOutIcon.png')}
           tailIcon={require('../assets/settingsIcons/arrowHead.png')}
