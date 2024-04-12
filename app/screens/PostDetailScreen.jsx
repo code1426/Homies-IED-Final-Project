@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   footerContainer: {
     flexDirection: 'row',
     // marginBottom: 50,
-    height: 78,
+    height: 88,
     bottom: 0,
     // marginHorizontal: -10
   },
@@ -260,6 +260,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingBottom: 10
   },
   reserveButton: {
     flex: 1,
@@ -267,6 +268,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#00E4BB',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingBottom: 10
   },
   applyButton: {
     flex: 2,
@@ -274,5 +276,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#4285F4',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingBottom: 10
   },
 });
