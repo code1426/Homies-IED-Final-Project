@@ -1,61 +1,44 @@
 import React, {useState} from 'react';
 import {
     TouchableOpacity, 
-    Text,
-    Stylesheet, 
-    View,
     SafeAreaView,
     StyleSheet,
     Image} from 'react-native';
 
 
 const SelectButton = () => {
-    const [selected, setSelected] = useState(false);
+    const [imageSource, setImageSource] = useState(require('../assets/circle.png'));
 
-    
+    const [notSelected, selected] = useState(false);
+    //     setImageSource(require('../assets/fill.png'))
+    // };
+    const imageChange = () => {
+        if (notSelected) {setImageSource(require('../assets/circle.png'));
+    }
+        else {setImageSource(require('../assets/fill.png'))
+    }
+       selected(!notSelected);
+    };
+   
     return (
-        <SafeAreaView style={{height: '100%', width: '100%'}}>
-            <PreviewLayout
-                selectedValue={alignItems}
-                values={['renter', 'owner']}
-                setSelectedValue={setAlignItems}>
-            </PreviewLayout>
+        <SafeAreaView style={styles.circleContainer}>
+           <TouchableOpacity onPress={imageChange}>
+                <Image style={styles.circle} source={imageSource}/>
+           </TouchableOpacity>
         </SafeAreaView>
 );
 };
 
-const button = require('../assets/circle.png');
-const selectedButton = require('../assets/fill.png');
-
-const PreviewLayout = ({
-    values, 
-    selectedValue,
-    setSelectedValue,
-    }) => (
-    <View style={styles.circleContainer}>
-        {values.map(value => (
-            <TouchableOpacity
-            key={value}
-            onPress={() => setSelectedValue(value)}
-            style={[styles.button, selectedValue === value && styles.selected]}>
-                
-            </TouchableOpacity>
-        ))}
-    
-</View>
-);
-
 const styles = StyleSheet.create({
     circleContainer: {
-        height: '3%', 
-        width: '6.5%',  
-        margin: 20,
-        backgroundColor: 'yellow'
+        height: '100%', 
+        width: '100%',  
+        alignSelf: 'center',
     },
     circle: {
         height: '100%', 
         width: '100%', 
-        objectFit: 'fill'
+        objectFit: 'contain'
     },
 });
 export default SelectButton;

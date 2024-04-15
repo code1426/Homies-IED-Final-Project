@@ -7,8 +7,11 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
+import SelectButton from "../components/SelectButton";
 
 function PreferredRole() {
+
+  const [isRenterSelected, setisRenterSelected] = useState(false)
   return (
     <SafeAreaView style={{ height: 736, width: 414 }}>
       <View>
@@ -17,103 +20,109 @@ function PreferredRole() {
           source={require("../assets/signup.png")}
         />
       </View>
-      <View
-        style={{
-          height: 446,
-          width: 414,
-          backgroundColor: "#ECEFF6",
-          borderTopLeftRadius: 40,
-          borderTopRightRadius: 40,
-          marginTop: -40,
-        }}
-      >
-        <Text
-          style={{
-            textAlign: "center",
-            fontFamily: "Arial",
-            fontStyle: "normal",
-            fontWeight: 600,
-            fontSize: 25,
-            marginTop: 30,
-            color: "midnightblue",
-          }}
-        >
-          Choose your role.
-        </Text>
         <View
           style={{
-            backgroundColor: "yellow",
-            height: 300,
-            width: 414,
-            flexDirection: "row",
-            justifyContent: "space-evenly",
-            paddingTop: 35,
+            height: '81%',
+            width: '100%',
+            backgroundColor: "#ECEFF6",
+            borderTopLeftRadius: 40,
+            borderTopRightRadius: 40,
+            marginTop: -40,
+            justifyContent: 'center'
           }}
         >
-          <TouchableOpacity
-            style={styles.role}
-            onPress={() => console.log("Renter tapped")}
-          >
-            {/* <Image 
-                style={{width: 150, height: 230}}
-                source={require('../assets/finder.png')}/>
-               */}
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.role}
-            onPress={() => console.log("Owner tapped")}
-          >
-            {/* <Image></Image> */}
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity onPress={() => Alert.alert("Proceed button pressed")}>
-          <View
+          <View style={{height: '80%', width: '100%'}}>
+          <Text
             style={{
-              height: 40,
-              width: 200,
-              alignSelf: "center",
-              backgroundColor: "midnightblue",
-              borderRadius: 15,
+              textAlign: "center",
+              fontFamily: "Arial",
+              fontStyle: "normal",
+              fontWeight: 600,
+              fontSize: 25,
+              marginTop: 30,
+              color: "midnightblue",
             }}
           >
-            <Text
-              style={{
-                color: "white",
-                textAlign: "center",
-                paddingVertical: 10,
-                fontSize: 15,
-                fontWeight: 600,
+            Choose your role.
+          </Text>
+          <View
+            style={{
+              height: 300,
+              width: 414,
+              flexDirection: "row",
+              justifyContent: "space-evenly",
+              paddingTop: 35,
+            }}
+          >
+            <TouchableOpacity
+              style={styles.role}
+              onPress={() => {
+                setisRenterSelected(!isRenterSelected);
+                console.log(isRenterSelected)
               }}
             >
-              Proceed
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-      {/* <View style={{height: 446, width: 414, backgroundColor: '#ECEFF6', borderTopLeftRadius: 40, borderTopRightRadius: 40, marginTop: -40}}>
-          <Text style={{textAlign: 'center', fontFamily: "Arial", fontStyle: "normal", fontWeight: 600, fontSize: 25, marginTop: 30, color: 'midnightblue'}}>Choose your role.</Text>
-          <View> style={{ alignItems: 'space-between', }}
+              <View style={{ height: '10%', width: '10%', marginLeft: '10%', marginTop: '10%'}}>
+                <SelectButton isSelected={isRenterSelected} ></SelectButton>
+              </View>
+              <View style={{height: '70%', width: '90%', alignSelf: 'center'}}>
+                <Image style={{height: '100%', width: '100%', objectFit: 'contain'}}source={require('../assets/renter.png')}/>
+              </View>
+              <View style={{ height: '8%', width: '100%', alignItems: 'center', marginVertical: '10%'}}>
+                <Text style={{fontWeight: 'bold'}}>Renter</Text>
+              </View>
+            </TouchableOpacity>
 
+            <TouchableOpacity
+              style={styles.role}
+              onPress={() => console.log("Owner tapped")}
+            >
+              <View style={{ height: '10%', width: '10%', marginLeft: '10%', marginTop: '10%'}}>
+                <SelectButton isSelected={isRenterSelected} ></SelectButton>
+              </View>
+              <View style={{height: '70%', width: '90%', alignSelf: 'center'}}>
+                <Image style={{height: '100%', width: '100%', objectFit: 'contain'}}source={require('../assets/owner.png')}/>
+              </View>
+              <View style={{ height: '8%', width: '100%', alignItems: 'center', marginVertical: '10%'}}>
+                <Text style={{fontWeight: 'bold'}}>Owner</Text>
+              </View>
+            </TouchableOpacity>
           </View>
-          <View style={{width: 200, alignSelf: 'center', marginTop: 300 }}>
-            <Button title="Proceed" onPress={() => Alert.alert('Proceed button pressed')} color={'midnightblue'}/>
-          </View>
-        </View> */}
+          <TouchableOpacity onPress={() => Alert.alert("Proceed button pressed")}>
+            <View
+              style={{
+                height: 40,
+                width: 200,
+                alignSelf: "center",
+                backgroundColor: "midnightblue",
+                borderRadius: 15,
+              }}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  textAlign: "center",
+                  paddingVertical: 10,
+                  fontSize: 15,
+                  fontWeight: 600,
+                }}
+              >
+                Proceed
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "seagreen",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   role: {
-    height: 230,
-    width: 150,
+    height: '80%',
+    width: '40%',
     backgroundColor: "white",
+    borderRadius: 18,
+    justifyContent: 'space-evenly'
   },
 });
 
