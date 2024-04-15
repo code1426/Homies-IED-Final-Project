@@ -10,7 +10,7 @@ function ButtonSettings({
   tailIconActive,
 }) {
   const navigation = useNavigation();
-  const [notificationsActive, setNotificationsActive] = useState(false);
+  const [notificationsActive, setNotificationsActive] = useState(true);
 
   const [tailIconPlaced, setIconPlaced] = useState(tailIcon);
 
@@ -18,14 +18,16 @@ function ButtonSettings({
     //write conditions to trigger navigation
     if (settingName === 'Notifications') {
       // temporarily disable
-      setNotificationsActive(!notificationsActive);
-
-      if (notificationsActive) {
-        icon = tailIconActive;
+      if (notificationsActive === true) {
+        // icon = tailIconActive;
         setIconPlaced(tailIconActive)
       } else {
         setIconPlaced(tailIcon)
       };
+      
+      setNotificationsActive(!notificationsActive);
+
+      
 
       // notifications should be manipulated here -----------------------------------------------------------------------
     }

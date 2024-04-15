@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     height: 55,
     borderRadius: 27.5,
     marginLeft: 35,
-    resizeMode: 'contain',
+    resizeMode: 'cover',
   },
   messageContent: {
     width: 227,
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     width: 21,
     height: 21,
     borderRadius: 10.5,
-    resizeMode: 'contain',
+    resizeMode: 'cover',
   },
 });
 

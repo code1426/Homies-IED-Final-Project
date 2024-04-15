@@ -1,5 +1,12 @@
 import React from 'react';
-import { Text, SafeAreaView, View, Image, StyleSheet } from 'react-native';
+import {
+  Text,
+  SafeAreaView,
+  View,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import HeaderComponent from '../components/HeaderComponent';
 import ButtonSettings from '../components/SettingsComponents/ButtonSettings';
 
@@ -16,10 +23,12 @@ function SettingsScreen(props) {
       <HeaderComponent title='Settings' />
       <View style={styles.container}>
         <View style={styles.profileContainer}>
-          <Image
-            style={styles.image}
-            source={require('../assets/settingsIcons/noProfilePlaceholder.png')}
-          />
+          <TouchableOpacity>
+            <Image
+              style={styles.image}
+              source={require('../assets/settingsIcons/noProfilePlaceholder.png')}
+            />
+          </TouchableOpacity>
           <View>
             <Text>{userName}</Text>
             <View>
@@ -28,6 +37,9 @@ function SettingsScreen(props) {
               <Text>{location}</Text>
               <Text>{gCashSync}</Text>
               <Text>{businessPermit}</Text>
+              <TouchableOpacity style={styles.editButton}>
+                <Text style={{ textAlign: 'center' }}>Edit Profile</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -70,9 +82,20 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   image: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: 130,
+    height: 130,
+    borderRadius: 65,
+    resizeMode: 'cover',
+  },
+  editButton: {
+    backgroundColor: '#D5E7F0',
+    height: 25,
+    width: '100%',
+    justifyContent: 'center',
+    borderRadius: 12.5,
+    borderWidth: 1,
+    borderColor: '#85BCDC',
+    marginTop: 10,
   },
 });
 
