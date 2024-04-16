@@ -20,7 +20,6 @@ import { doc, getDoc } from "firebase/firestore";
 import { FirebaseAuth, FirebaseDB } from "../../firebase.config";
 
 export default function SignInScreen({ navigation }) {
-
   const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
@@ -36,15 +35,15 @@ export default function SignInScreen({ navigation }) {
 
   const getUser = async (uid) => {
     const docRef = doc(FirebaseDB, "Users", uid);
-const docSnap = await getDoc(docRef);
+    const docSnap = await getDoc(docRef);
 
-if (docSnap.exists()) {
-  console.log("Document data:", docSnap.data());
-  return docSnap.data();
-} else {
-  console.log("No such document!");
-}
-  }
+    if (docSnap.exists()) {
+      console.log("Document data:", docSnap.data());
+      return docSnap.data();
+    } else {
+      console.log("No such document!");
+    }
+  };
 
   const validateForm = () => {
     let errors = {};
@@ -62,22 +61,22 @@ if (docSnap.exists()) {
         form.email,
         form.password
       ).catch((error) => {
-        setLoading(false)
+        setLoading(false);
         Alert.alert("Invalid Credential", "please try again.");
         console.log(error.code);
       });
       const user = resp?.user;
       if (user && user?.emailVerified) {
         console.log("User email is verified");
-        getUser(user.uid).then((userDetails)=> {
+        getUser(user.uid).then((userDetails) => {
           setLoading(false);
+          console.log("FROM GET-USER: ", userDetails);
           if (userDetails.role === "Owner") {
-            navigation.push("NavBarOwners", userDetails);
+            navigation.push("NavBarOwners", { currentUser: userDetails });
           } else {
-            navigation.push("NavBarRenters", userDetails);
+            navigation.push("NavBarRenters", { currentUser: userDetails });
           }
-        })
-        
+        });
       } else if (user && !user.emailVerified) {
         Alert.alert(
           "Email Not Verified",

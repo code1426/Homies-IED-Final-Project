@@ -12,9 +12,14 @@ import {
 
 import { useState, useEffect } from "react";
 
-import { FirebaseDB, firebaseApp } from "../../firebase.config";
-import { addDoc, collection, getDocs } from "firebase/firestore";
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { FirebaseDB, FirebaseAuth } from "../../firebase.config";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  serverTimestamp,
+} from "firebase/firestore";
+import { getDownloadURL, ref, uploadBytes, uploadBytesResumable } from "firebase/storage";
 
 import { Formik } from "formik";
 import { SafeAreaView } from "react-native";
@@ -24,8 +29,9 @@ import * as ImagePicker from "expo-image-picker";
 import { Dropdown, MultiSelect } from "react-native-element-dropdown";
 
 import HeaderComponent from "../components/HeaderComponent";
+import { firebaseStorage } from "../../firebase.config";
 
-const storage = getStorage(firebaseApp);
+// const storage = getStorage(firebaseApp);
 
 function AddPropertyScreen({ navigation }) {
   const [propertyList, setPropertyList] = useState([]);
@@ -48,7 +54,7 @@ function AddPropertyScreen({ navigation }) {
   const [featureStyle, setFeatureStyle] = useState({
     ...styles.featuresContainer,
   });
-  const [addressStyle, setAddressStyle] = useState({ ...styles.addressInput})
+  const [addressStyle, setAddressStyle] = useState({ ...styles.addressInput });
   const [image1Style, setImage1Style] = useState({ ...styles.image1 });
   const [image2Style, setImage2Style] = useState({ ...styles.image2 });
   const [image3Style, setImage3Style] = useState({ ...styles.image3 });
@@ -203,117 +209,93 @@ function AddPropertyScreen({ navigation }) {
       const image3Blob = await image3.blob();
 
       const storageRef = ref(
-        storage,
+        firebaseStorage,
         "ownerPosts/thumbnail/" + Date.now() + ".jpg"
       );
       const image1Ref = ref(
-        storage,
+        firebaseStorage,
         "ownerPosts/image1/" + Date.now() + ".jpg"
       );
       const image2Ref = ref(
-        storage,
+        firebaseStorage,
         "ownerPosts/image2/" + Date.now() + ".jpg"
       );
       const image3Ref = ref(
-        storage,
+        firebaseStorage,
         "ownerPosts/image3/" + Date.now() + ".jpg"
       );
 
-      uploadBytes(storageRef, thumbnailBlob)
-        .then((snapshot) => {
-          console.log("Uploaded THUMBNAIL to storage");
-        })
-        .then((resp) => {
-          getDownloadURL(storageRef).then(async (downloadUrl) => {
-            values.thumbnail = downloadUrl;
-            console.log("getting THUMBNAIL URL done.");
+      await uploadBytes(storageRef, thumbnailBlob);
+      // console.log("Uploaded THUMBNAIL to storage");
+      const thumbnailUrl = await getDownloadURL(storageRef);
+      values.thumbnail = thumbnailUrl;
+      console.log("getting THUMBNAIL URL done: ", thumbnailUrl);
 
-            uploadBytes(image1Ref, image1Blob)
-              .then((snapshot) => {
-                console.log("Uploaded IMAGE-1 to storage.");
-              })
-              .then((resp) => {
-                getDownloadURL(image1Ref).then(async (downloadUrl) => {
-                  values.images.image1 = downloadUrl;
-                  console.log("getting IMAGE-1 URL finished.");
+      await uploadBytesResumable(image1Ref, image1Blob);
+      // console.log("Uploaded IMAGE-1 to storage.");
+      const image1Url = await getDownloadURL(image1Ref);
+      values.images.image1 = image1Url;
+      console.log("getting IMAGE-1 URL finished: ", image1Url);
 
-                  uploadBytes(image2Ref, image2Blob)
-                    .then((snapshot) => {
-                      console.log("Uploaded IMAGE-2 to storage.");
-                    })
-                    .then((resp) => {
-                      getDownloadURL(image2Ref).then(async (downloadUrl) => {
-                        values.images.image2 = downloadUrl;
-                        console.log("getting IMAGE-2 URL finished.");
+      await uploadBytesResumable(image2Ref, image2Blob);
+      // console.log("Uploaded IMAGE-2 to storage.");
+      const image2Url = await getDownloadURL(image2Ref);
+      values.images.image2 = image2Url;
+      console.log("Uploaded IMAGE-2 to storage:", image2Url);
 
-                        uploadBytes(image3Ref, image3Blob)
-                          .then((snapshot) => {
-                            console.log("Uploaded IMAGE-3 to storage.");
-                          })
-                          .then((resp) => {
-                            getDownloadURL(image3Ref).then(
-                              async (downloadUrl) => {
-                                values.images.image3 = downloadUrl;
-                                console.log("getting IMAGE-3 URL finished.");
+      await uploadBytesResumable(image3Ref, image3Blob);
+      // console.log("Uploaded IMAGE-3 to storage.");
+      const image3Url = await getDownloadURL(image3Ref);
+      values.images.image3 = image3Url;
+      console.log("getting IMAGE-3 URL finished: ", image3Url);
 
-                                if (isAllInputFilled) {
-                                  // add the data to the firestore
-                                  console.log(
-                                    "setting all data to document..."
-                                  );
-                                  const docRef = await addDoc(
-                                    collection(FirebaseDB, "OwnerPosts"),
-                                    values
-                                  );
+      if (isAllInputFilled) {
+        // add the data to the firestore
+        console.log("setting all data to document...");
+        const docRef = await addDoc(
+          collection(FirebaseDB, "OwnerPosts"),
+          values
+        );
 
-                                  if (docRef.id) {
-                                    setLoading(false);
-                                    console.log("document added succesfully!");
-                                    Alert.alert(
-                                      "Success!",
-                                      "Post Added Successfully.",
-                                      [
-                                        {
-                                          text: "OK",
-                                          onPress: () => {
-                                            navigation.navigate("HomeStackNav");
-                                            setThumbnail(null);
-                                            setImages({
-                                              image1: null,
-                                              image2: null,
-                                              image3: null,
-                                            });
-                                            setImgStyle({
-                                              ...styles.thumbnail,
-                                            });
-                                            setImage1Style({
-                                              ...styles.image1,
-                                            });
-                                            setImage2Style({
-                                              ...styles.image2,
-                                            });
-                                            setImage3Style({
-                                              ...styles.image3,
-                                            });
-                                            Method.resetForm({
-                                              values: formInitialValues,
-                                            });
-                                          },
-                                        },
-                                      ],
-                                      { cancelable: false }
-                                    );
-                                  }
-                                }
-                              }
-                            );
-                          });
-                      });
-                    });
-                });
-              });
-          });
-        });
+        if (docRef.id) {
+          setLoading(false);
+          console.log("document added succesfully!");
+          Alert.alert(
+            "Success!",
+            "Post Added Successfully.",
+            [
+              {
+                text: "OK",
+                onPress: () => {
+                  navigation.navigate("HomeStackNav");
+                  setThumbnail(null);
+                  setImages({
+                    image1: null,
+                    image2: null,
+                    image3: null,
+                  });
+                  setImgStyle({
+                    ...styles.thumbnail,
+                  });
+                  setImage1Style({
+                    ...styles.image1,
+                  });
+                  setImage2Style({
+                    ...styles.image2,
+                  });
+                  setImage3Style({
+                    ...styles.image3,
+                  });
+                  Method.resetForm({
+                    values: formInitialValues,
+                  });
+                },
+              },
+            ],
+            { cancelable: false }
+          );
+        }
+      }
     } catch (error) {
       console.log(error.message, "main");
       setLoading(false);
@@ -436,7 +418,8 @@ function AddPropertyScreen({ navigation }) {
       });
     } else {
       setImage3Style({ ...styles.image3 });
-    } if (!values.address) {
+    }
+    if (!values.address) {
       setAddressStyle({
         ...styles.addressInput,
         borderWidth: 2,
@@ -461,6 +444,10 @@ function AddPropertyScreen({ navigation }) {
     },
     features: [],
     address: null,
+    created_at: serverTimestamp(),
+    uid: FirebaseAuth.currentUser.uid,
+    email: FirebaseAuth.currentUser.email,
+    userName: FirebaseAuth.currentUser.displayName,
   };
 
   const data = [
@@ -722,12 +709,14 @@ function AddPropertyScreen({ navigation }) {
                 </View>
 
                 <View>
-                  <Text style={{ fontSize: 22,
+                  <Text
+                    style={{
+                      fontSize: 22,
                       fontWeight: "bold",
-                      marginBottom: 8, 
+                      marginBottom: 8,
                     }}
                   >
-                      Address
+                    Address
                   </Text>
                   <TextInput
                     style={addressStyle}
@@ -955,10 +944,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderWidth: 1,
     height: 50,
-    width: '100%',
+    width: "100%",
     justifyContent: "center",
     borderRadius: 8,
     padding: 8,
     marginBottom: 20,
-  }
+  },
 });

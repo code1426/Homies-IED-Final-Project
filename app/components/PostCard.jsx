@@ -7,7 +7,7 @@ Text,
 
 import { useNavigation } from '@react-navigation/native';
 
-function PostCard ({ data, address='Jaro, Iloilo City'}) {
+function PostCard ({ data }) {
 
     const navigation = useNavigation()
 
@@ -28,7 +28,7 @@ function PostCard ({ data, address='Jaro, Iloilo City'}) {
 
                     <View style={{ alignItems: 'center', marginBottom: 20 }}> 
                         <Text style={styles.postTitle} numberOfLines={1}>{data?.title}</Text>
-                        <Text style={styles.postLocation}>{address}</Text>
+                        <Text style={styles.postLocation}>{data.address}</Text>
                     </View>
 
                     <View style={{ alignItems: 'center', marginBottom: 20 }}>
