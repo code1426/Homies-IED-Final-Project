@@ -5,33 +5,27 @@ import {
   Image,
   FlatList,
   TouchableOpacity,
-} from 'react-native';
-import React, { useEffect, useState } from 'react';
+} from "react-native";
+import React, { useEffect, useState } from "react";
 
-import { useRoute } from '@react-navigation/native';
+import { useRoute } from "@react-navigation/native";
 
-import { ImageSlider } from 'react-native-image-slider-aws-s3';
-import { set } from 'firebase/database';
+import { ImageSlider } from "react-native-image-slider-aws-s3";
 
-const PostDetailScreen = ({ navigation }) => {
+const PostDetailScreen = ({ navigation, route }) => {
+  const { currentUser } = route.params;
   const { params } = useRoute();
   const data = params.data;
-  let address = 'Jaro, Iloilo City'; // for testing purposes
-  // const [showBottomBar, setBottomBar] = useState(false);
+  let address = "Jaro, Iloilo City"; // for testing purposes
 
   // useEffect(() => {
-  //   const timeout = setTimeout(() => {
-  //     setBottomBar(true);
-  //   }, 2000);
-
-  //   return () => clearTimeout(timeout);
-  // }, []);
+  //   console.log("from postDetail: ", currentUser);
+  // }, [currentUser]);
 
   useEffect(() => {
-    // console.log(params.data);
     navigation.getParent()?.setOptions({
       tabBarStyle: {
-        display: 'none',
+        display: "none",
       },
     });
     return () =>
@@ -57,31 +51,32 @@ const PostDetailScreen = ({ navigation }) => {
                 ]}
                 autoPlay={false}
                 // onItemChanged={(item) => console.log("item", item)}
-                closeIconColor='#fff'
+                closeIconColor="#fff"
               />
             </View>
 
             <View style={{ marginHorizontal: 25 }}>
               <View style={styles.textsContainer}>
-                <View style={{ alignItems: 'center' }}>
+                <View style={{ alignItems: "center" }}>
                   <Text style={styles.postTitle}>{data?.title}</Text>
                   <View
                     style={{
-                      flexDirection: 'row',
-                      alignSelf: 'flex-start',
-                      justifyContent: 'center',
-                      alignItems: 'center',
+                      flexDirection: "row",
+                      alignSelf: "flex-start",
+                      justifyContent: "center",
+                      alignItems: "center",
                       marginTop: 6,
-                    }}>
+                    }}
+                  >
                     <Image
                       style={{ height: 15, width: 15 }}
-                      source={require('../../app/assets/location-Icon.png')}
+                      source={require("../../app/assets/location-Icon.png")}
                     />
-                    <Text style={styles.postLocation}>{address}</Text>
+                    <Text style={styles.postLocation}>{data?.address}</Text>
                   </View>
                 </View>
 
-                <View style={{ alignItems: 'center' }}>
+                <View style={{ alignItems: "center" }}>
                   <Text style={styles.price}>{`Php ${data?.rentPrice}`}</Text>
                   <Text style={styles.monthly}>monthly</Text>
                 </View>
@@ -90,10 +85,11 @@ const PostDetailScreen = ({ navigation }) => {
               <View style={styles.desContainer}>
                 <Text
                   style={{
-                    fontWeight: 'bold',
+                    fontWeight: "bold",
                     fontSize: 18,
                     marginBottom: 4,
-                  }}>
+                  }}
+                >
                   Description
                 </Text>
                 <Text style={styles.description}>{data?.description}</Text>
@@ -103,49 +99,48 @@ const PostDetailScreen = ({ navigation }) => {
         }
         ListFooterComponent={
           // <View style={{ marginHorizontal: 0 }}>
-            <View style={styles.applicantContainer}>
-              <Text style={styles.applicant}>APPLICANTS: 0</Text>
-            </View>
+          <View style={styles.applicantContainer}>
+            <Text style={styles.applicant}>APPLICANTS: 0</Text>
+          </View>
           // </View>
         }
         showsVerticalScrollIndicator={false}
         data={features}
         numColumns={2}
         renderItem={({ item, index }) => (
-          <FeaturesComponent
-            key={index}
-            title={item}
-          />
+          <FeaturesComponent key={index} title={item} />
         )}
       />
 
-      <View style={styles.footerContainer}>
-        <TouchableOpacity style={styles.pinnedButton}>
-          <Image
-            style={{ width: 23, height: 23 }}
-            source={require('./../../app/assets/navigationBarIcons/nonactivePin.png')}
-          />
-          <Text>Pin</Text>
-        </TouchableOpacity>
+      {currentUser?.role === "Owner" || (
+        <View style={styles.footerContainer}>
+          <TouchableOpacity style={styles.pinnedButton}>
+            <Image
+              style={{ width: 23, height: 23 }}
+              source={require("./../../app/assets/navigationBarIcons/nonactivePin.png")}
+            />
+            <Text>Pin</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.reserveButton}>
-          <Image
-            style={{ width: 25, height: 25 }}
-            source={require('./../../app/assets/reserveIcon.png')}
-          />
-          <Text>Reservation</Text>
-          <Text style={{ fontSize: 10 }}>{`(Php ${parseInt(
-            parseFloat(data.registrationPrice) * 1.01
-          )}.00)`}</Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.reserveButton}>
+            <Image
+              style={{ width: 25, height: 25 }}
+              source={require("./../../app/assets/reserveIcon.png")}
+            />
+            <Text>Reservation</Text>
+            <Text style={{ fontSize: 10 }}>{`(Php ${parseInt(
+              parseFloat(data.registrationPrice) * 1.01
+            )}.00)`}</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.applyButton}>
-          <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>
-            APPLY NOW!
-          </Text>
-          <Text style={{ color: 'white', fontSize: 10 }}>Watch an AD</Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity style={styles.applyButton}>
+            <Text style={{ color: "white", fontWeight: "bold", fontSize: 18 }}>
+              APPLY NOW!
+            </Text>
+            <Text style={{ color: "white", fontSize: 10 }}>Watch an AD</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };
@@ -154,18 +149,18 @@ function FeaturesComponent({ title }) {
   return (
     <View
       style={{
-        backgroundColor: '#C6E1F1',
-        borderColor: '#B1D5E9',
+        backgroundColor: "#C6E1F1",
+        borderColor: "#B1D5E9",
         borderWidth: 1,
         borderRadius: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: "center",
+        alignItems: "center",
         marginLeft: 8,
         height: 30,
         marginTop: 12,
-        left: 15
-        
-      }}>
+        left: 15,
+      }}
+    >
       <Text style={{ paddingVertical: 4, paddingHorizontal: 20, fontSize: 12 }}>
         {title}
       </Text>
@@ -177,7 +172,7 @@ export default PostDetailScreen;
 
 const styles = StyleSheet.create({
   container: {
-    height: '100%',
+    height: "100%",
     // paddingHorizontal: 10
   },
   imageSliderContainer: {
@@ -192,66 +187,66 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   textsContainer: {
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
     marginVertical: 8,
-    flexDirection: 'row',
+    flexDirection: "row",
     // backgroundColor: "blue",
   },
   postTitle: {
     fontSize: 22,
-    color: 'black',
-    alignSelf: 'flex-start',
+    color: "black",
+    alignSelf: "flex-start",
     width: 280,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     // marginBottom: 8,
   },
   postLocation: {
     fontSize: 14,
-    fontWeight: 'bold',
-    color: 'grey',
-    alignSelf: 'flex-start',
+    fontWeight: "bold",
+    color: "grey",
+    alignSelf: "flex-start",
   },
   price: {
-    alignSelf: 'flex-end',
-    fontWeight: 'bold',
+    alignSelf: "flex-end",
+    fontWeight: "bold",
     fontSize: 18,
-    color: 'teal',
+    color: "teal",
   },
   monthly: {
-    alignSelf: 'flex-end',
+    alignSelf: "flex-end",
     fontSize: 12,
-    fontWeight: 'bold',
-    color: 'grey',
+    fontWeight: "bold",
+    color: "grey",
   },
   desContainer: {
     marginVertical: 8,
     minHeight: 80,
   },
   description: {
-    color: 'gray',
+    color: "gray",
     fontSize: 16,
-    marginBottom:10,
+    marginBottom: 10,
   },
   applicantContainer: {
-    backgroundColor: '#ABCEE2',
+    backgroundColor: "#ABCEE2",
     borderRadius: 20,
     maxWidth: 160,
     marginVertical: 18,
-    alignItems: 'center',
+    alignItems: "center",
     marginLeft: 10,
     padding: 5,
     top: 10,
-    left: 12
+    left: 12,
     // paddingHorizontal: 10
   },
   applicant: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginVertical: 4,
     marginHorizontal: 10,
   },
   footerContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     // marginBottom: 50,
     height: 88,
     bottom: 0,
@@ -259,26 +254,26 @@ const styles = StyleSheet.create({
   },
   pinnedButton: {
     flex: 1,
-    flexDirection: 'column',
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingBottom: 10
+    flexDirection: "column",
+    backgroundColor: "white",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingBottom: 10,
   },
   reserveButton: {
     flex: 1,
-    flexDirection: 'column',
-    backgroundColor: '#00E4BB',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingBottom: 10
+    flexDirection: "column",
+    backgroundColor: "#00E4BB",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingBottom: 10,
   },
   applyButton: {
     flex: 2,
-    flexDirection: 'column',
-    backgroundColor: '#4285F4',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingBottom: 10
+    flexDirection: "column",
+    backgroundColor: "#4285F4",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingBottom: 10,
   },
 });

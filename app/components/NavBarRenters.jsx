@@ -36,7 +36,9 @@ const activeSettingsIcon = require('../assets/navigationBarIcons/activeSettings.
 // Middle Button
 const activeAppliedIcon = require('../assets/navigationBarIcons/applied.png');
 
-function NavBarRenters() {
+function NavBarRenters ({ route }) {
+  const { currentUser } = route.params;
+
   return (
     // <NavigationContainer>
       <Tab.Navigator
@@ -91,6 +93,7 @@ function NavBarRenters() {
         })}>
         <Tab.Screen
           name={home}
+          initialParams={{currentUser: currentUser}}
           component={HomeStackNav} // changed each component to stackNav
         />
         <Tab.Screen

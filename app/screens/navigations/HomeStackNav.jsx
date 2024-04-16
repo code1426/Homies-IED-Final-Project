@@ -8,7 +8,9 @@ import NotificationScreen from '../NotificationScreen.jsx';
 
 const Stack = createNativeStackNavigator();
 
-const HomeStackNav = ({ navigation }) => {
+const HomeStackNav = ({ navigation, route }) => {
+  const { currentUser } = route.params;
+
   return (
     <Stack.Navigator
       screenOptions={{
@@ -23,6 +25,7 @@ const HomeStackNav = ({ navigation }) => {
       <Stack.Screen
         name='postDetails'
         component={PostDetailScreen}
+        initialParams={{currentUser: currentUser}}
         options={{
           headerShown: true,
           headerTitleStyle: { fontWeight: 'bold', color: 'white' },
