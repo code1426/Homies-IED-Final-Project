@@ -27,7 +27,7 @@ function PostCard ({ data, address='Jaro, Iloilo City'}) {
                 <View style={styles.textsContainer}>
 
                     <View style={{ alignItems: 'center', marginBottom: 20 }}> 
-                        <Text style={styles.postTitle}>{data?.title}</Text>
+                        <Text style={styles.postTitle} numberOfLines={1}>{data?.title}</Text>
                         <Text style={styles.postLocation}>{address}</Text>
                     </View>
 
@@ -63,7 +63,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 18,
         color: "black",
-        alignSelf: 'flex-start'
+        alignSelf: 'flex-start',
+        width: 250,
     },
     postLocation: {
         fontSize: 12,

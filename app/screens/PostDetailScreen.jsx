@@ -110,7 +110,7 @@ const PostDetailScreen = ({ navigation }) => {
         }
         showsVerticalScrollIndicator={false}
         data={features}
-        numColumns={3}
+        numColumns={2}
         renderItem={({ item, index }) => (
           <FeaturesComponent
             key={index}
@@ -201,6 +201,9 @@ const styles = StyleSheet.create({
     fontSize: 22,
     color: 'black',
     alignSelf: 'flex-start',
+    width: 280,
+    fontWeight: 'bold',
+    // marginBottom: 8,
   },
   postLocation: {
     fontSize: 14,
