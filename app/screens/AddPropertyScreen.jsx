@@ -54,7 +54,6 @@ function AddPropertyScreen({ navigation }) {
   const [image3Style, setImage3Style] = useState({ ...styles.image3 });
 
   const [loading, setLoading] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const propertyTypes = [
     { label: "Apartment", value: "Apartment" },

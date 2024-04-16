@@ -5,8 +5,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import PostDetailScreen from '../PostDetailScreen.jsx';
 import HomeScreen from '../HomeScreen';
 import NotificationScreen from '../NotificationScreen.jsx';
-import { Button } from 'react-native';
-import useNavigation from '@react-navigation/native';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,6 +27,7 @@ const HomeStackNav = ({ navigation }) => {
           headerShown: true,
           headerTitleStyle: { fontWeight: 'bold', color: 'white' },
           headerStyle: { backgroundColor: '#4285F4', color: 'white' },
+          headerTitleAlign: 'center',
           headerTitle: 'Room Details',
           headerLeft: () => (
             <TouchableOpacity

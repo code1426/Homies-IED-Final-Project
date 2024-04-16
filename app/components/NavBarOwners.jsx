@@ -40,7 +40,7 @@ const addPropertyIcon = require('../assets/navigationBarIcons/addPropertyIcon.pn
 
 function NavBarOwners() {
   return (
-    <NavigationContainer>
+    // <NavigationContainer>
       <Tab.Navigator
         initialRouteName={home}
         screenOptions={({ route }) => ({
@@ -112,7 +112,7 @@ function NavBarOwners() {
           component={SettingStackNav}
         />
       </Tab.Navigator>
-    </NavigationContainer>
+    // </NavigationContainer>
   );
 }
 

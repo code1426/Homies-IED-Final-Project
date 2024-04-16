@@ -38,7 +38,7 @@ const activeAppliedIcon = require('../assets/navigationBarIcons/applied.png');
 
 function NavBarRenters() {
   return (
-    <NavigationContainer>
+    // <NavigationContainer>
       <Tab.Navigator
         initialRouteName={home}
         screenOptions={({ route }) => ({
@@ -110,7 +110,7 @@ function NavBarRenters() {
           component={SettingStackNav}
         />
       </Tab.Navigator>
-    </NavigationContainer>
+    // </NavigationContainer>
   );
 }
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { TouchableOpacity, View, Text, StyleSheet, Image } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
+import { FirebaseAuth } from '../../../firebase.config';
 
 function ButtonSettings({
   settingName,
@@ -33,6 +34,8 @@ function ButtonSettings({
     }
     else if (settingName === 'Log Out') {
       // temporarily disabled
+      FirebaseAuth.signOut()
+      navigation.navigate("SignIn")
     } else {
       navigation.navigate(settingName);
     }

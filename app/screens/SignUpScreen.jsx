@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,41 +6,149 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
 
-export default function SignUpScreen() {
+import { useRoute } from "@react-navigation/native";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { FirebaseAuth, FirebaseDB } from "../../firebase.config";
+import { sendEmailVerification } from "firebase/auth";
+
+export default function SignUpScreen({ navigation }) {
+  const [loading, setLoading] = useState(false);
+  const { params } = useRoute();
+
+  // useEffect(()=> {
+  //   console.log(form)
+  // }, [])
+
   const [form, setForm] = useState({
+    userName: "",
     email: "",
     password: "",
   });
+
   const [errors, setErrors] = useState({});
+
+  const uploadUserDetails = async (uid) => {
+    try {
+      const user = {
+        uid: uid,
+        userName: form.userName,
+        email: form.email,
+        role: params.role,
+        location: null,
+        contactNumber: null,
+      };
+      const docRef = await setDoc(doc(FirebaseDB, "Users", uid), user).catch(err => console.log("DB", err.message))
+  
+      if (docRef.id) {
+        setLoading(false);
+        navigation.navigate("SignIn");
+      }
+    } catch (err) {
+      console.log(err.message)
+    }
+    
+  };
 
   const validateForm = () => {
     let errors = {};
+    if (!form.userName) errors.userName = "Username is required";
     if (!form.email) errors.email = "Email is required";
     if (!form.password) errors.password = "Password is required";
+    if (form.password.length <= 8) {
+      errors.password = "Password is Invalid";
+      console.log("Please enter a valid password");
+    }
     setErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
-  const handleSubmit = () => {
-    if (validateForm()) {
-      console.log("Submitted", form.email, form.password);
-      setForm({ email: "", password: "" });
-      setErrors({});
+  const handleCreateAccount = async () => {
+    setLoading(true);
+    try {
+      const resp = await createUserWithEmailAndPassword(
+        FirebaseAuth,
+        form.email,
+        form.password
+      );
+      const user = resp.user;
+      await updateProfile(user, { displayName: form.userName })
+        .then(() => {
+          console.log("username set");
+          uploadUserDetails(user.uid);
+        })
+        .then(() => {
+          sendEmailVerification(FirebaseAuth.currentUser).then(() => {
+            console.log("Email verification sent");
+            Alert.alert(
+              "Email verification sent!",
+              "Please check your email before signing in.",
+              [
+                {
+                  text: "OK",
+                  onPress: () => {
+                    navigation.navigate("SignIn");
+                  },
+                },
+              ],
+              { cancelable: false }
+            );
+          });
+        });
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log("SIGN-UP:", error.message);
+      Alert.alert("Account already signed Up", "Please proceed to sign in.");
     }
+  };
+
+  const resetForm = () => {
+    setErrors({});
+    setForm({
+      email: "",
+      password: "",
+      userName: "",
+      PreferredRole: params.role,
+    });
+  };
+
+  const handleSubmit = () => {
+    setLoading(true);
+    if (validateForm()) {
+      handleCreateAccount();
+      resetForm();
+      setErrors({});
+    } else setLoading(false);
   };
 
   return (
     <View style={styles.container}>
       <View>
         <Image
-          source={require("./Images/signin-bg.png")}
+          source={require("../assets/signup-bg.png")}
           style={styles.headerImg}
         />
       </View>
       <View style={styles.formContainer}>
+        <Text style={{ fontSize: 30, fontWeight: "600" }}>Sign Up</Text>
         <View style={styles.form}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={[styles.input, styles.inputControl]}
+              placeholder="Username"
+              placeholderTextColor="#6b7280"
+              value={form.userName}
+              onChangeText={(userName) => setForm({ ...form, userName })}
+            />
+            {errors.userName && (
+              <Text style={styles.errorText}>{errors.userName}</Text>
+            )}
+          </View>
           <View style={styles.inputContainer}>
             <TextInput
               style={[styles.input, styles.inputControl]}
@@ -49,7 +157,9 @@ export default function SignUpScreen() {
               value={form.email}
               onChangeText={(email) => setForm({ ...form, email })}
             />
-            {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+            {errors.email && (
+              <Text style={styles.errorText}>{errors.email}</Text>
+            )}
           </View>
           <View style={styles.inputContainer}>
             <TextInput
@@ -60,25 +170,31 @@ export default function SignUpScreen() {
               secureTextEntry
               onChangeText={(password) => setForm({ ...form, password })}
             />
-            {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+            {!errors.password || (
+              <Text style={styles.errorText}>{errors.password}</Text>
+            )}
           </View>
-          <View style={styles.formAction}>
-            <TouchableOpacity onPress={handleSubmit}>
-              <View style={styles.btn}>
-                <Text style={styles.btnText}>Sign In</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity onPress={() => {}}>
-            <Text style={styles.inputLabel}>Forgot password?</Text>
+
+          <TouchableOpacity style={styles.formAction} onPress={handleSubmit}>
+            <View style={styles.btn}>
+              {loading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <Text style={styles.btnText}>Sign Up</Text>
+              )}
+            </View>
           </TouchableOpacity>
+
+          {/* <TouchableOpacity onPress={() => {}}>
+            <Text style={styles.inputLabel}>Forgot password?</Text>
+          </TouchableOpacity> */}
         </View>
 
-        <View style={styles.signInContainer}>
+        {/* <View style={styles.signInContainer}>
           <TouchableOpacity onPress={() => {}}>
             <View style={styles.signInButton}>
               <Image
-                source={require("./Images/Facebook-Logo.png")}
+                source={require("../assets/Facebook-Logo.png")}
                 style={styles.facebookImg}
               />
               <Text>Sign In</Text>
@@ -87,18 +203,23 @@ export default function SignUpScreen() {
           <TouchableOpacity onPress={() => {}}>
             <View style={styles.signInButton}>
               <Image
-                source={require("./Images/Google_logo.png")}
+                source={require("../assets/Google_logo.png")}
                 style={styles.GoogleImg}
               />
               <Text>Sign In</Text>
             </View>
           </TouchableOpacity>
-        </View>
+        </View> */}
 
         <View style={styles.formFooterContainer}>
-          <Text style={styles.formFooter}>Don't have an account?</Text>
-          <TouchableOpacity onPress={() => {}}>
-            <Text style={styles.signUpColor}> Sign Up</Text>
+          <Text style={styles.formFooter}>Already have an account?</Text>
+          <TouchableOpacity
+            onPress={() => {
+              resetForm();
+              navigation.navigate("SignIn");
+            }}
+          >
+            <Text style={styles.signUpColor}>Sign In</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -114,31 +235,30 @@ const styles = StyleSheet.create({
     top: -50,
   },
   headerImg: {
-    width: 500,
-    height: 200,
     alignSelf: "center",
     resizeMode: "contain",
   },
   formContainer: {
     backgroundColor: "#FFF",
-    borderRadius: 10,
+    borderRadius: 30,
     padding: 20,
     position: "absolute",
-    top: 200,
-    bottom: 0,
+    top: 260,
+    bottom: -50,
     left: 0,
     right: 0,
+    alignItems: "center",
   },
   form: {
     marginTop: 24,
-  },
-  formAction: {
-    marginVertical: 24,
+    width: "100%",
   },
   formFooterContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 20,
+    // position: 'absolute',
+    marginTop: 140,
+    // bottom: 50
   },
   formFooter: {
     fontSize: 13,
@@ -156,8 +276,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ABAEB6",
     borderRadius: 5,
-    paddingVertical: 0,
-    paddingHorizontal: 0,
   },
   inputLabel: {
     fontSize: 15,
@@ -177,27 +295,21 @@ const styles = StyleSheet.create({
     color: "#222",
   },
   formAction: {
-    alignItems: "center",
+    marginTop: 20,
   },
   btn: {
     backgroundColor: "#243470",
-    borderRadius: 8,
     borderWidth: 1,
     borderColor: "#243470",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
     borderRadius: 120,
-    width: 330,
     height: 54,
+    justifyContent: "center",
+    alignItems: "center",
   },
   btnText: {
     color: "#fff",
     fontSize: 18,
     fontWeight: "300",
-    textAlign: "center",
   },
   signUpColor: {
     color: "#243B7F",
@@ -235,7 +347,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: "red",
-    marginBottom: 10,
+    marginBottom: 0,
+    marginLeft: 16,
   },
 });
-

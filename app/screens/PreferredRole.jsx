@@ -7,39 +7,52 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
+
 import SelectButton from "../components/SelectButton";
 
-function PreferredRole() {
+import { useNavigation } from '@react-navigation/native';
 
-  const [isRenterSelected, setisRenterSelected] = useState(false)
+function PreferredRole({}) {
+
+  const [selectedName, setSelectedName] = useState("");
+  const navigation = useNavigation();
+
+  const handleProceed = () => {
+    if (selectedName) {
+      navigation.push("SignUp", {role: selectedName})
+    } else {
+      alert("Please select a role")
+    }
+  }
+
   return (
-    <SafeAreaView style={{ height: 736, width: 414 }}>
+    <SafeAreaView style={{ height: 736, width: "100%" }}>
       <View>
         <Image
           style={{ height: 330, width: 414 }}
           source={require("../assets/signup.png")}
         />
       </View>
-        <View
-          style={{
-            height: '81%',
-            width: '100%',
-            backgroundColor: "#ECEFF6",
-            borderTopLeftRadius: 40,
-            borderTopRightRadius: 40,
-            marginTop: -40,
-            justifyContent: 'center'
-          }}
-        >
-          <View style={{height: '80%', width: '100%'}}>
+      <View
+        style={{
+          height: "81%",
+          width: "100%",
+          backgroundColor: "#ECEFF6",
+          borderTopLeftRadius: 40,
+          borderTopRightRadius: 40,
+          marginTop: -40,
+          justifyContent: "center",
+        }}
+      >
+        <View style={{ height: "80%", width: "100%" }}>
           <Text
             style={{
               textAlign: "center",
-              fontFamily: "Arial",
-              fontStyle: "normal",
+              // fontFamily: "Arial",
+              // fontStyle: "normal",
               fontWeight: 600,
               fontSize: 25,
-              marginTop: 30,
+              // marginTop: 30,
               color: "midnightblue",
             }}
           >
@@ -48,7 +61,7 @@ function PreferredRole() {
           <View
             style={{
               height: 300,
-              width: 414,
+              width: "100%",
               flexDirection: "row",
               justifyContent: "space-evenly",
               paddingTop: 35,
@@ -57,37 +70,84 @@ function PreferredRole() {
             <TouchableOpacity
               style={styles.role}
               onPress={() => {
-                setisRenterSelected(!isRenterSelected);
-                console.log(isRenterSelected)
+                setSelectedName("Renter");
               }}
             >
-              <View style={{ height: '10%', width: '10%', marginLeft: '10%', marginTop: '10%'}}>
-                <SelectButton isSelected={isRenterSelected} ></SelectButton>
+              <View
+                style={{
+                  height: "10%",
+                  width: "10%",
+                  marginLeft: "10%",
+                  marginTop: "10%",
+                }}
+              >
+                <SelectButton name='Renter' selectedName={selectedName}></SelectButton>
               </View>
-              <View style={{height: '70%', width: '90%', alignSelf: 'center'}}>
-                <Image style={{height: '100%', width: '100%', objectFit: 'contain'}}source={require('../assets/renter.png')}/>
+              <View
+                style={{ height: "70%", width: "90%", alignSelf: "center" }}
+              >
+                <Image
+                  style={{
+                    height: "100%",
+                    width: "100%",
+                    objectFit: "contain",
+                  }}
+                  source={require("../assets/renter.png")}
+                />
               </View>
-              <View style={{ height: '8%', width: '100%', alignItems: 'center', marginVertical: '10%'}}>
-                <Text style={{fontWeight: 'bold'}}>Renter</Text>
+              <View
+                style={{
+                  height: "8%",
+                  width: "100%",
+                  alignItems: "center",
+                  marginVertical: "10%",
+                }}
+              >
+                <Text style={{ fontWeight: "bold" }}>Renter</Text>
               </View>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.role}
-              onPress={() => console.log("Owner tapped")}
+              onPress={()=> setSelectedName("Owner")}
             >
-              <View style={{ height: '10%', width: '10%', marginLeft: '10%', marginTop: '10%'}}>
-                <SelectButton isSelected={isRenterSelected} ></SelectButton>
+              <View
+                style={{
+                  height: "10%",
+                  width: "10%",
+                  marginLeft: "10%",
+                  marginTop: "10%",
+                }}
+              >
+                <SelectButton name='Owner' selectedName={selectedName}></SelectButton>
               </View>
-              <View style={{height: '70%', width: '90%', alignSelf: 'center'}}>
-                <Image style={{height: '100%', width: '100%', objectFit: 'contain'}}source={require('../assets/owner.png')}/>
+              <View
+                style={{ height: "70%", width: "90%", alignSelf: "center" }}
+              >
+                <Image
+                  style={{
+                    height: "100%",
+                    width: "100%",
+                    objectFit: "contain",
+                  }}
+                  source={require("../assets/owner.png")}
+                />
               </View>
-              <View style={{ height: '8%', width: '100%', alignItems: 'center', marginVertical: '10%'}}>
-                <Text style={{fontWeight: 'bold'}}>Owner</Text>
+              <View
+                style={{
+                  height: "8%",
+                  width: "100%",
+                  alignItems: "center",
+                  marginVertical: "10%",
+                }}
+              >
+                <Text style={{ fontWeight: "bold" }}>Owner</Text>
               </View>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={() => Alert.alert("Proceed button pressed")}>
+          <TouchableOpacity
+            onPress={() => handleProceed()}
+          >
             <View
               style={{
                 height: 40,
@@ -118,11 +178,11 @@ function PreferredRole() {
 
 const styles = StyleSheet.create({
   role: {
-    height: '80%',
-    width: '40%',
+    height: "80%",
+    width: "40%",
     backgroundColor: "white",
     borderRadius: 18,
-    justifyContent: 'space-evenly'
+    justifyContent: "space-evenly",
   },
 });
 
