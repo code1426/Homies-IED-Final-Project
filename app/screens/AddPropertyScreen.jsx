@@ -448,6 +448,7 @@ function AddPropertyScreen({ navigation }) {
     uid: FirebaseAuth.currentUser.uid,
     email: FirebaseAuth.currentUser.email,
     userName: FirebaseAuth.currentUser.displayName,
+    postID: Date.now()
   };
 
   const data = [

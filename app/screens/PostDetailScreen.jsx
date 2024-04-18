@@ -7,20 +7,28 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-
 import { useRoute } from "@react-navigation/native";
-
 import { ImageSlider } from "react-native-image-slider-aws-s3";
+import {
+  doc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+  getDoc,
+} from "firebase/firestore";
+import { FirebaseDB } from "../../firebase.config";
 
 const PostDetailScreen = ({ navigation, route }) => {
   const { currentUser } = route.params;
   const { params } = useRoute();
   const data = params.data;
-  let address = "Jaro, Iloilo City"; // for testing purposes
 
-  // useEffect(() => {
-  //   console.log("from postDetail: ", currentUser);
-  // }, [currentUser]);
+  const features = [data.propertyType, ...data.features];
+  const [isPropertyPinned, setIsPropertyPinned] = useState(null);
+
+  useEffect(() => {
+    isPinned();
+  }, []);
 
   useEffect(() => {
     navigation.getParent()?.setOptions({
@@ -34,7 +42,51 @@ const PostDetailScreen = ({ navigation, route }) => {
       });
   }, [navigation]);
 
-  const features = [data.propertyType, ...data.features];
+  const getCurrentUserPinned = async () => {
+    try {
+      const currentUserRef = doc(FirebaseDB, "Users", currentUser.uid);
+      const docSnap = await getDoc(currentUserRef);
+      if (docSnap.exists()) {
+        return docSnap.data().pinned;
+      } else {
+        return [];
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  const isPinned = async () => {
+    try {
+      const pinned = await getCurrentUserPinned();
+      const isPinned = pinned.includes(data.postID);
+      setIsPropertyPinned(isPinned);
+      // console.log(pinned, isPinned);
+      return isPinned;
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  const updatePinnedProperties = async () => {
+    try {
+      const currentUserRef = doc(FirebaseDB, "Users", currentUser.uid);
+      // console.log(isPropertyPinned);
+
+      if (isPropertyPinned) {
+        await updateDoc(currentUserRef, {
+          pinned: arrayRemove(data.postID),
+        });
+      } else {
+        await updateDoc(currentUserRef, {
+          pinned: arrayUnion(data.postID),
+        });
+      }
+      isPinned();
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -50,14 +102,13 @@ const PostDetailScreen = ({ navigation, route }) => {
                   { uri: data.images.image3 },
                 ]}
                 autoPlay={false}
-                // onItemChanged={(item) => console.log("item", item)}
                 closeIconColor="#fff"
               />
             </View>
 
             <View style={{ marginHorizontal: 25 }}>
               <View style={styles.textsContainer}>
-                <View style={{ alignItems: "center" }}>
+                <View style={{ alignItems: "center", flex: 3 }}>
                   <Text style={styles.postTitle}>{data?.title}</Text>
                   <View
                     style={{
@@ -68,15 +119,30 @@ const PostDetailScreen = ({ navigation, route }) => {
                       marginTop: 6,
                     }}
                   >
-                    <Image
-                      style={{ height: 15, width: 15 }}
-                      source={require("../../app/assets/location-Icon.png")}
-                    />
-                    <Text style={styles.postLocation}>{data?.address}</Text>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignSelf: "flex-start",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Image
+                        style={{
+                          height: 16,
+                          width: 16,
+                          marginRight: 4,
+                          resizeMode: "contain",
+                        }}
+                        source={require("../../app/assets/location-Icon.png")}
+                      />
+                      <Text style={styles.postLocation} numberOfLines={2}>
+                        {data?.address}
+                      </Text>
+                    </View>
                   </View>
                 </View>
 
-                <View style={{ alignItems: "center" }}>
+                <View style={{ alignItems: "center", flex: 2 }}>
                   <Text style={styles.price}>{`Php ${data?.rentPrice}`}</Text>
                   <Text style={styles.monthly}>monthly</Text>
                 </View>
@@ -98,11 +164,9 @@ const PostDetailScreen = ({ navigation, route }) => {
           </View>
         }
         ListFooterComponent={
-          // <View style={{ marginHorizontal: 0 }}>
           <View style={styles.applicantContainer}>
             <Text style={styles.applicant}>APPLICANTS: 0</Text>
           </View>
-          // </View>
         }
         showsVerticalScrollIndicator={false}
         data={features}
@@ -114,12 +178,19 @@ const PostDetailScreen = ({ navigation, route }) => {
 
       {currentUser?.role === "Owner" || (
         <View style={styles.footerContainer}>
-          <TouchableOpacity style={styles.pinnedButton}>
+          <TouchableOpacity
+            onPress={() => updatePinnedProperties()}
+            style={styles.pinnedButton}
+          >
             <Image
               style={{ width: 23, height: 23 }}
-              source={require("./../../app/assets/navigationBarIcons/nonactivePin.png")}
+              source={
+                isPropertyPinned
+                  ? require("./../../app/assets/navigationBarIcons/activePin.png")
+                  : require("./../../app/assets/navigationBarIcons/nonactivePin.png")
+              }
             />
-            <Text>Pin</Text>
+            <Text>{isPropertyPinned ? "Pinned" : "Pin"}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.reserveButton}>
@@ -138,6 +209,16 @@ const PostDetailScreen = ({ navigation, route }) => {
               APPLY NOW!
             </Text>
             <Text style={{ color: "white", fontSize: 10 }}>Watch an AD</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      {currentUser.role === "Owner" && data.uid === currentUser.uid && (
+        <View>
+          <TouchableOpacity
+            style={styles.editButtonContainer}
+            onPress={() => {}}
+          >
+            <Text style={{ color: "white", fontSize: 20, fontWeight: "700" }}>EDIT</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -173,15 +254,10 @@ export default PostDetailScreen;
 const styles = StyleSheet.create({
   container: {
     height: "100%",
-    // paddingHorizontal: 10
   },
   imageSliderContainer: {
-    // display: "absolute",
     borderRadius: 10,
-    // marginHorizontal: -20,
     marginVertical: 8,
-    // margin: 10,
-    // backgroundColor: 'red'
   },
   detailsContainer: {
     marginHorizontal: 20,
@@ -196,15 +272,15 @@ const styles = StyleSheet.create({
     fontSize: 22,
     color: "black",
     alignSelf: "flex-start",
-    width: 280,
-    fontWeight: "bold",
-    // marginBottom: 8,
+    width: "100%",
+    fontWeight: "600",
   },
   postLocation: {
     fontSize: 14,
     fontWeight: "bold",
     color: "grey",
     alignSelf: "flex-start",
+    width: "88%",
   },
   price: {
     alignSelf: "flex-end",
@@ -216,11 +292,12 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     fontSize: 12,
     fontWeight: "bold",
-    color: "grey",
+    // color: "grey",
   },
   desContainer: {
     marginVertical: 8,
     minHeight: 80,
+    // backgroundColor: 'red'
   },
   description: {
     color: "gray",
@@ -247,10 +324,8 @@ const styles = StyleSheet.create({
   },
   footerContainer: {
     flexDirection: "row",
-    // marginBottom: 50,
     height: 88,
     bottom: 0,
-    // marginHorizontal: -10
   },
   pinnedButton: {
     flex: 1,
@@ -275,5 +350,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingBottom: 10,
+  },
+  editButtonContainer: {
+    // flex: 1,
+    // flexDirection: "column",
+    backgroundColor: "#4285F4",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingBottom: 10,
+    bottom: 0,
+    height: 78,
   },
 });

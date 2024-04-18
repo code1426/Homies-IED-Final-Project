@@ -9,7 +9,7 @@ import {
   ScrollView,
   Platform,
   RefreshControl,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import PostCard from "../components/PostCard";
 import CategoryButton from "../components/CategoryButton.jsx";
@@ -18,14 +18,15 @@ import { FirebaseDB } from "../../firebase.config";
 import { collection, getDocs, query, where } from "firebase/firestore";
 
 function HomeScreen({ navigation }) {
-
   const [categoryName, setCategoryName] = useState("All");
   const [propertyList, setPropertyList] = useState([]);
 
   const propertyTypes = ["All", "Apartment", "Boarding House", "Dorm"];
 
   useEffect(() => {
+    // console.log(propertyList)
     getAllPropertyList();
+    // console.log(propertyList == [])
   }, []);
 
   const getAllPropertyList = async () => {
@@ -87,7 +88,7 @@ function HomeScreen({ navigation }) {
                 source={require("../assets/profile.jpg")}
               />
               <TouchableOpacity
-                onPress={() => navigation.navigate('Notifications')}
+                onPress={() => navigation.navigate("Notifications")}
               >
                 <Image
                   style={{
