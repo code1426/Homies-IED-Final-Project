@@ -98,14 +98,17 @@ function NavBarRenters({ route }) {
       />
       <Tab.Screen
         name={pinned}
+        initialParams={{ currentUser: currentUser }}
         component={PinnedStackNav}
       />
       <Tab.Screen
         name={applied}
+        initialParams={{ currentUser: currentUser }}
         component={AppliedStackNav}
       />
       <Tab.Screen
         name={messages}
+        initialParams={{ currentUser: currentUser }}
         component={MessageStackNav}
       />
       <Tab.Screen
