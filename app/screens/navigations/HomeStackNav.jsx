@@ -35,7 +35,7 @@ const HomeStackNav = ({ navigation, route }) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                navigation.goBack();
+                navigation.navigate("home");
               }}>
               <Image
                 source={require('../../assets/backIcon.png')}
