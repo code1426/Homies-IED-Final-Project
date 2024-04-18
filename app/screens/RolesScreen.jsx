@@ -1,12 +1,36 @@
-import { StyleSheet, Text, SafeAreaView, View, TouchableOpacity, Image } from 'react-native';
-import React from 'react';
-import {useState} from 'react';
-
+import {
+  StyleSheet,
+  Text,
+  SafeAreaView,
+  View,
+  TouchableOpacity,
+  Image,
+  Alert,
+} from 'react-native';
+import React, { useEffect } from 'react';
+import { useState } from 'react';
 
 import HeaderComponent from '../components/HeaderComponent';
+import { set } from 'firebase/database';
+import { doc, updateDoc, getDoc } from 'firebase/firestore';
 
-const RolesScreen = ({navigation}) => {
-  const [ownerMode, setOwnerMode] = useState(false);
+import { FirebaseDB } from '../../firebase.config';
+
+const RolesScreen = ({ navigation, route }) => {
+  const { currentUser } = route.params;
+  console.log(currentUser.role);
+
+  async function updatingRole(roleChange) {
+    await updateDoc(doc(FirebaseDB, 'Users', currentUser.uid), {
+      role: roleChange,
+    });
+  }
+  async function updateRole() {
+    let role = currentUser.role === 'Owner' ? 'Renter' : 'Owner';
+    console.log(role);
+    updatingRole(role);
+  }
+
   return (
     <SafeAreaView>
       <HeaderComponent title='Roles' />
@@ -19,13 +43,35 @@ const RolesScreen = ({navigation}) => {
         />
       </TouchableOpacity>
       <View style={styles.container}>
-        <TouchableOpacity onPress={() => setOwnerMode(!ownerMode)}>
+        <TouchableOpacity
+          onPress={async () => [
+            Alert.alert(
+              'Do you want to Change Roles?',
+              'Changing will log you out of your account.',
+              [
+                {
+                  text: 'YES',
+                  onPress: () => {
+                    updateRole();
+                    navigation.navigate('SignIn');
+                  },
+                },
+                {
+                  text: 'CANCEL',
+                  onPress: () => {
+                    console.log('cancelled');
+                  },
+                },
+              ]
+            ),
+            { cancelable: true },
+          ]}>
           <View style={{ flexDirection: 'row' }}>
             <Text style={styles.roleSwitchName}>Owner Mode</Text>
             <Image
               style={styles.button}
               source={
-                ownerMode
+                currentUser.role === 'Owner'
                   ? require('../assets/switchOn.png')
                   : require('../assets/switchOff.png')
               }
@@ -64,7 +110,7 @@ const styles = StyleSheet.create({
     width: 34,
     height: 27,
     top: 5,
-    right: 43,
+    right: 25,
   },
   roleSwitchName: {
     fontSize: 14,
@@ -88,4 +134,3 @@ const styles = StyleSheet.create({
 });
 
 export default RolesScreen;
-

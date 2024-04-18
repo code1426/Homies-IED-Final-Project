@@ -36,83 +36,84 @@ const activeSettingsIcon = require('../assets/navigationBarIcons/activeSettings.
 // Middle Button
 const activeAppliedIcon = require('../assets/navigationBarIcons/applied.png');
 
-function NavBarRenters ({ route }) {
+function NavBarRenters({ route }) {
   const { currentUser } = route.params;
 
   return (
     // <NavigationContainer>
-      <Tab.Navigator
-        initialRouteName={home}
-        screenOptions={({ route }) => ({
-          tabBarShowLabel: false,
-          headerShown: false,
-          tabBarIcon: ({ focused }) => {
-            let iconName;
-            let styleType;
-            let routeName = route.name;
+    <Tab.Navigator
+      initialRouteName={home}
+      screenOptions={({ route }) => ({
+        tabBarShowLabel: false,
+        headerShown: false,
+        tabBarIcon: ({ focused }) => {
+          let iconName;
+          let styleType;
+          let routeName = route.name;
 
-            if (routeName === home) {
-              iconName = focused ? activeHomeIcon : homeIcon;
-              styleType = styles.styleSmallIcons;
-            } else if (routeName === pinned) {
-              iconName = focused ? activePinnedIcon : pinnedIcon;
-              styleType = styles.styleSmallIcons;
-            } else if (routeName === messages) {
-              iconName = focused ? activeMessagesIcon : messagesIcon;
-              styleType = styles.styleSmallIcons;
-            } else if (routeName === settings) {
-              iconName = focused ? activeSettingsIcon : settingsIcon;
-              styleType = styles.styleSmallIcons;
-            } else if (routeName === applied) {
-              iconName = activeAppliedIcon;
-              styleType = styles.styleMiddleIcon;
-            }
-            if (routeName != applied)
-              return (
-                <View>
+          if (routeName === home) {
+            iconName = focused ? activeHomeIcon : homeIcon;
+            styleType = styles.styleSmallIcons;
+          } else if (routeName === pinned) {
+            iconName = focused ? activePinnedIcon : pinnedIcon;
+            styleType = styles.styleSmallIcons;
+          } else if (routeName === messages) {
+            iconName = focused ? activeMessagesIcon : messagesIcon;
+            styleType = styles.styleSmallIcons;
+          } else if (routeName === settings) {
+            iconName = focused ? activeSettingsIcon : settingsIcon;
+            styleType = styles.styleSmallIcons;
+          } else if (routeName === applied) {
+            iconName = activeAppliedIcon;
+            styleType = styles.styleMiddleIcon;
+          }
+          if (routeName != applied)
+            return (
+              <View>
+                <Image
+                  source={iconName}
+                  style={styleType}
+                  resizeMode='contain'
+                />
+              </View>
+            );
+          else
+            return (
+              <View style={[styles.midIcon]}>
+                <View style={[styles.midIconShadow]}>
                   <Image
                     source={iconName}
                     style={styleType}
                     resizeMode='contain'
                   />
                 </View>
-              );
-            else
-              return (
-                <View style={[styles.midIcon]}>
-                  <View style={[styles.midIconShadow]}>
-                    <Image
-                      source={iconName}
-                      style={styleType}
-                      resizeMode='contain'
-                    />
-                  </View>
-                </View>
-              );
-          },
-        })}>
-        <Tab.Screen
-          name={home}
-          initialParams={{currentUser: currentUser}}
-          component={HomeStackNav} // changed each component to stackNav
-        />
-        <Tab.Screen
-          name={pinned}
-          component={PinnedStackNav}
-        />
-        <Tab.Screen
-          name={applied}
-          component={AppliedStackNav}
-        />
-        <Tab.Screen
-          name={messages}
-          component={MessageStackNav}
-        />
-        <Tab.Screen
-          name={settings}
-          component={SettingStackNav}
-        />
-      </Tab.Navigator>
+              </View>
+            );
+        },
+      })}>
+      <Tab.Screen
+        name={home}
+        initialParams={{ currentUser: currentUser }}
+        component={HomeStackNav} // changed each component to stackNav
+      />
+      <Tab.Screen
+        name={pinned}
+        component={PinnedStackNav}
+      />
+      <Tab.Screen
+        name={applied}
+        component={AppliedStackNav}
+      />
+      <Tab.Screen
+        name={messages}
+        component={MessageStackNav}
+      />
+      <Tab.Screen
+        name={settings}
+        initialParams={{ currentUser: currentUser }}
+        component={SettingStackNav}
+      />
+    </Tab.Navigator>
     // </NavigationContainer>
   );
 }

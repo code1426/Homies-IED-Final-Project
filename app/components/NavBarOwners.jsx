@@ -111,6 +111,7 @@ function NavBarOwners({ route }) {
         />
         <Tab.Screen
           name={settings}
+          initialParams={{currentUser: currentUser}}
           component={SettingStackNav}
         />
       </Tab.Navigator>
