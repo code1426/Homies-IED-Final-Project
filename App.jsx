@@ -79,11 +79,7 @@ export default function App() {
 
         {!user && (
           <>
-            <Stack.Screen
-              initialParams={{ currentUser: user }}
-              name="LogoScreen"
-              component={LogoScreen}
-            />
+            <Stack.Screen name="LogoScreen" component={LogoScreen} />
             <Stack.Screen name="SignIn" component={SignInScreen} />
             <Stack.Screen name="SignUp" component={SignUpScreen} />
             <Stack.Screen name="Role" component={PreferredRole} />

@@ -12,7 +12,7 @@ import {
 
 import { useRoute } from "@react-navigation/native";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { FirebaseAuth, FirebaseDB } from "../../firebase.config";
 import { sendEmailVerification } from "firebase/auth";
 
@@ -20,12 +20,9 @@ export default function SignUpScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
   const { params } = useRoute();
 
-  // useEffect(()=> {
-  //   console.log(form)
-  // }, [])
-
   const [form, setForm] = useState({
-    userName: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
   });
@@ -36,7 +33,8 @@ export default function SignUpScreen({ navigation }) {
     try {
       const user = {
         uid: uid,
-        userName: form.userName,
+        firstName: form.firstName,
+        lastName: form.lastName,
         email: form.email,
         role: params.role,
         location: null,
@@ -45,23 +43,26 @@ export default function SignUpScreen({ navigation }) {
         applied: [],
         applicant: [],
       };
-      const docRef = await setDoc(doc(FirebaseDB, "Users", uid), user).catch(err => console.log("DB", err.message))
-  
+      const docRef = await setDoc(doc(FirebaseDB, "Users", uid), user).catch(
+        (err) => console.log("DB", err.message)
+      );
+
       if (docRef.id) {
         setLoading(false);
         navigation.navigate("SignIn");
       }
     } catch (err) {
-      console.log(err.message)
+      console.log(err.message);
     }
   };
 
   const validateForm = () => {
     let errors = {};
-    if (!form.userName) errors.userName = "Username is required";
+    if (!form.firstName) errors.firstName = "First Name is required";
+    if (!form.lastName) errors.lastName = "Last Name is required";
     if (!form.email) errors.email = "Email is required";
     if (!form.password) errors.password = "Password is required";
-    if (form.password.length <= 8) {
+    else if (form.password.length <= 8) {
       errors.password = "Password is Invalid";
       console.log("Please enter a valid password");
     }
@@ -78,7 +79,9 @@ export default function SignUpScreen({ navigation }) {
         form.password
       );
       const user = resp.user;
-      await updateProfile(user, { displayName: form.userName })
+      await updateProfile(user, {
+        displayName: `${form.firstName} ${form.lastName}`,
+      })
         .then(() => {
           console.log("username set");
           uploadUserDetails(user.uid);
@@ -105,7 +108,7 @@ export default function SignUpScreen({ navigation }) {
     } catch (error) {
       setLoading(false);
       console.log("SIGN-UP:", error.message);
-      Alert.alert("Account already signed Up", "Please proceed to sign in.");
+      Alert.alert("Email already signed Up", "Please proceed to sign in.");
     }
   };
 
@@ -140,16 +143,38 @@ export default function SignUpScreen({ navigation }) {
         <Text style={{ fontSize: 30, fontWeight: "600" }}>Sign Up</Text>
         <View style={styles.form}>
           <View style={styles.inputContainer}>
-            <TextInput
-              style={[styles.input, styles.inputControl]}
-              placeholder="Username"
-              placeholderTextColor="#6b7280"
-              value={form.userName}
-              onChangeText={(userName) => setForm({ ...form, userName })}
-            />
-            {errors.userName && (
-              <Text style={styles.errorText}>{errors.userName}</Text>
-            )}
+            <View style={styles.nameInputsContainer}>
+              <View style={{ flex: 1, flexDirection: "column" }}>
+                <TextInput
+                  style={[styles.input, styles.inputControl]}
+                  placeholder="First Name"
+                  placeholderTextColor="#6b7280"
+                  value={form.firstName}
+                  onChangeText={(firstName) => setForm({ ...form, firstName })}
+                />
+              </View>
+              <View style={{ flex: 1, flexDirection: "column" }}>
+                <TextInput
+                  style={[styles.input, styles.inputControl]}
+                  placeholder="Last Name"
+                  placeholderTextColor="#6b7280"
+                  value={form.lastName}
+                  onChangeText={(lastName) => setForm({ ...form, lastName })}
+                />
+              </View>
+            </View>
+            <View style={styles.nameInputsContainer}>
+              <View style={{ flex: 1 }}>
+                {errors.firstName && (
+                  <Text style={styles.errorText}>{errors.firstName}</Text>
+                )}
+              </View>
+              <View style={{ flex: 1 }}>
+                {errors.lastName && (
+                  <Text style={styles.errorText}>{errors.lastName}</Text>
+                )}
+              </View>
+            </View>
           </View>
           <View style={styles.inputContainer}>
             <TextInput
@@ -326,5 +351,12 @@ const styles = StyleSheet.create({
     color: "red",
     marginBottom: 0,
     marginLeft: 16,
+  },
+  nameInputsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    columnGap: 8,
+    // marginBottom: 4,
   },
 });

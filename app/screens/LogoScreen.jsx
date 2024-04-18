@@ -3,14 +3,13 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { FirebaseAuth } from "../../firebase.config";
 
-export default function LogoScreen({ navigation, route }) {
-const { currentUser } = route.params;
+export default function LogoScreen({ navigation }) {
 
   useEffect(() => {
     try {
       setTimeout(() => {
         FirebaseAuth.currentUser || navigation.navigate("SignIn");
-      }, 3000);
+      }, 2500);
     } catch (err) {
       console.log(err.message);
     }
