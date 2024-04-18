@@ -54,7 +54,6 @@ export default function SignUpScreen({ navigation }) {
     } catch (err) {
       console.log(err.message)
     }
-    
   };
 
   const validateForm = () => {
@@ -187,32 +186,7 @@ export default function SignUpScreen({ navigation }) {
               )}
             </View>
           </TouchableOpacity>
-
-          {/* <TouchableOpacity onPress={() => {}}>
-            <Text style={styles.inputLabel}>Forgot password?</Text>
-          </TouchableOpacity> */}
         </View>
-
-        {/* <View style={styles.signInContainer}>
-          <TouchableOpacity onPress={() => {}}>
-            <View style={styles.signInButton}>
-              <Image
-                source={require("../assets/Facebook-Logo.png")}
-                style={styles.facebookImg}
-              />
-              <Text>Sign In</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => {}}>
-            <View style={styles.signInButton}>
-              <Image
-                source={require("../assets/Google_logo.png")}
-                style={styles.GoogleImg}
-              />
-              <Text>Sign In</Text>
-            </View>
-          </TouchableOpacity>
-        </View> */}
 
         <View style={styles.formFooterContainer}>
           <Text style={styles.formFooter}>Already have an account?</Text>

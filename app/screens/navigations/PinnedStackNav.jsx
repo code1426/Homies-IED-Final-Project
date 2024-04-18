@@ -7,7 +7,7 @@ import PostDetailScreen from "../PostDetailScreen";
 
 const Stack = createNativeStackNavigator();
 
-const PinnedStackNav = ({ route }) => {
+const PinnedStackNav = ({ navigation, route }) => {
   const { currentUser } = route.params;
   return (
     <Stack.Navigator
@@ -27,13 +27,14 @@ const PinnedStackNav = ({ route }) => {
         options={{
           headerShown: true,
           headerTitleStyle: { fontWeight: 'bold', color: 'white' },
-          headerStyle: { backgroundColor: '#4285F4', color: 'white' },
+          headerStyle: { backgroundColor: '#4285F4', color: 'white' }, 
           headerTitleAlign: 'center',
           headerTitle: 'Room Details',
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate("home");
+                navigation.navigate("Pinned");
+                // navigation.goBack()
               }}>
               <Image
                 source={require('../../assets/backIcon.png')}

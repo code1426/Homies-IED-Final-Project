@@ -38,7 +38,7 @@ export default function SignInScreen({ navigation }) {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      console.log("Document data:", docSnap.data());
+      // console.log("Document data:", docSnap.data());
       return docSnap.data();
     } else {
       console.log("No such document!");
@@ -66,18 +66,8 @@ export default function SignInScreen({ navigation }) {
         console.log(error.code);
       });
       const user = resp?.user;
-      if (user && user?.emailVerified) {
-        console.log("User email is verified");
-        getUser(user.uid).then((userDetails) => {
-          setLoading(false);
-          console.log("FROM GET-USER: ", userDetails);
-          if (userDetails.role === "Owner") {
-            navigation.push("NavBarOwners", { currentUser: userDetails });
-          } else {
-            navigation.push("NavBarRenters", { currentUser: userDetails });
-          }
-        });
-      } else if (user && !user.emailVerified) {
+      if (user && !user.emailVerified) {
+        setLoading(false);
         Alert.alert(
           "Email Not Verified",
           "Please verify your email before logging in.",
@@ -169,27 +159,6 @@ export default function SignInScreen({ navigation }) {
             <Text style={styles.inputLabel}>Forgot password?</Text>
           </TouchableOpacity>
         </View>
-
-        {/* <View style={styles.signInContainer}>
-          <TouchableOpacity onPress={() => {}}>
-            <View style={styles.signInButton}>
-              <Image
-                source={require("../assets/Facebook-Logo.png")}
-                style={styles.facebookImg}
-              />
-              <Text>Sign In</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => {}}>
-            <View style={styles.signInButton}>
-              <Image
-                source={require("../assets/Google_logo.png")}
-                style={styles.GoogleImg}
-              />
-              <Text>Sign In</Text>
-            </View>
-          </TouchableOpacity>
-        </View> */}
 
         <View style={styles.formFooterContainer}>
           <Text style={styles.formFooter}>Don't have an account?</Text>

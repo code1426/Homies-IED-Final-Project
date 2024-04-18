@@ -11,10 +11,9 @@ import React, { useEffect } from 'react';
 import { useState } from 'react';
 
 import HeaderComponent from '../components/HeaderComponent';
-import { set } from 'firebase/database';
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
 
-import { FirebaseDB } from '../../firebase.config';
+import { FirebaseAuth, FirebaseDB } from '../../firebase.config';
 
 const RolesScreen = ({ navigation, route }) => {
   const { currentUser } = route.params;
@@ -25,6 +24,7 @@ const RolesScreen = ({ navigation, route }) => {
       role: roleChange,
     });
   }
+
   async function updateRole() {
     let role = currentUser.role === 'Owner' ? 'Renter' : 'Owner';
     console.log(role);
@@ -36,7 +36,7 @@ const RolesScreen = ({ navigation, route }) => {
       <HeaderComponent title='Roles' />
       <TouchableOpacity
         style={styles.backButton}
-        onPress={() => navigation.goBack()}>
+        onPress={() => navigation.navigate("Settings")}>
         <Image
           source={require('../assets/backIcon.png')}
           style={styles.backButtonImage}
@@ -53,7 +53,7 @@ const RolesScreen = ({ navigation, route }) => {
                   text: 'YES',
                   onPress: () => {
                     updateRole();
-                    navigation.navigate('SignIn');
+                    FirebaseAuth.signOut()
                   },
                 },
                 {

@@ -35,7 +35,7 @@ function ButtonSettings({
     else if (settingName === 'Log Out') {
       // temporarily disabled
       FirebaseAuth.signOut()
-      navigation.navigate("SignIn")
+      // navigation.navigate("SignIn")
     } else {
       navigation.navigate(settingName);
     }
