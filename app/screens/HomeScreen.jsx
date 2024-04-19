@@ -161,7 +161,6 @@ function HomeScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    // paddingTop: 26,
     paddingHorizontal: 30,
     marginBottom: 30,
     width: "100%",
@@ -182,8 +181,7 @@ const styles = StyleSheet.create({
   },
   postsContainer: {
     flexDirection: "column",
-    marginTop: 12,
-    // paddingVertical: 8
+    marginTop: 24,
   },
   profile: {
     alignSelf: "flex-start",
@@ -196,8 +194,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
     color: "grey",
-    // alignSelf: 'center',
-    // paddingTop: 10,
   },
   searchbarContainer: {
     height: 55,
@@ -212,7 +208,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 25,
     marginRight: 12,
-    // alignItems: 'center',
     justifyContent: "center",
   },
   filter: {

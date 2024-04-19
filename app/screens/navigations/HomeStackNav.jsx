@@ -17,7 +17,7 @@ const HomeStackNav = ({ navigation }) => {
         headerStyle: {height: 200}
       }}>
       <Stack.Screen
-        name='home'
+        name='Home'
         component={HomeScreen}
       />
 
@@ -33,7 +33,7 @@ const HomeStackNav = ({ navigation }) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate("home");
+                navigation.navigate("Home");
               }}>
               <Image
                 source={require('../../assets/backIcon.png')}
