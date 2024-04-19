@@ -29,11 +29,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   profilePicStyle: {
-    // alignSelf: 'center',
     width: 55,
     height: 55,
     borderRadius: 27.5,
-    // marginLeft: 35,
     margin: 10,
     resizeMode: 'cover',
   },

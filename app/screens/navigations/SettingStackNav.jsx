@@ -8,8 +8,7 @@ import RolesScreen from '../RolesScreen';
 
 const Stack = createNativeStackNavigator();
 
-const SettingStackNav = ({ navigation, route }) => {
-  const { currentUser } = route.params;
+const SettingStackNav = () => {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -27,7 +26,6 @@ const SettingStackNav = ({ navigation, route }) => {
 
       <Stack.Screen
         name='Roles'
-        initialParams={{currentUser: currentUser}}
         component={RolesScreen}
       />
     </Stack.Navigator>

@@ -1,6 +1,5 @@
 import { StyleSheet, Text, SafeAreaView, Image, Button } from "react-native";
 import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
 import { FirebaseAuth } from "../../firebase.config";
 
 export default function LogoScreen({ navigation }) {

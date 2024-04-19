@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   View,
   Text,
@@ -21,9 +21,10 @@ import {
 } from "firebase/firestore";
 
 import { useState, useEffect } from "react";
+import { UserContext } from "../../userContext";
 
-function PinnedScreen({ route }) {
-  const { currentUser } = route.params;
+function PinnedScreen() {
+  const currentUser = useContext(UserContext)
 
   useEffect(() => {
     getData();
@@ -65,7 +66,7 @@ function PinnedScreen({ route }) {
 
   const getData = async () => {
     await getPinnedPropertyList();
-    console.log(pinnedPropertyList);
+    // console.log(pinnedPropertyList);
   };
 
   const [refreshing, setRefreshing] = React.useState(false);
@@ -103,12 +104,8 @@ export default PinnedScreen;
 
 const styles = StyleSheet.create({
   container: {
-    // paddingTop: 26,
     paddingHorizontal: 30,
-    // paddingBottom: 80,
     width: "100%",
-    // backgroundColor: 'red'
-    // height: "100%",
   },
   pinnedContainer: {
     flexDirection: "column",

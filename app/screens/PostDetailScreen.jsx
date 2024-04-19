@@ -6,7 +6,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useRoute } from "@react-navigation/native";
 import { ImageSlider } from "react-native-image-slider-aws-s3";
 import {
@@ -17,9 +17,11 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { FirebaseDB } from "../../firebase.config";
+import { UserContext } from "../../userContext";
 
-const PostDetailScreen = ({ navigation, route }) => {
-  const { currentUser } = route.params;
+const PostDetailScreen = ({ navigation }) => {
+
+  const currentUser = useContext(UserContext)
   const { params } = useRoute();
   const data = params.data;
 

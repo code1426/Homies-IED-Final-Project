@@ -7,8 +7,7 @@ import PostDetailScreen from "../PostDetailScreen";
 
 const Stack = createNativeStackNavigator();
 
-const PinnedStackNav = ({ navigation, route }) => {
-  const { currentUser } = route.params;
+const PinnedStackNav = ({ navigation }) => {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -16,14 +15,12 @@ const PinnedStackNav = ({ navigation, route }) => {
       }}
     >
       <Stack.Screen
-        initialParams={{ currentUser: currentUser }}
         name="Pinned"
         component={PinnedScreen}
       />
       <Stack.Screen
         name='postDetails'
         component={PostDetailScreen}
-        initialParams={{currentUser: currentUser}}
         options={{
           headerShown: true,
           headerTitleStyle: { fontWeight: 'bold', color: 'white' },

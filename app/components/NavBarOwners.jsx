@@ -1,5 +1,4 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import { Image, View, StyleSheet } from 'react-native';
 
@@ -38,10 +37,8 @@ const activeSettingsIcon = require('../assets/navigationBarIcons/activeSettings.
 // Middle Button
 const addPropertyIcon = require('../assets/navigationBarIcons/addPropertyIcon.png');
 
-function NavBarOwners({ route }) {
-  const { currentUser } = route.params;
+function NavBarOwners() {
   return (
-    // <NavigationContainer>
       <Tab.Navigator
         initialRouteName={home}
         screenOptions={({ route }) => ({
@@ -94,7 +91,6 @@ function NavBarOwners({ route }) {
         })}>
         <Tab.Screen
           name={home}
-          initialParams={{currentUser: currentUser}}
           component={HomeStackNav} // changed all components to stackNav
         />
         <Tab.Screen
@@ -111,11 +107,9 @@ function NavBarOwners({ route }) {
         />
         <Tab.Screen
           name={settings}
-          initialParams={{currentUser: currentUser}}
           component={SettingStackNav}
         />
       </Tab.Navigator>
-    // </NavigationContainer>
   );
 }
 

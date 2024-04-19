@@ -7,17 +7,14 @@ import {
   Image,
   Alert,
 } from 'react-native';
-import React, { useEffect } from 'react';
-import { useState } from 'react';
-
+import React, { useEffect, useState, useContext } from 'react';
 import HeaderComponent from '../components/HeaderComponent';
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
-
 import { FirebaseAuth, FirebaseDB } from '../../firebase.config';
+import { UserContext } from '../../userContext';
 
-const RolesScreen = ({ navigation, route }) => {
-  const { currentUser } = route.params;
-  console.log(currentUser.role);
+const RolesScreen = ({ navigation }) => {
+  const currentUser = useContext(UserContext)
 
   async function updatingRole(roleChange) {
     await updateDoc(doc(FirebaseDB, 'Users', currentUser.uid), {

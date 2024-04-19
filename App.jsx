@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createContext } from "react";
 
 import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
@@ -13,6 +13,8 @@ import SignInScreen from "./app/screens/SignInScreen";
 import SignUpScreen from "./app/screens/SignUpScreen";
 import PreferredRole from "./app/screens/PreferredRole";
 import LogoScreen from "./app/screens/LogoScreen";
+
+import { UserContext } from "./userContext.jsx"
 
 const Stack = createNativeStackNavigator();
 
@@ -52,6 +54,7 @@ export default function App() {
   };
 
   return (
+    <UserContext.Provider value={user}>
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="LogoScreen"
@@ -59,34 +62,34 @@ export default function App() {
           headerShown: false,
         }}
       >
-        {user && (
-          <>
-            {user.role === "Owner" ? (
-              <Stack.Screen
-                initialParams={{ currentUser: user }}
-                name="NavBarOwners"
-                component={NavBarOwners}
-              />
-            ) : (
-              <Stack.Screen
-                initialParams={{ currentUser: user }}
-                name="NavBarRenters"
-                component={NavBarRenters}
-              />
-            )}
-          </>
-        )}
+        
+          {user && (
+            <>
+              {user.role === "Owner" ? (
+                <Stack.Screen
+                  name="NavBarOwners"
+                  component={NavBarOwners}
+                />
+              ) : (
+                <Stack.Screen
+                  name="NavBarRenters"
+                  component={NavBarRenters}
+                />
+              )}
+            </>
+          )}
 
-        {!user && (
-          <>
-            <Stack.Screen name="LogoScreen" component={LogoScreen} />
-            <Stack.Screen name="SignIn" component={SignInScreen} />
-            <Stack.Screen name="SignUp" component={SignUpScreen} />
-            <Stack.Screen name="Role" component={PreferredRole} />
-          </>
-        )}
+          {!user && (
+            <>
+              <Stack.Screen name="LogoScreen" component={LogoScreen} />
+              <Stack.Screen name="SignIn" component={SignInScreen} />
+              <Stack.Screen name="SignUp" component={SignUpScreen} />
+              <Stack.Screen name="Role" component={PreferredRole} />
+            </>
+          )}
       </Stack.Navigator>
     </NavigationContainer>
+    </UserContext.Provider>
   );
 }
 

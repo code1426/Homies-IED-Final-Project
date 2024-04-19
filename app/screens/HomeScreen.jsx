@@ -24,9 +24,7 @@ function HomeScreen({ navigation }) {
   const propertyTypes = ["All", "Apartment", "Boarding House", "Dorm"];
 
   useEffect(() => {
-    // console.log(propertyList)
     getAllPropertyList();
-    // console.log(propertyList == [])
   }, []);
 
   const getAllPropertyList = async () => {

@@ -16,8 +16,8 @@ import {
   sendEmailVerification,
 } from "firebase/auth";
 
-import { doc, getDoc } from "firebase/firestore";
-import { FirebaseAuth, FirebaseDB } from "../../firebase.config";
+import { FirebaseAuth } from "../../firebase.config";
+import { sendPasswordResetEmail } from "firebase/auth";
 
 export default function SignInScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
@@ -31,18 +31,6 @@ export default function SignInScreen({ navigation }) {
   const resetForm = () => {
     setErrors({});
     setForm({ email: "", password: "" });
-  };
-
-  const getUser = async (uid) => {
-    const docRef = doc(FirebaseDB, "Users", uid);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      // console.log("Document data:", docSnap.data());
-      return docSnap.data();
-    } else {
-      console.log("No such document!");
-    }
   };
 
   const validateForm = () => {
@@ -99,6 +87,15 @@ export default function SignInScreen({ navigation }) {
       handleAuth();
       resetForm();
     } else setLoading(false);
+  };
+
+  const handleResetPassword = async () => {
+    try {
+      await sendPasswordResetEmail(FirebaseAuth, form.email);
+      console.log("Email reset password sent");
+    } catch (err) {
+      console.log(err.message);
+    }
   };
 
   return (

@@ -1,5 +1,4 @@
 import { StyleSheet, View, TouchableOpacity, Image, Text } from "react-native";
-
 import { useNavigation } from "@react-navigation/native";
 
 function PostCard({ data }) {
@@ -53,7 +52,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 12,
     flexDirection: "row",
-    // backgroundColor: "blue",
   },
   shadow: {
     shadowColor: "grey",
@@ -66,7 +64,6 @@ const styles = StyleSheet.create({
     color: "black",
     alignSelf: "flex-start",
     width: "100%",
-    // backgroundColor: "red",
   },
   postLocation: {
     fontSize: 12,
@@ -74,7 +71,6 @@ const styles = StyleSheet.create({
     color: "grey",
     alignSelf: "flex-start",
     width: "88%",
-    // backgroundColor: "black",
   },
   price: {
     alignSelf: "flex-end",
