@@ -54,9 +54,7 @@ export default function SignInScreen({ navigation }) {
         console.log(error.code);
       });
       const user = resp?.user;
-      if (user && user.emailVerified) {
-        setLoading(false);
-      }
+
       if (user && !user.emailVerified) {
         setLoading(false);
         Alert.alert(
