@@ -34,45 +34,6 @@ function PinnedScreen() {
 
   const [pinnedPropertyList, setPinnedPropertyList] = useState([]);
 
-  // const getCurrentUserPinned = async () => {
-  //   try {
-  //     const currentUserRef = doc(FirebaseDB, "Users", currentUser.uid);
-  //     const docSnap = await getDoc(currentUserRef);
-  //     if (docSnap.exists()) {
-  //       return docSnap.data().pinned;
-  //     } else {
-  //       return [];
-  //     }
-  //   } catch (err) {
-  //     console.log(err.message);
-  //   }
-  // };
-
-  // const getPinnedPropertyList = async () => {
-  //   try {
-  // setLoading(true);
-  // setPinnedPropertyList([]);
-  //     const userPinnedIdList = await getCurrentUserPinned();
-  //     const q = query(
-  //       collection(FirebaseDB, "OwnerPosts"),
-  //       where("postID", "in", userPinnedIdList)
-  //     );
-
-  //     const querySnapshot = await getDocs(q);
-  //     setLoading(false);
-  //     querySnapshot.forEach((doc) => {
-  //       setPinnedPropertyList((property) => [...property, doc.data()]);
-  //     });
-  //   } catch (err) {
-  //     console.log(err.message);
-  //     setLoading(false);
-  //   }
-  // };
-
-  // const getData = async () => {
-  //   await getPinnedPropertyList();
-  // };
-
   const getPinnedPropertyList = async () => {
     try {
       setLoading(true);
@@ -121,8 +82,7 @@ function PinnedScreen() {
               <Text
                 style={{ fontSize: 14, color: "gray", textAlign: "center" }}
               >
-                You don't have any pinned posts yet. Find interesting listings
-                and pin them for easy access!
+                You haven't applied to any listings yet. Start browsing and find your perfect place!
               </Text>
             </View>
           )}

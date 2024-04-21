@@ -5,6 +5,7 @@ import {
   View,
   ScrollView,
   ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import HeaderComponent from "../components/HeaderComponent";
@@ -15,6 +16,16 @@ import { getDocs, collection, query, where } from "firebase/firestore";
 const ListingScreen = ({ navigation }) => {
   const [propertyList, setPropertyList] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      getCurrentUserPropertyList();
+      setRefreshing(false);
+    }, 750);
+  }, []);
 
   useEffect(() => {
     getCurrentUserPropertyList();
@@ -43,7 +54,7 @@ const ListingScreen = ({ navigation }) => {
   return (
     <SafeAreaView>
       <HeaderComponent title="Listing" />
-      <ScrollView style={styles.container}>
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} style={styles.container}>
         {loading ? (
           <ActivityIndicator color="midnightblue" size="large" />
         ) : propertyList[0] ? (

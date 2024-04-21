@@ -8,7 +8,7 @@ import {
   Image,
 } from "react-native";
 
-const QueuedComponent = () => {
+const QueuedComponent = ({ applicant }) => {
   return (
     <View style={styles.container}>
       <View style={styles.profileContainer}>
@@ -17,7 +17,7 @@ const QueuedComponent = () => {
           source={require("../assets/profile.jpg")}
         />
         <Text numberOfLines={1} style={styles.name}>
-          Sandy Hahah
+          {applicant.firstName}
         </Text>
       </View>
       <View style={styles.buttonsContainer}>
@@ -25,11 +25,11 @@ const QueuedComponent = () => {
           <Text style={styles.buttonLabel}>Approve</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.cancelContainer}>
-              <Image
-                style={styles.cancelImage}
-                source={require("../assets/cancel.png")}
-              />
-          </TouchableOpacity>
+          <Image
+            style={styles.cancelImage}
+            source={require("../assets/cancel.png")}
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -51,9 +51,11 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   profileContainer: {
+    // flex: 2,
     flexDirection: "row",
     alignItems: "center",
     columnGap: 6,
+    // backgroundColor: 'red'
   },
   profile: {
     height: 40,
@@ -72,6 +74,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     columnGap: 8,
+    // flex: 1
   },
   approveContainer: {
     width: "70%",
