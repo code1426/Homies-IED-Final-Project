@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SettingsScreen from '../SettingsScreen';
 import PrivacyScreen from '../PrivacyScreen';
 import RolesScreen from '../RolesScreen';
+import EditProfileScreen from '../EditProfileScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +18,10 @@ const SettingStackNav = () => {
       <Stack.Screen
         name='Settings'
         component={SettingsScreen}
+      />
+      <Stack.Screen
+        name='Edit Profile'
+        component={EditProfileScreen}
       />
 
       <Stack.Screen
