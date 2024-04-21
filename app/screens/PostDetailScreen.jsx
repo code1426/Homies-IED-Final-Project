@@ -106,12 +106,12 @@ const PostDetailScreen = ({ navigation }) => {
       const postOwnerRef = doc(
         FirebaseDB,
         `Users/${data.uid}/Applicants`,
-        data.uid
+        currentUser.uid
       );
       const postRef = doc(
         FirebaseDB,
         `OwnerPosts/${data.postID}/Applicants`,
-        data.uid
+        currentUser.uid
       );
 
       if (!isPropertyApplied) {
