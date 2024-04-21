@@ -11,6 +11,12 @@ import QueuedComponent from "./QueuedComponent";
 import PostCard from "./PostCard";
 
 const PostQueueCard = ({ data }) => {
+  const [applicants, setApplicants] = useState([])
+
+  const getApplicantList = () => {
+    
+  }
+
   return (
     <View style={styles.container}>
       <PostCard data={data} />

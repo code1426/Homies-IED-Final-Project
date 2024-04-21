@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 
 import HeaderComponent from "../components/HeaderComponent";
@@ -24,49 +25,69 @@ import { useState, useEffect } from "react";
 import { UserContext } from "../../userContext";
 
 function PinnedScreen() {
-  const currentUser = useContext(UserContext)
+  const currentUser = useContext(UserContext);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getData();
+    getPinnedPropertyList()
   }, [pinnedPropertyList]);
 
   const [pinnedPropertyList, setPinnedPropertyList] = useState([]);
 
-  const getCurrentUserPinned = async () => {
-    try {
-      const currentUserRef = doc(FirebaseDB, "Users", currentUser.uid);
-      const docSnap = await getDoc(currentUserRef);
-      if (docSnap.exists()) {
-        return docSnap.data().pinned;
-      } else {
-        return [];
-      }
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
+  // const getCurrentUserPinned = async () => {
+  //   try {
+  //     const currentUserRef = doc(FirebaseDB, "Users", currentUser.uid);
+  //     const docSnap = await getDoc(currentUserRef);
+  //     if (docSnap.exists()) {
+  //       return docSnap.data().pinned;
+  //     } else {
+  //       return [];
+  //     }
+  //   } catch (err) {
+  //     console.log(err.message);
+  //   }
+  // };
+
+  // const getPinnedPropertyList = async () => {
+  //   try {
+  // setLoading(true);
+  // setPinnedPropertyList([]);
+  //     const userPinnedIdList = await getCurrentUserPinned();
+  //     const q = query(
+  //       collection(FirebaseDB, "OwnerPosts"),
+  //       where("postID", "in", userPinnedIdList)
+  //     );
+
+  //     const querySnapshot = await getDocs(q);
+  //     setLoading(false);
+  //     querySnapshot.forEach((doc) => {
+  //       setPinnedPropertyList((property) => [...property, doc.data()]);
+  //     });
+  //   } catch (err) {
+  //     console.log(err.message);
+  //     setLoading(false);
+  //   }
+  // };
+
+  // const getData = async () => {
+  //   await getPinnedPropertyList();
+  // };
 
   const getPinnedPropertyList = async () => {
     try {
+      setLoading(true);
       setPinnedPropertyList([]);
-      const userPinnedIdList = await getCurrentUserPinned();
-      const q = query(
-        collection(FirebaseDB, "OwnerPosts"),
-        where("postID", "in", userPinnedIdList)
+      const querySnapshot = await getDocs(
+        collection(FirebaseDB, `Users/${currentUser.uid}/Pinned`)
       );
-
-      const querySnapshot = await getDocs(q);
+      setLoading(false);
       querySnapshot.forEach((doc) => {
         setPinnedPropertyList((property) => [...property, doc.data()]);
       });
     } catch (err) {
       console.log(err.message);
+      setLoading(false)
     }
-  };
-
-  const getData = async () => {
-    await getPinnedPropertyList();
-    // console.log(pinnedPropertyList);
   };
 
   const [refreshing, setRefreshing] = React.useState(false);
@@ -74,7 +95,7 @@ function PinnedScreen() {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
-      getData();
+      getPinnedPropertyList();
       setRefreshing(false);
     }, 750);
   }, []);
@@ -89,13 +110,25 @@ function PinnedScreen() {
         style={styles.container}
       >
         <View style={styles.pinnedContainer}>
-          {pinnedPropertyList.map((property, index) => (
-            <PostCard key={index} data={property} />
-          ))}
+          {loading ? (
+            <ActivityIndicator size="large" color="midnightblue" />
+          ) : pinnedPropertyList[0] ? (
+            pinnedPropertyList.map((property, index) => (
+              <PostCard key={index} data={property} />
+            ))
+          ) : (
+            <View style={styles.placeHolderContainer}>
+              <Text
+                style={{ fontSize: 14, color: "gray", textAlign: "center" }}
+              >
+                You don't have any pinned posts yet. Find interesting listings
+                and pin them for easy access!
+              </Text>
+            </View>
+          )}
         </View>
         <View style={{ height: 80 }}></View>
       </ScrollView>
-      {/* <View style={{height: 40, backgroundColor: 'blue'}}></View> */}
     </SafeAreaView>
   );
 }
@@ -111,5 +144,11 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     marginTop: 12,
     marginBottom: 30,
+  },
+  placeHolderContainer: {
+    flex: 1,
+    height: 100,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

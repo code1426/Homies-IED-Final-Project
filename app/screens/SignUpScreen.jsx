@@ -39,9 +39,6 @@ export default function SignUpScreen({ navigation }) {
         role: params.role,
         location: null,
         contactNumber: null,
-        pinned: [],
-        applied: [],
-        applicant: [],
       };
       const docRef = await setDoc(doc(FirebaseDB, "Users", uid), user).catch(
         (err) => console.log("DB", err.message)
@@ -107,7 +104,7 @@ export default function SignUpScreen({ navigation }) {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      console.log("SIGN-UP:", error.message);
+      console.log("ERROR SIGN-UP:", error.message);
       Alert.alert("Email already signed Up", "Please proceed to sign in.");
     }
   };

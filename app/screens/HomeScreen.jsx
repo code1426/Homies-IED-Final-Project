@@ -20,6 +20,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 function HomeScreen({ navigation }) {
   const [categoryName, setCategoryName] = useState("All");
   const [propertyList, setPropertyList] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const propertyTypes = ["All", "Apartment", "Boarding House", "Dorm"];
 
@@ -28,25 +29,40 @@ function HomeScreen({ navigation }) {
   }, []);
 
   const getAllPropertyList = async () => {
-    setPropertyList([]);
-    const querySnapshot = await getDocs(collection(FirebaseDB, "OwnerPosts"));
+    try {
+      setPropertyList([]);
+      setLoading(true);
+      const querySnapshot = await getDocs(collection(FirebaseDB, "OwnerPosts"));
 
-    querySnapshot.forEach((doc) => {
-      setPropertyList((property) => [...property, doc.data()]);
-    });
+      querySnapshot.forEach((doc) => {
+        setPropertyList((property) => [...property, doc.data()]);
+        setLoading(false);
+      });
+    } catch (err) {
+      console.log(err).message;
+      setLoading(false);
+    }
   };
 
   const getFilteredPropertyList = async (name) => {
-    setPropertyList([]);
-    const q = query(
-      collection(FirebaseDB, "OwnerPosts"),
-      where("propertyType", "==", name)
-    );
+    try {
+      setPropertyList([]);
+      setLoading(true);
+      const q = query(
+        collection(FirebaseDB, "OwnerPosts"),
+        where("propertyType", "==", name)
+      );
 
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      setPropertyList((property) => [...property, doc.data()]);
-    });
+      const querySnapshot = await getDocs(q);
+      setLoading(false);
+      querySnapshot.forEach((doc) => {
+        // console.log("ID", doc.id)
+        setPropertyList((property) => [...property, doc.data()]);
+      });
+    } catch (err) {
+      console.log(err).message;
+      setLoading(false);
+    }
   };
 
   const [refreshing, setRefreshing] = React.useState(false);
@@ -149,9 +165,21 @@ function HomeScreen({ navigation }) {
           </View>
 
           <View style={styles.postsContainer}>
-            {propertyList.map((property, index) => (
-              <PostCard key={index} data={property} />
-            ))}
+            {loading ? (
+              <ActivityIndicator size="large" color="midnightblue" />
+            ) : propertyList[0] ? (
+              propertyList.map((property, index) => (
+                <PostCard key={index} data={property} />
+              ))
+            ) : (
+              <View style={styles.placeHolderContainer}>
+                <Text
+                  style={{ fontSize: 14, color: "gray", textAlign: "center" }}
+                >
+                  The feed is currently empty. Check back soon for new listings!
+                </Text>
+              </View>
+            )}
           </View>
         </View>
       </ScrollView>
@@ -221,6 +249,12 @@ const styles = StyleSheet.create({
     shadowColor: "grey",
     shadowOffset: { width: 0, height: 3 },
     shadowRadius: 10,
+  },
+  placeHolderContainer: {
+    flex: 1,
+    height: 100,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

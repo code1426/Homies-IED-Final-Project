@@ -8,7 +8,7 @@ export default function LogoScreen({ navigation }) {
     try {
       setTimeout(() => {
         FirebaseAuth.currentUser || navigation.navigate("SignIn");
-      }, 1750);
+      }, 2750);
     } catch (err) {
       console.log(err.message);
     }

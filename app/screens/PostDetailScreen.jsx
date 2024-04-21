@@ -9,33 +9,29 @@ import {
 import React, { useEffect, useState, useContext } from "react";
 import { useRoute } from "@react-navigation/native";
 import { ImageSlider } from "react-native-image-slider-aws-s3";
-import {
-  doc,
-  updateDoc,
-  arrayUnion,
-  arrayRemove,
-  getDoc,
-} from "firebase/firestore";
-import { FirebaseDB } from "../../firebase.config";
+import { doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
+import { FirebaseAuth, FirebaseDB } from "../../firebase.config";
 import { UserContext } from "../../userContext";
 
 const PostDetailScreen = ({ navigation }) => {
-
-  const currentUser = useContext(UserContext)
+  const currentUser = useContext(UserContext);
   const { params } = useRoute();
   const data = params.data;
 
   const features = [data.propertyType, ...data.features];
-  const [isPropertyPinned, setIsPropertyPinned] = useState(null);
+  const [isPropertyPinned, setIsPropertyPinned] = useState(false);
+  const [isPropertyApplied, setIsPropertyApplied] = useState(false);
 
   useEffect(() => {
     isPinned();
+    isApplied();
   }, []);
 
   useEffect(() => {
     navigation.getParent()?.setOptions({
       tabBarStyle: {
         display: "none",
+        bottom: 0,
       },
     });
     return () =>
@@ -44,47 +40,91 @@ const PostDetailScreen = ({ navigation }) => {
       });
   }, [navigation]);
 
-  const getCurrentUserPinned = async () => {
-    try {
-      const currentUserRef = doc(FirebaseDB, "Users", currentUser.uid);
-      const docSnap = await getDoc(currentUserRef);
-      if (docSnap.exists()) {
-        return docSnap.data().pinned;
-      } else {
-        return [];
-      }
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
-
   const isPinned = async () => {
     try {
-      const pinned = await getCurrentUserPinned();
-      const isPinned = pinned.includes(data.postID);
-      setIsPropertyPinned(isPinned);
-      // console.log(pinned, isPinned);
-      return isPinned;
+      const currentUserRef = doc(
+        FirebaseDB,
+        `Users/${currentUser.uid}/Pinned`,
+        data.postID
+      );
+      const docSnap = await getDoc(currentUserRef);
+      if (docSnap.exists()) {
+        setIsPropertyPinned(true);
+      } else {
+        setIsPropertyPinned(false);
+      }
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
+
+  const setPinnedProperties = async () => {
+    try {
+      const currentUserRef = doc(
+        FirebaseDB,
+        `Users/${currentUser.uid}/Pinned`,
+        data.postID
+      );
+
+      if (!isPropertyPinned) {
+        setIsPropertyPinned(true);
+        await setDoc(currentUserRef, data);
+      } else {
+        setIsPropertyPinned(false);
+        await deleteDoc(currentUserRef);
+      }
     } catch (err) {
       console.log(err.message);
     }
   };
 
-  const updatePinnedProperties = async () => {
+  const isApplied = async () => {
     try {
-      const currentUserRef = doc(FirebaseDB, "Users", currentUser.uid);
-      // console.log(isPropertyPinned);
-
-      if (isPropertyPinned) {
-        await updateDoc(currentUserRef, {
-          pinned: arrayRemove(data.postID),
-        });
+      const currentUserRef = doc(
+        FirebaseDB,
+        `Users/${currentUser.uid}/Applied`,
+        data.postID
+      );
+      const docSnap = await getDoc(currentUserRef);
+      if (docSnap.exists()) {
+        setIsPropertyApplied(true);
       } else {
-        await updateDoc(currentUserRef, {
-          pinned: arrayUnion(data.postID),
-        });
+        setIsPropertyApplied(false);
       }
-      isPinned();
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
+
+  const setAppliedProperties = async () => {
+    try {
+      const currentUserRef = doc(
+        FirebaseDB,
+        `Users/${currentUser.uid}/Applied`,
+        data.postID
+      );
+      const postOwnerRef = doc(
+        FirebaseDB,
+        `Users/${data.uid}/Applicants`,
+        data.uid
+      );
+      const postRef = doc(
+        FirebaseDB,
+        `OwnerPosts/${data.postID}/Applicants`,
+        data.uid
+      );
+
+      if (!isPropertyApplied) {
+        setIsPropertyApplied(true);
+        await setDoc(currentUserRef, data);
+        await setDoc(postOwnerRef, currentUser);
+        await setDoc(postRef, currentUser);
+      } else {
+        setIsPropertyApplied(false);
+        await deleteDoc(currentUserRef);
+        await deleteDoc(postOwnerRef);
+        await deleteDoc(postRef);
+      }
     } catch (err) {
       console.log(err.message);
     }
@@ -181,7 +221,7 @@ const PostDetailScreen = ({ navigation }) => {
       {currentUser?.role === "Owner" || (
         <View style={styles.footerContainer}>
           <TouchableOpacity
-            onPress={() => updatePinnedProperties()}
+            onPress={() => setPinnedProperties()}
             style={styles.pinnedButton}
           >
             <Image
@@ -206,9 +246,14 @@ const PostDetailScreen = ({ navigation }) => {
             )}.00)`}</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.applyButton}>
+          <TouchableOpacity
+            style={styles.applyButton}
+            onPress={() => {
+              setAppliedProperties();
+            }}
+          >
             <Text style={{ color: "white", fontWeight: "bold", fontSize: 18 }}>
-              APPLY NOW!
+              {isPropertyApplied ? "APPLIED" : "APPLY NOW!"}
             </Text>
             <Text style={{ color: "white", fontSize: 10 }}>Watch an AD</Text>
           </TouchableOpacity>
@@ -220,7 +265,9 @@ const PostDetailScreen = ({ navigation }) => {
             style={styles.editButtonContainer}
             onPress={() => {}}
           >
-            <Text style={{ color: "white", fontSize: 20, fontWeight: "700" }}>EDIT</Text>
+            <Text style={{ color: "white", fontSize: 20, fontWeight: "700" }}>
+              EDIT
+            </Text>
           </TouchableOpacity>
         </View>
       )}

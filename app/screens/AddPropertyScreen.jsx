@@ -18,6 +18,8 @@ import {
   collection,
   getDocs,
   serverTimestamp,
+  setDoc,
+  doc,
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes, uploadBytesResumable } from "firebase/storage";
 
@@ -251,13 +253,12 @@ function AddPropertyScreen({ navigation }) {
 
       if (isAllInputFilled) {
         // add the data to the firestore
+        const docRef = doc(FirebaseDB, "OwnerPosts", values.postID)
         console.log("setting all data to document...");
-        const docRef = await addDoc(
-          collection(FirebaseDB, "OwnerPosts"),
-          values
-        );
+        await setDoc(docRef, values)
+        console.log("SUCCESS");
 
-        if (docRef.id) {
+        if (true) {
           setLoading(false);
           console.log("document added succesfully!");
           Alert.alert(
@@ -448,7 +449,7 @@ function AddPropertyScreen({ navigation }) {
     uid: FirebaseAuth.currentUser.uid,
     email: FirebaseAuth.currentUser.email,
     userName: FirebaseAuth.currentUser.displayName,
-    postID: Date.now()
+    postID: Math.random().toString(16).slice(2)
   };
 
   const data = [
