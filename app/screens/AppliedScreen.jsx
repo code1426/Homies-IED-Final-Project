@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   },
   appliedContainer: {
     flexDirection: "column",
-    marginTop: 12,
+    marginTop: 2,
     marginBottom: 30,
   },
 });
