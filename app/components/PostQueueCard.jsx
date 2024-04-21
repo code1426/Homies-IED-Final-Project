@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   TouchableOpacity,
@@ -9,6 +9,8 @@ import {
 } from "react-native";
 import QueuedComponent from "./QueuedComponent";
 import PostCard from "./PostCard";
+
+import { collection, getDocs } from "firebase/firestore";
 
 const PostQueueCard = ({ data }) => {
   const [applicants, setApplicants] = useState([])

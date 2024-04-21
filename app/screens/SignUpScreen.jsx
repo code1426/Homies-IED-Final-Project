@@ -40,16 +40,10 @@ export default function SignUpScreen({ navigation }) {
         location: null,
         contactNumber: null,
       };
-      const docRef = await setDoc(doc(FirebaseDB, "Users", uid), user).catch(
-        (err) => console.log("DB", err.message)
-      );
-
-      if (docRef.id) {
-        setLoading(false);
-        navigation.navigate("SignIn");
-      }
+      await setDoc(doc(FirebaseDB, "Users", uid), user);
+      setLoading(false);
     } catch (err) {
-      console.log(err.message);
+      console.log("uploadUser Error:", err.message);
     }
   };
 
@@ -94,6 +88,7 @@ export default function SignUpScreen({ navigation }) {
                   text: "OK",
                   onPress: () => {
                     navigation.navigate("SignIn");
+                    FirebaseAuth.signOut();
                   },
                 },
               ],
