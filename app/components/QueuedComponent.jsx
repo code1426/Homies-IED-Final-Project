@@ -41,7 +41,6 @@ const QueuedComponent = ({ applicant, postData }) => {
   const handleApprove = async () => {
     try {
       setIsApproved(true);
-      renderCount++
       const postRef = doc(
         FirebaseDB,
         `OwnerPosts/${postData.postID}/Applicants`,
@@ -84,6 +83,7 @@ const QueuedComponent = ({ applicant, postData }) => {
       await updateDoc(applicantRef, {
         isDeletedByOwner: "yes",
       });
+      console.log("Removed Applicant")
     } catch (err) {
       console.log(err);
     }
