@@ -1,39 +1,95 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
   StyleSheet,
   ActivityIndicator,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import QueuedComponent from "./QueuedComponent";
 import PostCard from "./PostCard";
 
-import { collection, getDocs } from "firebase/firestore";
-import { FirebaseDB } from "../../firebase.config";
+import { doc, getDoc, deleteDoc } from "firebase/firestore";
+import { FirebaseAuth, FirebaseDB } from "../../firebase.config";
+
+import { UserContext } from "../../userContext";
 
 const AppliedPostCard = ({ data }) => {
-  const [applicantList, setApplicantList] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const currentUser = useContext(UserContext);
+  const [isApproved, setIsApproved] = useState(false);
+  const [isdeleted, setIsDeleted] = useState(false);
 
-  // useEffect(() => {
-  //   getApplicantList();
-  // }, []);
+  useEffect(() => {
+    isApplicantApproved();
+    isDeletedByOwner();
+  }, []);
 
-  const getApplicantList = async () => {
+  const isApplicantApproved = async () => {
     try {
-      setLoading(true);
-      setApplicantList([]);
-      const querySnapshot = await getDocs(
-        collection(FirebaseDB, `OwnerPosts/${data.postID}/Applicants`)
+      const postRef = doc(
+        FirebaseDB,
+        `OwnerPosts/${data.postID}/Applicants`,
+        FirebaseAuth.currentUser.uid
       );
-      setLoading(false);
-      querySnapshot.forEach((doc) => {
-        setApplicantList((property) => [...property, doc.data()]);
-      });
+      const docsnap = await getDoc(postRef);
+      console.log("isApproved:", docsnap.exists());
+      if (docsnap.exists()) {
+        if (docsnap.data().isApproved) {
+          setIsApproved(true);
+        } else {
+          setIsApproved(false);
+        }
+      }
+    } catch (err) {
+      console.log(err).message;
+    }
+  };
+
+  const isDeletedByOwner = async () => {
+    try {
+      const postRef = doc(
+        FirebaseDB,
+        `OwnerPosts/${data.postID}/Applicants`,
+        FirebaseAuth.currentUser.uid
+      );
+      const docsnap = await getDoc(postRef);
+      console.log("isDeleted:", docsnap.exists());
+      if (docsnap.exists()) {
+        if (docsnap.data().isDeletedByOwner === "yes") {
+          setIsDeleted(true);
+        } else {
+          setIsDeleted(false);
+        }
+      }
+    } catch (err) {
+      console.log(err).message;
+    }
+  };
+
+  const handleCancel = async () => {
+    try {
+      const currentUserRef = doc(
+        FirebaseDB,
+        `Users/${currentUser.uid}/Applied`,
+        data.postID
+      );
+      const postOwnerRef = doc(
+        FirebaseDB,
+        `Users/${data.uid}/Applicants`,
+        currentUser.uid
+      );
+      const postRef = doc(
+        FirebaseDB,
+        `OwnerPosts/${data.postID}/Applicants`,
+        currentUser.uid
+      );
+      await deleteDoc(currentUserRef);
+      await deleteDoc(postOwnerRef);
+      await deleteDoc(postRef);
+      console.log("CancelButton: canceled");
     } catch (err) {
       console.log(err.message);
-      setLoading(false);
     }
   };
 
@@ -42,8 +98,21 @@ const AppliedPostCard = ({ data }) => {
       <PostCard data={data} />
       <View style={styles.statusContainer}>
         <View style={styles.buttonsContainer}>
-          <Button title="Queued" bgc="#4285F4" color="white" />
-          <CancelButton />
+          {isdeleted ? (
+            <Button title="Unavailable" bgc="#F44336" color="white" />
+          ) : (
+            <Button
+              title={isApproved ? "Approved" : "Queued"}
+              bgc={isApproved ? "limegreen" : "#4285F4"}
+              color="white"
+            />
+          )}
+
+          {isApproved ? (
+            <MessageButton />
+          ) : (
+            <CancelButton onPress={handleCancel} />
+          )}
         </View>
       </View>
     </View>
@@ -53,18 +122,30 @@ const AppliedPostCard = ({ data }) => {
 const Button = ({ title, bgc, color }) => {
   return (
     <View style={{ ...styles.button, backgroundColor: bgc }}>
-      <Text style={{...styles.buttonText, color: color}}>{title}</Text>
+      <Text style={{ ...styles.buttonText, color: color }}>{title}</Text>
     </View>
   );
 };
 
-const CancelButton = () => {
+const CancelButton = ({ onPress }) => {
   return (
-    <TouchableOpacity style={styles.button}>
+    <TouchableOpacity onPress={onPress} style={styles.button}>
       <Text style={styles.buttonText}>Cancel</Text>
     </TouchableOpacity>
   );
-}
+};
+
+const MessageButton = ({}) => {
+  return (
+    <TouchableOpacity style={styles.messageButton}>
+      <Image
+        style={{ width: 16, height: 16 }}
+        source={require("../assets/navigationBarIcons/nonactiveMessages.png")}
+      />
+      <Text style={{ ...styles.buttonLabel, color: "black" }}>Message</Text>
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -103,7 +184,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: "100%",
     bottom: 0,
-    backgroundColor: 'white'
+    backgroundColor: "white",
   },
   button: {
     paddingHorizontal: 15,
@@ -112,17 +193,30 @@ const styles = StyleSheet.create({
     backgroundColor: "#BBE0F5",
   },
   buttonText: {
-    // color: "white",
     fontSize: 15,
-    fontWeight: "500"
+    fontWeight: "500",
   },
   buttonsContainer: {
     flexDirection: "row",
     alignItems: "center",
     columnGap: 8,
+    marginLeft: 12,
     // backgroundColor: "red",
-    marginLeft: 12
-  }
+  },
+  messageButton: {
+    flexDirection: "row",
+    backgroundColor: "#BBE0F5",
+    paddingHorizontal: 16,
+    paddingVertical: 4,
+    borderRadius: 15,
+    columnGap: 8,
+  },
+  buttonLabel: {
+    fontSize: 13,
+    fontWeight: "bold",
+    color: "white",
+    textAlign: "center",
+  },
 });
 
 export default AppliedPostCard;

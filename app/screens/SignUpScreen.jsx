@@ -38,7 +38,6 @@ export default function SignUpScreen({ navigation }) {
         email: form.email,
         role: params.role,
         location: null,
-        contactNumber: null,
       };
       await setDoc(doc(FirebaseDB, "Users", uid), user);
       setLoading(false);
@@ -67,7 +66,7 @@ export default function SignUpScreen({ navigation }) {
       const resp = await createUserWithEmailAndPassword(
         FirebaseAuth,
         form.email,
-        form.password
+        form.password,
       );
       const user = resp.user;
       await updateProfile(user, {

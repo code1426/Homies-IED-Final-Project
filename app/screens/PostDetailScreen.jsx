@@ -117,8 +117,8 @@ const PostDetailScreen = ({ navigation }) => {
       if (!isPropertyApplied) {
         setIsPropertyApplied(true);
         await setDoc(currentUserRef, data);
-        await setDoc(postOwnerRef, currentUser);
-        await setDoc(postRef, currentUser);
+        await setDoc(postOwnerRef, {...currentUser, isApproved: false, isDeletedByOwner: "no"});
+        await setDoc(postRef, {...currentUser, isApproved: false, isDeletedByOwner: "no"});
       } else {
         setIsPropertyApplied(false);
         await deleteDoc(currentUserRef);

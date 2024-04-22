@@ -1,14 +1,9 @@
-import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ActivityIndicator
-} from "react-native";
+import React, { useState, useEffect, createContext } from "react";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import QueuedComponent from "./QueuedComponent";
 import PostCard from "./PostCard";
 
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { FirebaseDB } from "../../firebase.config";
 
 const PostQueueCard = ({ data }) => {
@@ -23,9 +18,11 @@ const PostQueueCard = ({ data }) => {
     try {
       setLoading(true);
       setApplicantList([]);
-      const querySnapshot = await getDocs(
-        collection(FirebaseDB, `OwnerPosts/${data.postID}/Applicants`)
+      const q = query(
+        collection(FirebaseDB, `OwnerPosts/${data.postID}/Applicants`),
+        where("isDeletedByOwner", "==", "no")
       );
+      const querySnapshot = await getDocs(q);
       setLoading(false);
       querySnapshot.forEach((doc) => {
         setApplicantList((property) => [...property, doc.data()]);
@@ -49,7 +46,11 @@ const PostQueueCard = ({ data }) => {
             <ActivityIndicator size="small" color="midnightblue" />
           ) : applicantList[0] ? (
             applicantList.map((applicant, index) => (
-              <QueuedComponent key={index} applicant={applicant} />
+              <QueuedComponent
+                postData={data}
+                key={index}
+                applicant={applicant}
+              />
             ))
           ) : (
             <View style={styles.placeHolderContainer}>

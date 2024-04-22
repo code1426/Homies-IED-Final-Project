@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   TouchableOpacity,
@@ -8,7 +8,87 @@ import {
   Image,
 } from "react-native";
 
-const QueuedComponent = ({ applicant }) => {
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { FirebaseAuth, FirebaseDB } from "../../firebase.config";
+
+const QueuedComponent = ({ applicant, postData }) => {
+  const [isApproved, setIsApproved] = useState(false);
+
+  useEffect(() => {
+    isApplicantApproved();
+  }, []);
+
+  const isApplicantApproved = async () => {
+    try {
+      const postRef = doc(
+        FirebaseDB,
+        `OwnerPosts/${postData.postID}/Applicants`,
+        applicant.uid
+      );
+      const docsnap = await getDoc(postRef);
+      if (docsnap.exists()) {
+        if (docsnap.data().isApproved) {
+          setIsApproved(true);
+        } else {
+          setIsApproved(false);
+        }
+      }
+    } catch (err) {
+      console.log(err).message;
+    }
+  };
+
+  const handleApprove = async () => {
+    try {
+      setIsApproved(true);
+      renderCount++
+      const postRef = doc(
+        FirebaseDB,
+        `OwnerPosts/${postData.postID}/Applicants`,
+        applicant.uid
+      );
+      const applicantRef = doc(
+        FirebaseDB,
+        `Users/${FirebaseAuth.currentUser.uid}/Applicants`,
+        applicant.uid
+      );
+      await updateDoc(postRef, {
+        isApproved: true,
+      });
+      console.log("updated post Applicant");
+      await updateDoc(applicantRef, {
+        isApproved: true,
+      });
+      console.log("updated user Applicant");
+    } catch (err) {
+      console.log(err);
+      setIsApproved(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const postRef = doc(
+        FirebaseDB,
+        `OwnerPosts/${postData.postID}/Applicants`,
+        applicant.uid
+      );
+      const applicantRef = doc(
+        FirebaseDB,
+        `Users/${FirebaseAuth.currentUser.uid}/Applicants`,
+        applicant.uid
+      );
+      await updateDoc(postRef, {
+        isDeletedByOwner: "yes",
+      });
+      await updateDoc(applicantRef, {
+        isDeletedByOwner: "yes",
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.profileContainer}>
@@ -20,16 +100,34 @@ const QueuedComponent = ({ applicant }) => {
           {applicant.firstName}
         </Text>
       </View>
+
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonLabel}>Approve</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.cancelContainer}>
-          <Image
-            style={styles.cancelImage}
-            source={require("../assets/cancel.png")}
-          />
-        </TouchableOpacity>
+        {!isApproved ? (
+          <>
+            <TouchableOpacity onPress={handleApprove} style={styles.button}>
+              <Text style={styles.buttonLabel}>Approve</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleDelete}
+              style={styles.cancelContainer}
+            >
+              <Image
+                style={styles.cancelImage}
+                source={require("../assets/cancel.png")}
+              />
+            </TouchableOpacity>
+          </>
+        ) : (
+          <TouchableOpacity style={styles.messageButton}>
+            <Image
+              style={{ width: 16, height: 16 }}
+              source={require("../assets/navigationBarIcons/nonactiveMessages.png")}
+            />
+            <Text style={{ ...styles.buttonLabel, color: "black" }}>
+              Message
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -87,7 +185,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   button: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
     paddingVertical: 4,
     borderRadius: 15,
     backgroundColor: "limegreen",
@@ -97,6 +195,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
     textAlign: "center",
+  },
+  messageButton: {
+    flexDirection: "row",
+    backgroundColor: "#BBE0F5",
+    paddingHorizontal: 16,
+    paddingVertical: 4,
+    borderRadius: 15,
+    columnGap: 8,
   },
 });
 
