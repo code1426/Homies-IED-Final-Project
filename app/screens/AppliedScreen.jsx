@@ -78,8 +78,7 @@ function AppliedScreen(props) {
               <Text
                 style={{ fontSize: 14, color: "gray", textAlign: "center" }}
               >
-                You haven't listed any rooms yet. Add your boarding house,
-                apartment, or dorm to start finding tenants!
+                You haven't applied to any listings yet. Start browsing and find your perfect place!
               </Text>
             </View>
           )}
@@ -102,10 +101,11 @@ const styles = StyleSheet.create({
     height: 100,
     justifyContent: "center",
     alignItems: "center",
+    // backgroundColor: 'red'
   },
   appliedContainer: {
     flexDirection: "column",
-    marginTop: 2,
+    marginTop: 12,
     marginBottom: 30,
   },
 });

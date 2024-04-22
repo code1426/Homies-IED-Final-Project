@@ -67,7 +67,6 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
 
   const handleDelete = async () => {
     try {
-      updateList()
       const postRef = doc(
         FirebaseDB,
         `OwnerPosts/${postData.postID}/Applicants`,
@@ -81,6 +80,7 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
       await updateDoc(postRef, {
         isDeletedByOwner: "yes",
       });
+      updateList()
       await updateDoc(applicantRef, {
         isDeletedByOwner: "yes",
       });

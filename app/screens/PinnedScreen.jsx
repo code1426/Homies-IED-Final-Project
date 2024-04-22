@@ -82,7 +82,7 @@ function PinnedScreen() {
               <Text
                 style={{ fontSize: 14, color: "gray", textAlign: "center" }}
               >
-                You haven't applied to any listings yet. Start browsing and find your perfect place!
+                You don't have any pinned posts yet. Find interesting listings and pin them for easy access!
               </Text>
             </View>
           )}
@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     marginTop: 12,
     marginBottom: 30,
+    // backgroundColor: "red"
   },
   placeHolderContainer: {
     flex: 1,

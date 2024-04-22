@@ -33,7 +33,7 @@ const AppliedPostCard = ({ data, updateList }) => {
         FirebaseAuth.currentUser.uid
       );
       const docsnap = await getDoc(postRef);
-      console.log("isApproved:", docsnap.exists());
+      // console.log("isApproved:", docsnap.exists());
       if (docsnap.exists()) {
         if (docsnap.data().isApproved) {
           setIsApproved(true);
@@ -54,7 +54,7 @@ const AppliedPostCard = ({ data, updateList }) => {
         FirebaseAuth.currentUser.uid
       );
       const docsnap = await getDoc(postRef);
-      console.log("isDeleted:", docsnap.exists());
+      // console.log("isDeleted:", docsnap.exists());
       if (docsnap.exists()) {
         if (docsnap.data().isDeletedByOwner === "yes") {
           setIsDeleted(true);
@@ -69,7 +69,6 @@ const AppliedPostCard = ({ data, updateList }) => {
 
   const handleCancel = async () => {
     try {
-      updateList()
       const currentUserRef = doc(
         FirebaseDB,
         `Users/${currentUser.uid}/Applied`,
@@ -86,9 +85,10 @@ const AppliedPostCard = ({ data, updateList }) => {
         currentUser.uid
       );
       await deleteDoc(currentUserRef);
+      updateList();
       await deleteDoc(postOwnerRef);
       await deleteDoc(postRef);
-      console.log("CancelButton: canceled");
+      // console.log("CancelButton: canceled");
     } catch (err) {
       console.log(err.message);
     }
