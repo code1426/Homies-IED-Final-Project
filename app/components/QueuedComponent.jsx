@@ -11,7 +11,7 @@ import {
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { FirebaseAuth, FirebaseDB } from "../../firebase.config";
 
-const QueuedComponent = ({ applicant, postData }) => {
+const QueuedComponent = ({ applicant, postData, updateList }) => {
   const [isApproved, setIsApproved] = useState(false);
 
   useEffect(() => {
@@ -67,6 +67,7 @@ const QueuedComponent = ({ applicant, postData }) => {
 
   const handleDelete = async () => {
     try {
+      updateList()
       const postRef = doc(
         FirebaseDB,
         `OwnerPosts/${postData.postID}/Applicants`,

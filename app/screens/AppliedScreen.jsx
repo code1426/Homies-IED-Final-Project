@@ -52,25 +52,37 @@ function AppliedScreen(props) {
       setLoading(false);
     }
   };
+
   return (
     <SafeAreaView>
       <HeaderComponent title="Applied" />
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} style={styles.container}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        style={styles.container}
+      >
         <View style={styles.appliedContainer}>
-        {loading ? (
-          <ActivityIndicator color="midnightblue" size="large" />
-        ) : appliedPropertyList[0] ? (
-          appliedPropertyList.map((property, index) => (
-            <AppliedPostCard key={index} data={property} />
-          ))
-        ) : (
-          <View style={styles.placeHolderContainer}>
-            <Text style={{ fontSize: 14, color: "gray", textAlign: "center" }}>
-              You haven't listed any rooms yet. Add your boarding house,
-              apartment, or dorm to start finding tenants!
-            </Text>
-          </View>
-        )}
+          {loading ? (
+            <ActivityIndicator color="midnightblue" size="large" />
+          ) : appliedPropertyList[0] ? (
+            appliedPropertyList.map((property, index) => (
+              <AppliedPostCard
+                updateList={getAppliedPropertyList}
+                key={index}
+                data={property}
+              />
+            ))
+          ) : (
+            <View style={styles.placeHolderContainer}>
+              <Text
+                style={{ fontSize: 14, color: "gray", textAlign: "center" }}
+              >
+                You haven't listed any rooms yet. Add your boarding house,
+                apartment, or dorm to start finding tenants!
+              </Text>
+            </View>
+          )}
         </View>
         <View style={{ height: 80 }}></View>
       </ScrollView>

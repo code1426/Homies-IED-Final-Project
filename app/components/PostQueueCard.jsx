@@ -47,6 +47,7 @@ const PostQueueCard = ({ data }) => {
           ) : applicantList[0] ? (
             applicantList.map((applicant, index) => (
               <QueuedComponent
+                updateList={getApplicantList}
                 postData={data}
                 key={index}
                 applicant={applicant}

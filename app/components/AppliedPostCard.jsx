@@ -15,7 +15,7 @@ import { FirebaseAuth, FirebaseDB } from "../../firebase.config";
 
 import { UserContext } from "../../userContext";
 
-const AppliedPostCard = ({ data }) => {
+const AppliedPostCard = ({ data, updateList }) => {
   const currentUser = useContext(UserContext);
   const [isApproved, setIsApproved] = useState(false);
   const [isdeleted, setIsDeleted] = useState(false);
@@ -69,6 +69,7 @@ const AppliedPostCard = ({ data }) => {
 
   const handleCancel = async () => {
     try {
+      updateList()
       const currentUserRef = doc(
         FirebaseDB,
         `Users/${currentUser.uid}/Applied`,
