@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { FirebaseAuth } from "../../firebase.config";
 
 export default function LogoScreen({ navigation }) {
-
   useEffect(() => {
     try {
       setTimeout(() => {
@@ -14,7 +13,7 @@ export default function LogoScreen({ navigation }) {
     }
   }, []);
 
-  const appLogo = require("../assets/homies-logo-with-app-name.png");
+  const appLogo = require("../assets/homies-Logo.png");
   return (
     <SafeAreaView style={styles.container}>
       <Image style={styles.icon} source={appLogo} />
@@ -24,12 +23,14 @@ export default function LogoScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#9CC6DE",
+    // backgroundColor: "#CBE6F6",
+    backgroundColor: "#B0DBF3",
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },
   icon: {
-    bottom: 100,
+    height: 210,
+    width: 210,
   },
 });

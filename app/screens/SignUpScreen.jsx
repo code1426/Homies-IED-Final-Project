@@ -126,7 +126,7 @@ export default function SignUpScreen({ navigation }) {
     <View style={styles.container}>
       <View>
         <Image
-          source={require("../assets/signup-bg.png")}
+          source={require("../assets/signup.png")}
           style={styles.headerImg}
         />
       </View>
@@ -229,7 +229,9 @@ const styles = StyleSheet.create({
   },
   headerImg: {
     alignSelf: "center",
-    resizeMode: "contain",
+    // resizeMode: "cover",
+    height: 330, 
+    width: 414,
   },
   formContainer: {
     backgroundColor: "#FFF",

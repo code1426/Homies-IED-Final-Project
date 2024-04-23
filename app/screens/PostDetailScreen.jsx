@@ -9,7 +9,7 @@ import {
 import React, { useEffect, useState, useContext } from "react";
 import { useRoute } from "@react-navigation/native";
 import { ImageSlider } from "react-native-image-slider-aws-s3";
-import { doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, deleteDoc, getDocs, collection } from "firebase/firestore";
 import { FirebaseAuth, FirebaseDB } from "../../firebase.config";
 import { UserContext } from "../../userContext";
 
@@ -21,10 +21,13 @@ const PostDetailScreen = ({ navigation }) => {
   const features = [data.propertyType, ...data.features];
   const [isPropertyPinned, setIsPropertyPinned] = useState(false);
   const [isPropertyApplied, setIsPropertyApplied] = useState(false);
+  const [isApproved, setIsApproved] = useState(false);
 
   useEffect(() => {
     isPinned();
+    isApplicantAprroved();
     isApplied();
+    countApplicants();
   }, []);
 
   useEffect(() => {
@@ -117,14 +120,63 @@ const PostDetailScreen = ({ navigation }) => {
       if (!isPropertyApplied) {
         setIsPropertyApplied(true);
         await setDoc(currentUserRef, data);
-        await setDoc(postOwnerRef, {...currentUser, isApproved: false, isDeletedByOwner: "no"});
-        await setDoc(postRef, {...currentUser, isApproved: false, isDeletedByOwner: "no"});
+        await setDoc(postOwnerRef, {
+          ...currentUser,
+          isApproved: false,
+          isDeletedByOwner: "no",
+        });
+        await setDoc(postRef, {
+          ...currentUser,
+          isApproved: false,
+          isDeletedByOwner: "no",
+        });
       } else {
         setIsPropertyApplied(false);
         await deleteDoc(currentUserRef);
         await deleteDoc(postOwnerRef);
         await deleteDoc(postRef);
       }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  const isApplicantAprroved = async () => {
+    try {
+      const postRef = doc(
+        FirebaseDB,
+        `OwnerPosts/${data.postID}/Applicants`,
+        currentUser.uid
+      );
+      const post = await getDoc(postRef);
+      if (post.exists()) {
+        if (post.data().isApproved) {
+          setIsApproved(true);
+        } else {
+          setIsApproved(false);
+        }
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  const [count, setCount] = useState(0);
+
+  const countApplicants = async () => {
+    try {
+      let count = 0;
+      setCount(0);
+      const postRef = collection(
+        FirebaseDB,
+        `OwnerPosts/${data.postID}/Applicants`
+      );
+      const snapshot = await getDocs(postRef);
+      snapshot.forEach((doc) => {
+        //if doc.data().isApproved 
+        count++;
+      });
+      setCount(count);
     } catch (err) {
       console.log(err.message);
     }
@@ -207,7 +259,7 @@ const PostDetailScreen = ({ navigation }) => {
         }
         ListFooterComponent={
           <View style={styles.applicantContainer}>
-            <Text style={styles.applicant}>APPLICANTS: 0</Text>
+            <Text style={styles.applicant}>{`APPLICANTS: ${count}`}</Text>
           </View>
         }
         showsVerticalScrollIndicator={false}
@@ -245,18 +297,32 @@ const PostDetailScreen = ({ navigation }) => {
               parseFloat(data.registrationPrice) * 1.01
             )}.00)`}</Text>
           </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.applyButton}
-            onPress={() => {
-              setAppliedProperties();
-            }}
-          >
-            <Text style={{ color: "white", fontWeight: "bold", fontSize: 18 }}>
-              {isPropertyApplied ? "APPLIED" : "APPLY NOW!"}
-            </Text>
-            <Text style={{ color: "white", fontSize: 10 }}>Watch an AD</Text>
-          </TouchableOpacity>
+          {isApproved ? (
+            <TouchableOpacity
+              onPress={() => console.log("Message")}
+              style={{ ...styles.applyButton, backgroundColor: "#lightblue" }}
+            >
+              <Image
+                style={{ width: 20, height: 20 }}
+                source={require("../assets/navigationBarIcons/nonactiveMessages.png")}
+              />
+              <Text>Message</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.applyButton}
+              onPress={() => {
+                setAppliedProperties();
+              }}
+            >
+              <Text
+                style={{ color: "white", fontWeight: "bold", fontSize: 18 }}
+              >
+                {isPropertyApplied ? "APPLIED" : "APPLY NOW!"}
+              </Text>
+              <Text style={{ color: "white", fontSize: 10 }}>Watch an AD</Text>
+            </TouchableOpacity>
+          )}
         </View>
       )}
       {currentUser.role === "Owner" && data.uid === currentUser.uid && (
@@ -399,6 +465,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingBottom: 10,
+    columnGap: 10,
   },
   editButtonContainer: {
     // flex: 1,
