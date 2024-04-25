@@ -38,7 +38,6 @@ import {
   uploadBytes,
   uploadBytesResumable,
 } from 'firebase/storage';
-import { set } from 'firebase/database';
 import { useIsFocused } from '@react-navigation/native';
 
 export default function EditProfileScreen({ navigation }) {
@@ -319,6 +318,9 @@ export default function EditProfileScreen({ navigation }) {
                   <TouchableOpacity>
                     <Text>Verified</Text>
                   </TouchableOpacity>
+                  <TouchableOpacity onPress={handleChangeLocation}>
+                    <Text style={styles.deleteAcc}>Delete Account</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>
@@ -383,6 +385,18 @@ const styles = {
     paddingHorizontal: '10%',
     fontWeight: '800',
     textAlign: 'center',
+  },
+  deleteAcc: {
+    marginTop: '4%',
+    marginLeft: '48%',
+    borderWidth: 0.6,
+    borderColor: 'black',
+    borderRadius: 15,
+    paddingVertical: '1.2%',
+    paddingHorizontal: '10%',
+    fontWeight: '800',
+    textAlign: 'center',
+    color: 'red',
   },
   changeProfileButton: {
     textAlign: 'center',
