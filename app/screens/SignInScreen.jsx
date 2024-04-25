@@ -90,8 +90,6 @@ export default function SignInScreen({ navigation }) {
     } else setLoading(false);
   };
 
-  
-
   return (
     <View style={styles.container}>
       <View>

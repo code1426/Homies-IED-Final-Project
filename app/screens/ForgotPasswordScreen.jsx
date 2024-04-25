@@ -6,14 +6,15 @@ import {
   StyleSheet,
   TouchableOpacity,
   Text,
+  Image,
 } from 'react-native';
 import HeaderComponent from '../components/HeaderComponent';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { FirebaseAuth } from '../../firebase.config';
 
-function ForgotPasswordScreen(props) {
+function ForgotPasswordScreen({ navigation }) {
   const [email, setEmail] = useState('');
-  
+
   const handleResetPassword = async () => {
     try {
       await sendPasswordResetEmail(FirebaseAuth, email);
@@ -26,6 +27,14 @@ function ForgotPasswordScreen(props) {
   return (
     <SafeAreaView>
       <HeaderComponent title={'Forgot Password'} />
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.goBack()}>
+        <Image
+          source={require('../assets/backIcon.png')}
+          style={styles.backButtonImage}
+        />
+      </TouchableOpacity>
       <View style={{ paddingHorizontal: '10%' }}>
         <TextInput
           style={styles.input}
@@ -62,6 +71,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: '10%',
     fontWeight: '800',
     textAlign: 'center',
+  },
+  backButtonImage: {
+    width: 25,
+    height: 25,
+    position: 'absolute',
+  },
+  backButton: {
+    width: 25,
+    height: 25,
+    top: -47,
+    left: 20,
   },
 });
 
