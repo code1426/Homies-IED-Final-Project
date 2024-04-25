@@ -12,7 +12,7 @@ import HeaderComponent from '../components/HeaderComponent';
 import ButtonSettings from '../components/SettingsComponents/ButtonSettings';
 
 import { FirebaseAuth } from '../../firebase.config';
-import { UserContext } from '../../userContext';
+import { UserContext } from '../../Contexts';
 import { useIsFocused } from '@react-navigation/native';
 
 function SettingsScreen({ navigation }) {
