@@ -7,15 +7,18 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import HeaderComponent from "../components/HeaderComponent";
 import PostQueueCard from "../components/PostQueueCard";
 import { FirebaseAuth, FirebaseDB } from "../../firebase.config";
 import { getDocs, collection, query, where } from "firebase/firestore";
+import { AddPropertyContext } from "../../Contexts";
 
 const ListingScreen = ({ navigation }) => {
   const [propertyList, setPropertyList] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const { addState } = useContext(AddPropertyContext)
 
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -29,7 +32,7 @@ const ListingScreen = ({ navigation }) => {
 
   useEffect(() => {
     getCurrentUserPropertyList();
-  }, []);
+  }, [addState]);
 
   const getCurrentUserPropertyList = async () => {
     try {
@@ -69,6 +72,9 @@ const ListingScreen = ({ navigation }) => {
             </Text>
           </View>
         )}
+        <View style={{height: 140, width: "auto"}}>
+
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

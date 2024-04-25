@@ -249,7 +249,7 @@ function AddPropertyScreen({ navigation }) {
 
         if (true) {
           setLoading(false);
-          setAddState((prevState) => prevState++);
+          setAddState((prevState) => prevState + 1);
           console.log("document added succesfully!");
           Alert.alert(
             "Success!",
