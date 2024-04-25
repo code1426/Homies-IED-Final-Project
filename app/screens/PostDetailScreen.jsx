@@ -185,8 +185,9 @@ const PostDetailScreen = ({ navigation }) => {
       );
       const snapshot = await getDocs(postRef);
       snapshot.forEach((doc) => {
-        //if doc.data().isApproved
-        count++;
+        if (doc.data().isDeletedByOwner === "no") {
+          count++;
+        }
       });
       setCount(count);
     } catch (err) {
