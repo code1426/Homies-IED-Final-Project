@@ -10,7 +10,7 @@ import {
   Keyboard,
   Alert,
 } from 'react-native';
-import { UserContext } from '../../userContext';
+import { UserContext } from '../../Contexts';
 import { FirebaseAuth, FirebaseDB } from '../../firebase.config';
 import {
   RecaptchaVerifier,
