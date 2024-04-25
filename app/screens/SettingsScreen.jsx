@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
   Text,
   SafeAreaView,
@@ -12,14 +12,22 @@ import HeaderComponent from '../components/HeaderComponent';
 import ButtonSettings from '../components/SettingsComponents/ButtonSettings';
 
 import { FirebaseAuth } from '../../firebase.config';
+import { UserContext } from '../../userContext';
+import { useIsFocused } from '@react-navigation/native';
 
 function SettingsScreen({ navigation }) {
-  const user = FirebaseAuth.currentUser;
+  const currentUser = useContext(UserContext);
+  const userAuth = FirebaseAuth.currentUser;
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    userAuth;
+  }, [isFocused]);
 
   // const userName = user?.displayName;
   // const email = user?.email;
-  const contactNumber = '09123456789'; // should be changed to fetching
-  const location = 'somewhere'; // should be changed to fetching
+  // const contactNumber = '09123456789'; // should be changed to fetching
+  // const location = 'somewhere'; // should be changed to fetching
   const gCashSync = 'synced'; // should be changed to fetching
   const businessPermit = 'verified'; // should be changed to fetching
 
@@ -28,24 +36,22 @@ function SettingsScreen({ navigation }) {
       <HeaderComponent title='Settings' />
       <View style={styles.container}>
         <View style={styles.profileContainer}>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('Edit Profile');
-            }}>
-            <Image
-              style={styles.image}
-              source={require('../assets/settingsIcons/noProfilePlaceholder.png')}
-            />
-          </TouchableOpacity>
+          <Image
+            style={styles.image}
+            source={{ uri: userAuth.photoURL }}
+          />
           <View>
-            <Text>{user.displayName}</Text>
+            <Text>{currentUser.displayName}</Text>
             <View>
-              <Text>{user.email}</Text>
-              <Text>{contactNumber}</Text>
-              <Text>{location}</Text>
+              <Text>{currentUser.email}</Text>
+              <Text>{currentUser.location}</Text>
               <Text>{gCashSync}</Text>
               <Text>{businessPermit}</Text>
-              <TouchableOpacity style={styles.editButton}>
+              <TouchableOpacity
+                style={styles.editButton}
+                onPress={() => {
+                  navigation.navigate('Edit Profile');
+                }}>
                 <Text style={{ textAlign: 'center' }}>Edit Profile</Text>
               </TouchableOpacity>
             </View>

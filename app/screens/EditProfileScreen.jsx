@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,9 +9,15 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Alert,
+  ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import { UserContext } from '../../Contexts';
-import { FirebaseAuth, FirebaseDB } from '../../firebase.config';
+import {
+  FirebaseAuth,
+  FirebaseDB,
+  firebaseStorage,
+} from '../../firebase.config';
 import {
   RecaptchaVerifier,
   sendEmailVerification,
@@ -23,10 +29,35 @@ import {
 } from 'firebase/auth';
 
 import HeaderComponent from '../components/HeaderComponent';
-import { updateDoc, doc } from 'firebase/firestore';
+import { updateDoc, doc, getDoc } from 'firebase/firestore';
+
+import * as ImagePicker from 'expo-image-picker';
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  uploadBytesResumable,
+} from 'firebase/storage';
+import { set } from 'firebase/database';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function EditProfileScreen({ navigation }) {
   const currentUser = useContext(UserContext);
+  const [loading, setLoading] = useState(false);
+
+  //  refresh
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setCount((count) => count + 1);
+    }, 5000);
+  });
+  // const timer = setTimeout(setRefresh(), 5000);
+
+  useEffect(() => {
+    userAuth;
+  }, [count, useIsFocused()]);
 
   const userAuth = FirebaseAuth.currentUser;
   // DisplayName
@@ -47,12 +78,11 @@ export default function EditProfileScreen({ navigation }) {
   const validatePassword = () => {
     let passwordErrors = {};
     if (passwords.currentPassword === '')
-      passwordErrors.currentPassword = 'Wrong Password';
+      passwordErrors.currentPassword = 'Please type in your Current Password.';
     // TypeError: Cannot read property 'length' of undefined
-    // else if (passwords.currentPassword.length <= 8) {
-    //   passwordErrors.newPassword = 'New Password is Invalid';
-    //   console.log('Please enter a valid password');
-    // }
+    if (passwords.newPassword.length <= 8) {
+      passwordErrors.newPassword = 'New Password is Invalid.';
+    }
     setPasswordErrors(passwordErrors);
     return Object.keys(passwordErrors).length === 0;
   };
@@ -63,18 +93,27 @@ export default function EditProfileScreen({ navigation }) {
         userAuth.email,
         passwords.currentPassword
       );
-      await reauthenticateWithCredential(userAuth, credential);
-      updatePassword(userAuth, passwords.newPassword);
+      await reauthenticateWithCredential(userAuth, credential).catch((error) =>
+        setPasswordErrors({
+          ...passwordErrors,
+          currentPassword: 'Wrong Password',
+        })
+      );
+      await updatePassword(userAuth, passwords.newPassword).catch((error) =>
+        Alert.alert(error.message)
+      );
     } catch (error) {
       console.log('Change Password', error.message);
-      Alert.alert(error.message);
+      setPasswordErrors({
+        ...passwordErrors,
+        currentPassword: 'Wrong Password',
+      });
     }
   };
 
   const handleChangePassword = async () => {
     if (validatePassword()) {
       await handleInputPassword();
-    } else {
       resetPasswordValidation();
     }
   };
@@ -84,121 +123,216 @@ export default function EditProfileScreen({ navigation }) {
     onChangePassword({ currentPassword: '', newPassword: '' });
   };
 
+  // Location
+  const firestoreLocation = currentUser.location;
+
+  const [location, onChangeLocation] = useState(firestoreLocation);
+
+  const handleChangeLocation = async () => {
+    await updateDoc(doc(FirebaseDB, 'Users', currentUser.uid), {
+      location: location,
+    });
+  };
+
+  // Profile Picture
+
+  const [profile, setProfilePic] = useState(userAuth.photoURL);
+
+  const pickProfilePic = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [5, 4],
+        quality: 1,
+      });
+      if (!result.canceled) {
+        setProfilePic(result.assets[0].uri);
+        console.log('Image Picker');
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const handleChangeProfile = async () => {
+    setLoading(true);
+    try {
+      const profilePicRes = await fetch(profile);
+      console.log('Fetched');
+
+      const profileBlob = await profilePicRes.blob();
+      console.log('Blobbed');
+
+      const profilePicRef = ref(
+        firebaseStorage,
+        'Users/photoURL/' + Date.now() + '.jpg'
+      );
+
+      await uploadBytesResumable(profilePicRef, profileBlob);
+      console.log('Uploaded');
+
+      const profilePicURL = await getDownloadURL(profilePicRef);
+      console.log('Downloaded');
+
+      await updateProfile(userAuth, { photoURL: profilePicURL });
+      console.log('Changed Successfully');
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <SafeAreaView style={styles.container}>
-        <HeaderComponent title='Profile Details' />
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.navigate('Settings')}>
-          <Image
-            source={require('../assets/backIcon.png')}
-            style={styles.backButtonImage}
-          />
-        </TouchableOpacity>
-        <View style={styles.formContainer}>
-          <Text style={styles.text}>Email Adress</Text>
-          <Text style={styles.emailAdress}>{userAuth.email}</Text>
-          <Text style={styles.text}>Name</Text>
-          <TextInput
-            style={styles.input}
-            placeholder={firstName}
-            onChangeText={onChangeFirstName}
-            placeholderTextColor='#6b7280'
-            autoCapitalize='words'
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder={lastName}
-            onChangeText={onChangeLastName}
-            placeholderTextColor='#6b7280'
-            autoCapitalize='words'
-          />
+    <ScrollView>
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <SafeAreaView style={styles.container}>
+          <HeaderComponent title='Profile Details' />
           <TouchableOpacity
-            onPress={async () => [
-              await updateProfile(userAuth, {
-                displayName: `${firstName} ${lastName}`,
-              }),
-              // checker
-              console.log(userAuth),
-              console.log(userAuth.displayName),
-            ]}>
-            <Text style={styles.edit}>Edit Name</Text>
+            style={styles.backButton}
+            onPress={() => navigation.navigate('Settings')}>
+            <Image
+              source={require('../assets/backIcon.png')}
+              style={styles.backButtonImage}
+            />
           </TouchableOpacity>
-          <Text style={styles.text}>Current Password</Text>
-          <TextInput
-            style={styles.input}
-            placeholder={passwords.currentPassword}
-            onChangeText={(currentPassword) => [
-              onChangePassword({ ...passwords, currentPassword }),
-              console.log(passwords),
-            ]}
-            placeholderTextColor='#6b7280'
-          />
-          {!passwordErrors.currentPassword || (
-            <Text style={[styles.errorText, { marginTop: '3%' }]}>
-              {passwordErrors.currentPassword}
-            </Text>
-          )}
-          <Text style={[styles.text, { marginTop: '3%' }]}>New Password</Text>
-          <TextInput
-            style={styles.input}
-            placeholder={passwords.newPassword}
-            onChangeText={(newPassword) =>
-              onChangePassword({ ...passwords, newPassword })
-            }
-            placeholderTextColor='#6b7280'
-          />
-          {!passwordErrors.newPassword || (
-            <Text style={styles.errorText}>{passwordErrors.newPassword}</Text>
-          )}
-          <TouchableOpacity onPress={handleChangePassword}>
-            <Text style={styles.edit}>Change Password</Text>
-          </TouchableOpacity>
-          <Text style={styles.text}></Text>
-
-          <Text style={styles.text}>Location</Text>
-          <TextInput
-            style={styles.input}
-            placeholder={
-              currentUser.location === null
-                ? 'Enter Your Location'
-                : currentUser.location
-            }
-            placeholderTextColor='#6b7280'
-          />
-          <TouchableOpacity>
-            <Text style={styles.edit}>Edit Location</Text>
-          </TouchableOpacity>
-
-          <View>
-            <View style={styles.GcashAndBusinessPermit}>
-              <Text style={styles.text}>Gcash Synced</Text>
-              <View>
-                <TouchableOpacity style={styles.ChangeAccount}>
-                  <Text>Change Account</Text>
-                </TouchableOpacity>
-              </View>
+          <View style={styles.formContainer}>
+            <Text style={styles.text}>Profile Picture</Text>
+            <View
+              style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+              <TouchableOpacity
+                onPress={async () => {
+                  {
+                    await pickProfilePic(), console.log(profile);
+                  }
+                }}>
+                <Image
+                  style={[styles.image, { flex: 1 }]}
+                  source={
+                    profile === undefined
+                      ? { uri: userAuth.photoURL }
+                      : { uri: profile }
+                  }
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.buttonProfile}
+                onPress={handleChangeProfile}>
+                {loading ? (
+                  <ActivityIndicator
+                    size='small'
+                    style={{ alignSelf: 'center' }}
+                  />
+                ) : (
+                  <Text style={styles.changeProfileButton}>Edit Profile</Text>
+                )}
+              </TouchableOpacity>
             </View>
-            <View style={styles.GcashAndBusinessPermit}>
-              <Text style={styles.text}>Business Permit Verified</Text>
-              <View style={styles.Verified}>
-                <TouchableOpacity>
-                  <Text>Verified</Text>
-                </TouchableOpacity>
+            <Text style={styles.text}>Email Adress</Text>
+            <Text style={styles.emailAdress}>{userAuth.email}</Text>
+            <Text style={styles.text}>Name</Text>
+            <TextInput
+              style={styles.input}
+              placeholder={userFirstName}
+              onChangeText={onChangeFirstName}
+              placeholderTextColor='#6b7280'
+              autoCapitalize='words'
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder={userLastName}
+              onChangeText={onChangeLastName}
+              placeholderTextColor='#6b7280'
+              autoCapitalize='words'
+            />
+            <TouchableOpacity
+              onPress={async () => [
+                await updateProfile(userAuth, {
+                  displayName: `${firstName} ${lastName}`,
+                }),
+                // checker
+                console.log(userAuth),
+                console.log(userAuth.displayName),
+              ]}>
+              <Text style={styles.edit}>Edit Name</Text>
+            </TouchableOpacity>
+            <Text style={styles.text}>Current Password</Text>
+            <TextInput
+              style={styles.input}
+              placeholder={''}
+              onChangeText={(currentPassword) => [
+                onChangePassword({ ...passwords, currentPassword }),
+                console.log(passwords),
+              ]}
+              secureTextEntry
+              placeholderTextColor='#6b7280'
+            />
+            {passwordErrors.currentPassword && (
+              <Text style={[styles.errorText, { marginTop: '3%' }]}>
+                {passwordErrors.currentPassword}
+              </Text>
+            )}
+            <Text style={[styles.text, { marginTop: '3%' }]}>New Password</Text>
+            <TextInput
+              style={styles.input}
+              placeholder={''}
+              onChangeText={(newPassword) =>
+                onChangePassword({ ...passwords, newPassword })
+              }
+              secureTextEntry
+              placeholderTextColor='#6b7280'
+            />
+            {passwordErrors.newPassword && (
+              <Text style={[styles.errorText, { marginTop: '3%' }]}>
+                {passwordErrors.newPassword}
+              </Text>
+            )}
+            <TouchableOpacity onPress={handleChangePassword}>
+              <Text style={styles.edit}>Change Password</Text>
+            </TouchableOpacity>
+            <Text style={styles.text}></Text>
+
+            <Text style={styles.text}>Location</Text>
+            <TextInput
+              style={styles.input}
+              placeholder={location === null ? 'Enter Your Location' : location}
+              placeholderTextColor='#6b7280'
+              onChangeText={onChangeLocation}
+            />
+            <TouchableOpacity onPress={handleChangeLocation}>
+              <Text style={styles.edit}>Edit Location</Text>
+            </TouchableOpacity>
+
+            <View>
+              <View style={styles.GcashAndBusinessPermit}>
+                <Text style={styles.text}>Gcash Synced</Text>
+                <View>
+                  <TouchableOpacity style={styles.ChangeAccount}>
+                    <Text>Change Account</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View style={styles.GcashAndBusinessPermit}>
+                <Text style={styles.text}>Business Permit Verified</Text>
+                <View style={styles.Verified}>
+                  <TouchableOpacity>
+                    <Text>Verified</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </View>
-        </View>
-      </SafeAreaView>
-    </TouchableWithoutFeedback>
+        </SafeAreaView>
+      </TouchableWithoutFeedback>
+    </ScrollView>
   );
 }
 
 const styles = {
   container: {
     flex: 1,
+    marginBottom: 100,
     backgroundColor: 'ECEFF6',
   },
   backButton: {
@@ -215,7 +349,7 @@ const styles = {
   input: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#ABAEB6',
+    color: 'black',
     borderWidth: 1.2,
     borderColor: 'black',
     borderRadius: 10,
@@ -250,6 +384,31 @@ const styles = {
     fontWeight: '800',
     textAlign: 'center',
   },
+  changeProfileButton: {
+    textAlign: 'center',
+    alignSelf: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    fontWeight: '800',
+  },
+  buttonProfile: {
+    borderColor: 'black',
+    borderRadius: 15,
+    borderWidth: 0.6,
+    marginLeft: '18%',
+    height: 33,
+    width: 130,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  image: {
+    marginTop: '5%',
+    marginBottom: '5%',
+    width: 135,
+    height: 135,
+    borderRadius: 67.5,
+    resizeMode: 'cover',
+  },
   LocationTexts: {
     marginTop: '4%',
     borderWidth: 1,
@@ -283,7 +442,6 @@ const styles = {
     justifyContent: 'center',
     fontWeight: '100',
     borderColor: '#85BCDC',
-    textAlign: 'center',
     marginRight: '48%',
   },
   Verified: {
