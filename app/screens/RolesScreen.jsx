@@ -48,16 +48,16 @@ const RolesScreen = ({ navigation }) => {
               "Changing will log you out of your account.",
               [
                 {
-                  text: "YES",
-                  onPress: () => {
-                    updateRole();
-                    FirebaseAuth.signOut();
-                  },
-                },
-                {
                   text: "CANCEL",
                   onPress: () => {
                     console.log("cancelled");
+                  },
+                },
+                {
+                  text: "Yes",
+                  onPress: () => {
+                    updateRole();
+                    FirebaseAuth.signOut();
                   },
                 },
               ]

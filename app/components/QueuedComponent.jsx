@@ -39,6 +39,17 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
     }
   };
 
+  const confirmApprove = () => {
+    Alert.alert(
+      "Approve Application",
+      "Are you sure you want to approve this application?",
+      [
+        { text: "Cancel", onPress: () => console.log("Cancel") },
+        { text: "Yes", onPress: () => handleApprove() },
+      ]
+    );
+  };
+
   const handleApprove = async () => {
     try {
       setIsApproved(true);
@@ -47,19 +58,10 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
         `OwnerPosts/${postData.postID}/Applicants`,
         applicant.uid
       );
-      const applicantRef = doc(
-        FirebaseDB,
-        `Users/${FirebaseAuth.currentUser.uid}/Applicants`,
-        applicant.uid
-      );
       await updateDoc(postRef, {
         isApproved: true,
       });
       console.log("updated post Applicant");
-      await updateDoc(applicantRef, {
-        isApproved: true,
-      });
-      console.log("updated user Applicant");
     } catch (err) {
       console.log(err);
       setIsApproved(false);
@@ -67,8 +69,15 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
   };
 
   const confirmDelete = () => {
-    Alert.alert("Remove Applicant", "Are you sure you want to remove this applicant?", [{text: "Yes", onPress:() => handleDelete()},{text: "Cancel", onPress: () => console.log("Cancel")}])
-  }
+    Alert.alert(
+      "Remove Applicant",
+      "Are you sure you want to remove this applicant?",
+      [
+        { text: "Cancel", onPress: () => console.log("Cancel") },
+        { text: "Yes", onPress: () => handleDelete() },
+      ]
+    );
+  };
 
   const handleDelete = async () => {
     try {
@@ -85,11 +94,11 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
       await updateDoc(postRef, {
         isDeletedByOwner: "yes",
       });
-      updateList()
+      updateList();
       await updateDoc(applicantRef, {
         isDeletedByOwner: "yes",
       });
-      console.log("Removed Applicant")
+      console.log("Removed Applicant");
     } catch (err) {
       console.log(err);
     }
@@ -110,7 +119,7 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
       <View style={styles.buttonsContainer}>
         {!isApproved ? (
           <>
-            <TouchableOpacity onPress={handleApprove} style={styles.button}>
+            <TouchableOpacity onPress={confirmApprove} style={styles.button}>
               <Text style={styles.buttonLabel}>Approve</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -204,6 +213,8 @@ const styles = StyleSheet.create({
   },
   messageButton: {
     flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: "#BBE0F5",
     paddingHorizontal: 16,
     paddingVertical: 4,

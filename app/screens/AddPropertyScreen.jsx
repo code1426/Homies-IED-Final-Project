@@ -10,23 +10,10 @@ import {
   ActivityIndicator,
 } from "react-native";
 
-import { useState, useEffect, useContext } from "react";
-
+import { useState, useContext } from "react";
 import { FirebaseDB, FirebaseAuth } from "../../firebase.config";
-import {
-  addDoc,
-  collection,
-  getDocs,
-  serverTimestamp,
-  setDoc,
-  doc,
-} from "firebase/firestore";
-import {
-  getDownloadURL,
-  ref,
-  uploadBytes,
-  uploadBytesResumable,
-} from "firebase/storage";
+import { serverTimestamp, setDoc, doc } from "firebase/firestore";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 import { Formik } from "formik";
 import { SafeAreaView } from "react-native";
@@ -41,8 +28,6 @@ import { firebaseStorage } from "../../firebase.config";
 import { AddPropertyContext } from "../../Contexts";
 
 function AddPropertyScreen({ navigation }) {
-  const [propertyList, setPropertyList] = useState([]);
-
   const [thumbnail, setThumbnail] = useState(null);
   const [images, setImages] = useState({
     image1: null,
@@ -631,7 +616,7 @@ function AddPropertyScreen({ navigation }) {
                     onChangeText={handleChange("description")}
                     multiline={true}
                     numberOfLines={5}
-                    maxLength={300}
+                    maxLength={600}
                     autoCapitalize="sentences"
                   />
                 </View>
@@ -693,6 +678,7 @@ function AddPropertyScreen({ navigation }) {
                       valueField="value"
                       placeholder="Select"
                       value={values?.features}
+                      // value={["Room"]}
                       onChange={(item) => {
                         setFieldValue("features", item);
                       }}
@@ -814,7 +800,7 @@ const styles = StyleSheet.create({
   descriptionInput: {
     fontSize: 18,
     minHeight: 150,
-    maxHeight: 300,
+    maxHeight: 600,
     width: "100%",
     backgroundColor: "#DBDBDB",
     borderWidth: 0,

@@ -5,6 +5,8 @@ import {
   Image,
   FlatList,
   TouchableOpacity,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
 import { useRoute } from "@react-navigation/native";
@@ -18,7 +20,12 @@ import {
   collection,
 } from "firebase/firestore";
 import { FirebaseAuth, FirebaseDB } from "../../firebase.config";
-import { UserContext, PinContext, AppliedContext } from "../../Contexts";
+import {
+  UserContext,
+  PinContext,
+  AppliedContext,
+  AddPropertyContext,
+} from "../../Contexts";
 
 const PostDetailScreen = ({ navigation }) => {
   const currentUser = useContext(UserContext);
@@ -31,7 +38,8 @@ const PostDetailScreen = ({ navigation }) => {
   const [isApproved, setIsApproved] = useState(false);
 
   const { setPinState } = useContext(PinContext);
-  const { setAppliedState } = useContext(AppliedContext)
+  const { setAppliedState } = useContext(AppliedContext);
+  const { setAddState } = useContext(AddPropertyContext);
 
   useEffect(() => {
     isPinned();
@@ -112,16 +120,11 @@ const PostDetailScreen = ({ navigation }) => {
 
   const setAppliedProperties = async () => {
     try {
-      setAppliedState((prevstate) =>!prevstate);
+      setAppliedState((prevstate) => !prevstate);
       const currentUserRef = doc(
         FirebaseDB,
         `Users/${currentUser.uid}/Applied`,
         data.postID
-      );
-      const postOwnerRef = doc(
-        FirebaseDB,
-        `Users/${data.uid}/Applicants`,
-        currentUser.uid
       );
       const postRef = doc(
         FirebaseDB,
@@ -132,11 +135,6 @@ const PostDetailScreen = ({ navigation }) => {
       if (!isPropertyApplied) {
         setIsPropertyApplied(true);
         await setDoc(currentUserRef, data);
-        await setDoc(postOwnerRef, {
-          ...currentUser,
-          isApproved: false,
-          isDeletedByOwner: "no",
-        });
         await setDoc(postRef, {
           ...currentUser,
           isApproved: false,
@@ -145,7 +143,6 @@ const PostDetailScreen = ({ navigation }) => {
       } else {
         setIsPropertyApplied(false);
         await deleteDoc(currentUserRef);
-        await deleteDoc(postOwnerRef);
         await deleteDoc(postRef);
       }
     } catch (err) {
@@ -192,6 +189,56 @@ const PostDetailScreen = ({ navigation }) => {
       setCount(count);
     } catch (err) {
       console.log(err.message);
+    }
+  };
+
+  const [isdeleteLoading, setIsDeleteLoading] = useState(false);
+
+  const confirmDelete = () => {
+    Alert.alert("Delete Post", "Are you sure you want to remove this post?", [
+      { text: "Cancel", onPress: () => console.log("Cancel") },
+      { text: "Yes", onPress: () => handleDeleteProperty() },
+    ]);
+  };
+
+  const handleDeleteProperty = async () => {
+    try {
+      setIsDeleteLoading(true);
+      const postApplicantRef = collection(
+        FirebaseDB,
+        `OwnerPosts/${data.postID}/Applicants`
+      );
+      const snapshot = await getDocs(postApplicantRef);
+      snapshot.forEach(async (document) => {
+        try {
+          const user = document.data();
+          console.log(`User ${user.uid}`);
+          const userAppliedRef = doc(
+            FirebaseDB,
+            `Users/${user.uid}/Applied`,
+            data.postID
+          );
+          const userPinnedRef = doc(
+            FirebaseDB,
+            `Users/${user.uid}/Pinned`,
+            data.postID
+          );
+          await deleteDoc(userAppliedRef);
+          await deleteDoc(userPinnedRef);
+        } catch (e) {
+          setIsDeleteLoading(false);
+          console.log("doc.map Error", e.message);
+        }
+      });
+      const postRef = doc(FirebaseDB, "OwnerPosts", data.postID);
+      await deleteDoc(postRef);
+      console.log("post deleted successfully");
+      setIsDeleteLoading(false);
+      setAddState((prevState) => prevState + 1);
+      navigation.goBack();
+    } catch (err) {
+      console.log(err.message);
+      setIsDeleteLoading(false);
     }
   };
 
@@ -283,7 +330,7 @@ const PostDetailScreen = ({ navigation }) => {
         )}
       />
 
-      {currentUser?.role === "Owner" || (
+      {currentUser?.role === "Owner" || currentUser.uid === data.uid || (
         <View style={styles.footerContainer}>
           <TouchableOpacity
             onPress={() => setPinnedProperties()}
@@ -339,9 +386,24 @@ const PostDetailScreen = ({ navigation }) => {
         </View>
       )}
       {currentUser.role === "Owner" && data.uid === currentUser.uid && (
-        <View>
+        <View style={styles.ownerFooterContainer}>
           <TouchableOpacity
-            style={styles.editButtonContainer}
+            style={[styles.editButtonContainer, { backgroundColor: "red" }]}
+            onPress={() => {
+              confirmDelete();
+            }}
+          >
+            {isdeleteLoading ? (
+              <ActivityIndicator size="small" color="white" />
+            ) : (
+              <Text style={{ color: "white", fontSize: 20, fontWeight: "700" }}>
+                DELETE
+              </Text>
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.editButtonContainer, { flex: 2 }]}
             onPress={() => {}}
           >
             <Text style={{ color: "white", fontSize: 20, fontWeight: "700" }}>
@@ -442,6 +504,7 @@ const styles = StyleSheet.create({
     padding: 5,
     top: 10,
     left: 12,
+    marginBottom: 100,
     // paddingHorizontal: 10
   },
   applicant: {
@@ -481,13 +544,18 @@ const styles = StyleSheet.create({
     columnGap: 10,
   },
   editButtonContainer: {
-    // flex: 1,
-    // flexDirection: "column",
+    flex: 1,
     backgroundColor: "#4285F4",
     alignItems: "center",
     justifyContent: "center",
     paddingBottom: 10,
+  },
+  ownerFooterContainer: {
+    flexDirection: "row",
+    position: "absolute",
     bottom: 0,
     height: 78,
+    left: 0,
+    right: 0,
   },
 });
