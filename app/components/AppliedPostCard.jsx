@@ -13,7 +13,7 @@ import PostCard from "./PostCard";
 import { doc, getDoc, deleteDoc } from "firebase/firestore";
 import { FirebaseAuth, FirebaseDB } from "../../firebase.config";
 
-import { UserContext } from "../../userContext";
+import { UserContext } from "../../Contexts";
 
 const AppliedPostCard = ({ data, updateList }) => {
   const currentUser = useContext(UserContext);

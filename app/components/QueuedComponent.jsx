@@ -6,6 +6,7 @@ import {
   StyleSheet,
   SafeAreaView,
   Image,
+  Alert,
 } from "react-native";
 
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
@@ -65,6 +66,10 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
     }
   };
 
+  const confirmDelete = () => {
+    Alert.alert("Remove Applicant", "Are you sure you want to remove this applicant?", [{text: "Yes", onPress:() => handleDelete()},{text: "Cancel", onPress: () => console.log("Cancel")}])
+  }
+
   const handleDelete = async () => {
     try {
       const postRef = doc(
@@ -109,7 +114,7 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
               <Text style={styles.buttonLabel}>Approve</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={handleDelete}
+              onPress={confirmDelete}
               style={styles.cancelContainer}
             >
               <Image

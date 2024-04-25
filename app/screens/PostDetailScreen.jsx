@@ -9,9 +9,16 @@ import {
 import React, { useEffect, useState, useContext } from "react";
 import { useRoute } from "@react-navigation/native";
 import { ImageSlider } from "react-native-image-slider-aws-s3";
-import { doc, getDoc, setDoc, deleteDoc, getDocs, collection } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  deleteDoc,
+  getDocs,
+  collection,
+} from "firebase/firestore";
 import { FirebaseAuth, FirebaseDB } from "../../firebase.config";
-import { UserContext } from "../../userContext";
+import { UserContext, PinContext, AppliedContext } from "../../Contexts";
 
 const PostDetailScreen = ({ navigation }) => {
   const currentUser = useContext(UserContext);
@@ -22,6 +29,9 @@ const PostDetailScreen = ({ navigation }) => {
   const [isPropertyPinned, setIsPropertyPinned] = useState(false);
   const [isPropertyApplied, setIsPropertyApplied] = useState(false);
   const [isApproved, setIsApproved] = useState(false);
+
+  const { setPinState } = useContext(PinContext);
+  const { setAppliedState } = useContext(AppliedContext)
 
   useEffect(() => {
     isPinned();
@@ -63,6 +73,7 @@ const PostDetailScreen = ({ navigation }) => {
 
   const setPinnedProperties = async () => {
     try {
+      setPinState((prevstate) => !prevstate);
       const currentUserRef = doc(
         FirebaseDB,
         `Users/${currentUser.uid}/Pinned`,
@@ -101,6 +112,7 @@ const PostDetailScreen = ({ navigation }) => {
 
   const setAppliedProperties = async () => {
     try {
+      setAppliedState((prevstate) =>!prevstate);
       const currentUserRef = doc(
         FirebaseDB,
         `Users/${currentUser.uid}/Applied`,
@@ -173,7 +185,7 @@ const PostDetailScreen = ({ navigation }) => {
       );
       const snapshot = await getDocs(postRef);
       snapshot.forEach((doc) => {
-        //if doc.data().isApproved 
+        //if doc.data().isApproved
         count++;
       });
       setCount(count);

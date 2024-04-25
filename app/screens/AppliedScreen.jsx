@@ -13,13 +13,14 @@ import { getDocs, collection } from "firebase/firestore";
 import HeaderComponent from "../components/HeaderComponent";
 import PostCard from "../components/PostCard";
 import { FirebaseDB } from "../../firebase.config";
-import { UserContext } from "../../userContext";
+import { UserContext, AppliedContext } from "../../Contexts";
 
 import AppliedPostCard from "../components/AppliedPostCard";
 
 function AppliedScreen(props) {
   const [appliedPropertyList, setAppliedPropertyList] = useState([]);
   const currentUser = useContext(UserContext);
+  const { appliedState } = useContext(AppliedContext)
   const [loading, setLoading] = useState(false);
 
   const [refreshing, setRefreshing] = React.useState(false);
@@ -34,7 +35,7 @@ function AppliedScreen(props) {
 
   useEffect(() => {
     getAppliedPropertyList();
-  }, []);
+  }, [appliedState]);
 
   const getAppliedPropertyList = async () => {
     try {
@@ -78,7 +79,8 @@ function AppliedScreen(props) {
               <Text
                 style={{ fontSize: 14, color: "gray", textAlign: "center" }}
               >
-                You haven't applied to any listings yet. Start browsing and find your perfect place!
+                You haven't applied to any listings yet. Start browsing and find
+                your perfect place!
               </Text>
             </View>
           )}

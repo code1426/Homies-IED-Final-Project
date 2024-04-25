@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import { FirebaseDB, FirebaseAuth } from "../../firebase.config";
 import {
@@ -21,7 +21,12 @@ import {
   setDoc,
   doc,
 } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytes, uploadBytesResumable } from "firebase/storage";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  uploadBytesResumable,
+} from "firebase/storage";
 
 import { Formik } from "formik";
 import { SafeAreaView } from "react-native";
@@ -33,7 +38,7 @@ import { Dropdown, MultiSelect } from "react-native-element-dropdown";
 import HeaderComponent from "../components/HeaderComponent";
 import { firebaseStorage } from "../../firebase.config";
 
-// const storage = getStorage(firebaseApp);
+import { AddPropertyContext } from "../../Contexts";
 
 function AddPropertyScreen({ navigation }) {
   const [propertyList, setPropertyList] = useState([]);
@@ -44,6 +49,8 @@ function AddPropertyScreen({ navigation }) {
     image2: null,
     image3: null,
   });
+
+  const { setAddState } = useContext(AddPropertyContext);
 
   const [titleStyle, setTitleStyle] = useState({ ...styles.titleInput });
   const [descStyle, setDescStyle] = useState({ ...styles.descriptionInput });
@@ -68,20 +75,6 @@ function AddPropertyScreen({ navigation }) {
     { label: "Boarding House", value: "Boarding House" },
     { label: "Dormitory", value: "Dorm" },
   ];
-
-  // useEffect(() => {
-  //   getPropertyList()
-  //   }, [])
-
-  // used to get the property list
-  const getPropertyList = async () => {
-    const querySnapshot = await getDocs(collection(FirebaseDB, "OwnerPosts"));
-
-    querySnapshot.forEach((doc) => {
-      console.log(doc.id, " => ", doc.data());
-      setPropertyList([...propertyList, doc.data()]);
-    });
-  };
 
   const pickThumbnail = async () => {
     try {
@@ -227,39 +220,36 @@ function AddPropertyScreen({ navigation }) {
         "ownerPosts/image3/" + Date.now() + ".jpg"
       );
 
-      await uploadBytes(storageRef, thumbnailBlob);
-      // console.log("Uploaded THUMBNAIL to storage");
+      await uploadBytesResumable(storageRef, thumbnailBlob);
       const thumbnailUrl = await getDownloadURL(storageRef);
       values.thumbnail = thumbnailUrl;
       console.log("getting THUMBNAIL URL done: ", thumbnailUrl);
 
       await uploadBytesResumable(image1Ref, image1Blob);
-      // console.log("Uploaded IMAGE-1 to storage.");
       const image1Url = await getDownloadURL(image1Ref);
       values.images.image1 = image1Url;
       console.log("getting IMAGE-1 URL finished: ", image1Url);
 
       await uploadBytesResumable(image2Ref, image2Blob);
-      // console.log("Uploaded IMAGE-2 to storage.");
       const image2Url = await getDownloadURL(image2Ref);
       values.images.image2 = image2Url;
       console.log("Uploaded IMAGE-2 to storage:", image2Url);
 
       await uploadBytesResumable(image3Ref, image3Blob);
-      // console.log("Uploaded IMAGE-3 to storage.");
       const image3Url = await getDownloadURL(image3Ref);
       values.images.image3 = image3Url;
       console.log("getting IMAGE-3 URL finished: ", image3Url);
 
       if (isAllInputFilled) {
         // add the data to the firestore
-        const docRef = doc(FirebaseDB, "OwnerPosts", values.postID)
+        const docRef = doc(FirebaseDB, "OwnerPosts", values.postID);
         console.log("setting all data to document...");
-        await setDoc(docRef, values)
+        await setDoc(docRef, values);
         console.log("SUCCESS");
 
         if (true) {
           setLoading(false);
+          setAddState((prevState) => prevState++);
           console.log("document added succesfully!");
           Alert.alert(
             "Success!",
@@ -449,7 +439,7 @@ function AddPropertyScreen({ navigation }) {
     uid: FirebaseAuth.currentUser.uid,
     email: FirebaseAuth.currentUser.email,
     userName: FirebaseAuth.currentUser.displayName,
-    postID: Math.random().toString(16).slice(2)
+    postID: Math.random().toString(16).slice(2),
   };
 
   const data = [

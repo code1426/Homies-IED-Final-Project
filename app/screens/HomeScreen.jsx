@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Text,
   SafeAreaView,
@@ -17,16 +17,20 @@ import CategoryButton from "../components/CategoryButton.jsx";
 import { FirebaseDB } from "../../firebase.config";
 import { collection, getDocs, query, where } from "firebase/firestore";
 
+import { AddPropertyContext } from "../../Contexts.js";
+
 function HomeScreen({ navigation }) {
   const [categoryName, setCategoryName] = useState("All");
   const [propertyList, setPropertyList] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const { addState } = useContext(AddPropertyContext)
+
   const propertyTypes = ["All", "Apartment", "Boarding House", "Dorm"];
 
   useEffect(() => {
     getAllPropertyList();
-  }, []);
+  }, [addState]);
 
   const getAllPropertyList = async () => {
     try {

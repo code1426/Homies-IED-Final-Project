@@ -6,36 +6,37 @@ import {
   TouchableOpacity,
   Image,
   Alert,
-} from 'react-native';
-import React, { useEffect, useState, useContext } from 'react';
-import HeaderComponent from '../components/HeaderComponent';
-import { doc, updateDoc, getDoc } from 'firebase/firestore';
-import { FirebaseAuth, FirebaseDB } from '../../firebase.config';
-import { UserContext } from '../../userContext';
+} from "react-native";
+import React, { useEffect, useState, useContext } from "react";
+import HeaderComponent from "../components/HeaderComponent";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { FirebaseAuth, FirebaseDB } from "../../firebase.config";
+import { UserContext } from "../../Contexts";
 
 const RolesScreen = ({ navigation }) => {
-  const currentUser = useContext(UserContext)
+  const currentUser = useContext(UserContext);
 
   async function updatingRole(roleChange) {
-    await updateDoc(doc(FirebaseDB, 'Users', currentUser.uid), {
+    await updateDoc(doc(FirebaseDB, "Users", currentUser.uid), {
       role: roleChange,
     });
   }
 
   async function updateRole() {
-    let role = currentUser.role === 'Owner' ? 'Renter' : 'Owner';
+    let role = currentUser.role === "Owner" ? "Renter" : "Owner";
     console.log(role);
     updatingRole(role);
   }
 
   return (
     <SafeAreaView>
-      <HeaderComponent title='Roles' />
+      <HeaderComponent title="Roles" />
       <TouchableOpacity
         style={styles.backButton}
-        onPress={() => navigation.navigate("Settings")}>
+        onPress={() => navigation.navigate("Settings")}
+      >
         <Image
-          source={require('../assets/backIcon.png')}
+          source={require("../assets/backIcon.png")}
           style={styles.backButtonImage}
         />
       </TouchableOpacity>
@@ -43,34 +44,35 @@ const RolesScreen = ({ navigation }) => {
         <TouchableOpacity
           onPress={async () => [
             Alert.alert(
-              'Do you want to Change Roles?',
-              'Changing will log you out of your account.',
+              "Do you want to Change Roles?",
+              "Changing will log you out of your account.",
               [
                 {
-                  text: 'YES',
+                  text: "YES",
                   onPress: () => {
                     updateRole();
-                    FirebaseAuth.signOut()
+                    FirebaseAuth.signOut();
                   },
                 },
                 {
-                  text: 'CANCEL',
+                  text: "CANCEL",
                   onPress: () => {
-                    console.log('cancelled');
+                    console.log("cancelled");
                   },
                 },
               ]
             ),
             { cancelable: true },
-          ]}>
-          <View style={{ flexDirection: 'row' }}>
+          ]}
+        >
+          <View style={{ flexDirection: "row" }}>
             <Text style={styles.roleSwitchName}>Owner Mode</Text>
             <Image
               style={styles.button}
               source={
-                currentUser.role === 'Owner'
-                  ? require('../assets/switchOn.png')
-                  : require('../assets/switchOff.png')
+                currentUser.role === "Owner"
+                  ? require("../assets/switchOn.png")
+                  : require("../assets/switchOff.png")
               }
             />
           </View>
@@ -100,7 +102,7 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     paddingHorizontal: 50,
     // marginTop: 15,
-    height: '100%',
+    height: "100%",
     // backgroundColor: 'red'
   },
   button: {
@@ -111,10 +113,10 @@ const styles = StyleSheet.create({
   },
   roleSwitchName: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
     marginTop: 10,
-    width: '100%',
+    width: "100%",
     // marginRight: 200,
   },
   backButton: {
@@ -126,7 +128,7 @@ const styles = StyleSheet.create({
   backButtonImage: {
     width: 25,
     height: 25,
-    position: 'absolute',
+    position: "absolute",
   },
 });
 

@@ -12,32 +12,27 @@ import {
 import HeaderComponent from "../components/HeaderComponent";
 import PostCard from "../components/PostCard";
 import { FirebaseDB } from "../../firebase.config";
-import {
-  doc,
-  query,
-  getDoc,
-  collection,
-  where,
-  getDocs,
-} from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 
 import { useState, useEffect } from "react";
-import { UserContext } from "../../userContext";
+import { AppliedContext, PinContext, UserContext } from "../../Contexts";
+import { useIsFocused } from "@react-navigation/native";
 
 function PinnedScreen() {
   const currentUser = useContext(UserContext);
+  const { pinState } = useContext(PinContext);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getPinnedPropertyList()
-  }, [pinnedPropertyList]);
+    getPinnedPropertyList();
+  }, [pinState]);
 
   const [pinnedPropertyList, setPinnedPropertyList] = useState([]);
 
   const getPinnedPropertyList = async () => {
+    setPinnedPropertyList([]);
     try {
       setLoading(true);
-      setPinnedPropertyList([]);
       const querySnapshot = await getDocs(
         collection(FirebaseDB, `Users/${currentUser.uid}/Pinned`)
       );
@@ -47,7 +42,7 @@ function PinnedScreen() {
       });
     } catch (err) {
       console.log(err.message);
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -82,7 +77,8 @@ function PinnedScreen() {
               <Text
                 style={{ fontSize: 14, color: "gray", textAlign: "center" }}
               >
-                You don't have any pinned posts yet. Find interesting listings and pin them for easy access!
+                You don't have any pinned posts yet. Find interesting listings
+                and pin them for easy access!
               </Text>
             </View>
           )}
