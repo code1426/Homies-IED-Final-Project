@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -7,12 +7,21 @@ import {
   SafeAreaView,
   Image,
   Alert,
-} from "react-native";
+} from 'react-native';
 
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { FirebaseAuth, FirebaseDB } from "../../firebase.config";
+import {
+  doc,
+  getDoc,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore';
+import { FirebaseAuth, FirebaseDB } from '../../firebase.config';
+import { UserContext } from '../../Contexts';
 
 const QueuedComponent = ({ applicant, postData, updateList }) => {
+  const currentUser = useContext(UserContext);
+
   const [isApproved, setIsApproved] = useState(false);
 
   useEffect(() => {
@@ -41,11 +50,11 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
 
   const confirmApprove = () => {
     Alert.alert(
-      "Approve Application",
-      "Are you sure you want to approve this application?",
+      'Approve Application',
+      'Are you sure you want to approve this application?',
       [
-        { text: "Cancel", onPress: () => console.log("Cancel") },
-        { text: "Yes", onPress: () => handleApprove() },
+        { text: 'Cancel', onPress: () => console.log('Cancel') },
+        { text: 'Yes', onPress: () => handleApprove() },
       ]
     );
   };
@@ -61,7 +70,7 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
       await updateDoc(postRef, {
         isApproved: true,
       });
-      console.log("updated post Applicant");
+      console.log('updated post Applicant');
     } catch (err) {
       console.log(err);
       setIsApproved(false);
@@ -70,13 +79,55 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
 
   const confirmDelete = () => {
     Alert.alert(
-      "Remove Applicant",
-      "Are you sure you want to remove this applicant?",
+      'Remove Applicant',
+      'Are you sure you want to remove this applicant?',
       [
-        { text: "Cancel", onPress: () => console.log("Cancel") },
-        { text: "Yes", onPress: () => handleDelete() },
+        { text: 'Cancel', onPress: () => console.log('Cancel') },
+        { text: 'Yes', onPress: () => handleDelete() },
       ]
     );
+  };
+
+  const handleMessage = async () => {
+    console.log(currentUser);
+    // combine the ids
+    const combinedID =
+      currentUser.uid > applicant.uid
+        ? currentUser.uid + applicant.uid
+        : applicant.uid + currentUser.uid;
+    // using that id to make a document
+    try {
+      // checking if the document already exists
+      const res = await getDoc(doc(FirebaseDB, 'Messages', combinedID));
+      console.log('Messages Checked');
+      // if the document doesn't exist then make a new one
+      if (!res.exists()) {
+        await setDoc(doc(FirebaseDB, 'Messages', combinedID), { messages: [] });
+        console.log('Messages Between Two Users has been Created.');
+
+        // Updating the MESSAGES DATA for the CURRENT USER
+        await updateDoc(doc(FirebaseDB, 'UserMessages', currentUser.uid), {
+          [combinedID + '.userInfo']: {
+            uid: applicant.uid,
+            displayName: 'asdasd', //applicant.displayName,
+            photoURL: '../assets/settingsIcons/noProfilePlaceholder.png', //applicant.photoURL
+          },
+          [combinedID + '.date']: serverTimestamp(),
+        });
+        console.log('currentUser message set');
+        // Updating the MESSAGES DATA for the APPLICANT
+        await updateDoc(doc(FirebaseDB, 'UserMessages', applicant.uid), {
+          [combinedID + '.userInfo']: {
+            uid: currentUser.uid,
+            displayName: 'asdasd', //currentUser.displayName,
+            photoURL: currentUser.photoURL,
+          },
+          [combinedID + '.date']: serverTimestamp,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleDelete = async () => {
@@ -92,13 +143,13 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
         applicant.uid
       );
       await updateDoc(postRef, {
-        isDeletedByOwner: "yes",
+        isDeletedByOwner: 'yes',
       });
       updateList();
       await updateDoc(applicantRef, {
-        isDeletedByOwner: "yes",
+        isDeletedByOwner: 'yes',
       });
-      console.log("Removed Applicant");
+      console.log('Removed Applicant');
     } catch (err) {
       console.log(err);
     }
@@ -109,9 +160,11 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
       <View style={styles.profileContainer}>
         <Image
           style={styles.profileImage}
-          source={require("../assets/profile.jpg")}
+          source={require('../assets/profile.jpg')}
         />
-        <Text numberOfLines={1} style={styles.name}>
+        <Text
+          numberOfLines={1}
+          style={styles.name}>
           {applicant.firstName}
         </Text>
       </View>
@@ -119,26 +172,29 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
       <View style={styles.buttonsContainer}>
         {!isApproved ? (
           <>
-            <TouchableOpacity onPress={confirmApprove} style={styles.button}>
+            <TouchableOpacity
+              onPress={confirmApprove}
+              style={styles.button}>
               <Text style={styles.buttonLabel}>Approve</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={confirmDelete}
-              style={styles.cancelContainer}
-            >
+              style={styles.cancelContainer}>
               <Image
                 style={styles.cancelImage}
-                source={require("../assets/cancel.png")}
+                source={require('../assets/cancel.png')}
               />
             </TouchableOpacity>
           </>
         ) : (
-          <TouchableOpacity style={styles.messageButton}>
+          <TouchableOpacity
+            style={styles.messageButton}
+            onPress={handleMessage}>
             <Image
               style={{ width: 16, height: 16 }}
-              source={require("../assets/navigationBarIcons/nonactiveMessages.png")}
+              source={require('../assets/navigationBarIcons/nonactiveMessages.png')}
             />
-            <Text style={{ ...styles.buttonLabel, color: "black" }}>
+            <Text style={{ ...styles.buttonLabel, color: 'black' }}>
               Message
             </Text>
           </TouchableOpacity>
@@ -150,23 +206,23 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
+    width: '100%',
     height: 65,
     paddingHorizontal: 12,
-    flexDirection: "row",
+    flexDirection: 'row',
     columnGap: 10,
-    alignItems: "center",
-    justifyContent: "space-between",
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   center: {
-    height: "100%",
-    flexDirection: "row",
-    alignSelf: "center",
+    height: '100%',
+    flexDirection: 'row',
+    alignSelf: 'center',
   },
   profileContainer: {
     // flex: 2,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     columnGap: 6,
     // backgroundColor: 'red'
   },
@@ -180,19 +236,19 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   name: {
-    fontWeight: "500",
+    fontWeight: '500',
     fontSize: 16,
   },
   buttonsContainer: {
-    alignItems: "center",
-    flexDirection: "row",
+    alignItems: 'center',
+    flexDirection: 'row',
     columnGap: 8,
     // flex: 1
   },
   approveContainer: {
-    width: "70%",
-    height: "100%",
-    justifyContent: "center",
+    width: '70%',
+    height: '100%',
+    justifyContent: 'center',
   },
   cancelImage: {
     height: 25,
@@ -203,19 +259,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 4,
     borderRadius: 15,
-    backgroundColor: "limegreen",
+    backgroundColor: 'limegreen',
   },
   buttonLabel: {
     fontSize: 13,
-    fontWeight: "bold",
-    color: "white",
-    textAlign: "center",
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
   },
   messageButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#BBE0F5",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#BBE0F5',
     paddingHorizontal: 16,
     paddingVertical: 4,
     borderRadius: 15,

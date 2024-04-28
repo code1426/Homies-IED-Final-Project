@@ -1,27 +1,53 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Message from '../components/Message.jsx';
-import { View, Text, SafeAreaView, Image, StyleSheet, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Image,
+  StyleSheet,
+  Platform,
+} from 'react-native';
 
 import HeaderComponent from '../components/HeaderComponent';
+import {
+  doc,
+  getDoc,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+} from 'firebase/firestore';
+import { FirebaseDB } from '../../firebase.config.js';
+import { UserContext } from '../../Contexts.js';
 
 function MessagesScreen(props) {
+  const currentUser = useContext(UserContext);
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    const unsub = onSnapshot(
+      doc(FirebaseDB, 'UserMessages', currentUser.uid),
+      (doc) => {
+        setMessages(doc.data());
+      }
+    );
+    return () => {
+      unsub();
+    };
+  }, [currentUser.uid]);
+
   return (
     <SafeAreaView style={styles.screen}>
       <HeaderComponent title='Messages' />
-
-      <Message
-        profilePic={require('../assets/icon.png')}
-        name='Yay Me Yao'
-        latestMessage='Hello, how are you?'
-        time = '8:15 PM'
-      />
-      <Message
-        profilePic={require('../assets/icon.png')}
-        name='Wansapanataym'
-        latestMessage='Wassup bro'
-        time = '8:15 AM'
-      />
-      
+      {Object.entries(messages)?.map((message) => (
+        <Message
+          profilePic={{ uri: message[1].userInfo.photoURL }}
+          name={message[1].userInfo.displayName}
+          latestMessage={message[1].userInfo.latestMessage}
+          time='8:15 PM'
+        />
+      ))}
     </SafeAreaView>
   );
 }

@@ -26,10 +26,11 @@ import {
   EmailAuthProvider,
   reauthenticateWithCredential,
   updatePassword,
+  deleteUser,
 } from 'firebase/auth';
 
 import HeaderComponent from '../components/HeaderComponent';
-import { updateDoc, doc, getDoc } from 'firebase/firestore';
+import { updateDoc, doc, getDoc, deleteDoc } from 'firebase/firestore';
 
 import * as ImagePicker from 'expo-image-picker';
 import {
@@ -134,7 +135,6 @@ export default function EditProfileScreen({ navigation }) {
   };
 
   // Profile Picture
-
   const [profile, setProfilePic] = useState(userAuth.photoURL);
 
   const pickProfilePic = async () => {
@@ -182,8 +182,42 @@ export default function EditProfileScreen({ navigation }) {
     }
   };
 
+  // Character Deletion
+  const [inputPasswordReqDelete, setInputPasswordReqDelete] = useState();
+  const [popUp, setPopUp] = useState(false); // default false
+
+  const handleDeleteAccount = async () => {
+    try {
+      await deleteUser(userAuth);
+      console.log('Account Deleted');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDeletionProcess = async () => {
+    try {
+      const credential = EmailAuthProvider.credential(
+        userAuth.email,
+        inputPasswordReqDelete
+      );
+      await reauthenticateWithCredential(userAuth, credential).catch(
+        (error) => Alert.alert('Wrong Password', 'Try again later.')
+        // console.log(error)
+      );
+      console.log('Reaunthenticated');
+      await handleDeleteAccount();
+      await deleteDoc(FirebaseDB, 'Users', currentUser.uid);
+      console.log('Documents Deleted');
+    } catch (error) {
+      console.log('Change Password', error.message);
+      Alert.alert('Wrong Password', 'Try again later.');
+      setPopUp(!popUp);
+    }
+  };
+
   return (
-    <ScrollView>
+    <ScrollView scrollEnabled={popUp ? false : true}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <SafeAreaView style={styles.container}>
           <HeaderComponent title='Profile Details' />
@@ -223,7 +257,9 @@ export default function EditProfileScreen({ navigation }) {
                     style={{ alignSelf: 'center' }}
                   />
                 ) : (
-                  <Text style={styles.changeProfileButton}>Edit Profile</Text>
+                  <Text style={styles.changeProfileButton}>
+                    Change Profile Pic
+                  </Text>
                 )}
               </TouchableOpacity>
             </View>
@@ -318,13 +354,60 @@ export default function EditProfileScreen({ navigation }) {
                   <TouchableOpacity>
                     <Text>Verified</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={handleChangeLocation}>
-                    <Text style={styles.deleteAcc}>Delete Account</Text>
-                  </TouchableOpacity>
+                </View>
+              </View>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => {
+                  setPopUp(!popUp);
+                }}>
+                <Text style={[styles.deleteAcc]}>Delete Account</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          {popUp && (
+            <View style={styles.popUpContainer}>
+              <View style={styles.popUp}>
+                <View style={{ paddingHorizontal: 20, paddingVertical: 20 }}>
+                  <Text style={styles.popUpTitle}>Delete Account</Text>
+                  <Text style={styles.popUpDescription}>
+                    Enter Your Password
+                  </Text>
+                  <TextInput
+                    style={styles.passwordReqDeletion}
+                    placeholder='password'
+                    onChangeText={setInputPasswordReqDelete}
+                    secureTextEntry
+                  />
+                </View>
+                <View>
+                  <View style={styles.popUpButtons}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setPopUp(!popUp);
+                      }}>
+                      <Text
+                        style={[
+                          styles.popUpButton,
+                          { right: 10, borderRightWidth: 0.6 },
+                        ]}>
+                        Cancel
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={handleDeletionProcess}>
+                      <Text
+                        style={[
+                          styles.popUpButton,
+                          { color: 'red', left: 10 },
+                        ]}>
+                        Delete
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
+          )}
         </SafeAreaView>
       </TouchableWithoutFeedback>
     </ScrollView>
@@ -386,17 +469,22 @@ const styles = {
     fontWeight: '800',
     textAlign: 'center',
   },
-  deleteAcc: {
-    marginTop: '4%',
-    marginLeft: '48%',
+  deleteButton: {
     borderWidth: 0.6,
     borderColor: 'black',
     borderRadius: 15,
-    paddingVertical: '1.2%',
-    paddingHorizontal: '10%',
+    width: 170,
+    height: 33,
+    marginTop: '4%',
+    marginLeft: '51%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'red',
+  },
+  deleteAcc: {
     fontWeight: '800',
     textAlign: 'center',
-    color: 'red',
+    color: 'white',
   },
   changeProfileButton: {
     textAlign: 'center',
@@ -409,9 +497,9 @@ const styles = {
     borderColor: 'black',
     borderRadius: 15,
     borderWidth: 0.6,
-    marginLeft: '18%',
+    marginLeft: '10%',
     height: 33,
-    width: 130,
+    width: 180,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -484,4 +572,54 @@ const styles = {
     marginBottom: 0,
     marginLeft: 16,
   },
+  popUpContainer: {
+    backgroundColor: 'rgba(52, 52, 52, 0.8)',
+    paddingHorizontal: '15%',
+    height: 1500,
+    width: 1000,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    alignSelf: 'center',
+    // top: '75%',
+  },
+  popUp: {
+    backgroundColor: 'lightgray',
+    borderColor: 'black',
+    borderWidth: 0.6,
+    borderRadius: 15,
+    width: 'auto',
+    height: 'auto',
+  },
+  popUpTitle: {
+    // backgroundColor: 'pink',
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    // top: -10,
+  },
+  popUpDescription: {
+    textAlign: 'center',
+    paddingVertical: 5,
+    fontSize: 12,
+  },
+  passwordReqDeletion: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: 'black',
+    borderWidth: 0.8,
+    borderColor: 'black',
+    borderRadius: 10,
+    paddingVertical: '2%',
+    paddingHorizontal: '3%',
+    marginTop: '3%',
+    top: 10,
+    width: 200,
+  },
+  popUpButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    borderTopWidth: 0.6,
+  },
+  popUpButton: { paddingVertical: 10 },
 };

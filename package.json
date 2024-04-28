@@ -22,6 +22,7 @@
     "formik": "^2.4.5",
     "pinar": "^0.12.2",
     "react": "18.2.0",
+    "react-firebase-hooks": "^5.1.1",
     "react-native": "0.72.10",
     "react-native-element-dropdown": "^2.10.4",
     "react-native-image-slider-aws-s3": "^1.0.1",
