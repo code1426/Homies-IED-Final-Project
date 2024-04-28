@@ -41,7 +41,7 @@ function SettingsScreen({ navigation }) {
             source={{ uri: userAuth.photoURL }}
           />
           <View>
-            <Text>{currentUser.displayName}</Text>
+            <Text>{userAuth.displayName}</Text>
             <View>
               <Text>{currentUser.email}</Text>
               <Text>{currentUser.location}</Text>
