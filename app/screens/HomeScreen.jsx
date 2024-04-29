@@ -132,7 +132,7 @@ function HomeScreen({ navigation }) {
             >
               <TouchableOpacity
                 style={[styles.searchbar, styles.shadow]}
-                onPress={() => console.log("Search")}
+                onPress={() => navigation.navigate("Search")}
               >
                 <Text style={styles.searchText}>Search</Text>
               </TouchableOpacity>

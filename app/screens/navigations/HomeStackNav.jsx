@@ -1,42 +1,42 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
-import React from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
+import React from "react";
 
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import PostDetailScreen from '../PostDetailScreen.jsx';
-import HomeScreen from '../HomeScreen';
-import NotificationScreen from '../NotificationScreen.jsx';
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import PostDetailScreen from "../PostDetailScreen.jsx";
+import HomeScreen from "../HomeScreen";
+import NotificationScreen from "../NotificationScreen.jsx";
+import SearchScreen from "../SearchScreen.jsx";
+import SearchedContentScreen from "../SearchedContentScreen.jsx";
 
 const Stack = createNativeStackNavigator();
 
 const HomeStackNav = ({ navigation }) => {
-
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
-        headerStyle: {height: 200}
-      }}>
-      <Stack.Screen
-        name='Home'
-        component={HomeScreen}
-      />
+        headerStyle: { height: 200 },
+      }}
+    >
+      <Stack.Screen name="Home" component={HomeScreen} />
 
       <Stack.Screen
-        name='postDetails'
+        name="postDetails"
         component={PostDetailScreen}
         options={{
           headerShown: true,
-          headerTitleStyle: { fontWeight: 'bold', color: 'white' },
-          headerStyle: { backgroundColor: '#4285F4', color: 'white' },
-          headerTitleAlign: 'center',
-          headerTitle: 'Room Details',
+          headerTitleStyle: { fontWeight: "bold", color: "white" },
+          headerStyle: { backgroundColor: "#4285F4", color: "white" },
+          headerTitleAlign: "center",
+          headerTitle: "Room Details",
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate("Home");
-              }}>
+                navigation.goBack();
+              }}
+            >
               <Image
-                source={require('../../assets/backIcon.png')}
+                source={require("../../assets/backIcon.png")}
                 style={styles.button}
               />
             </TouchableOpacity>
@@ -44,10 +44,11 @@ const HomeStackNav = ({ navigation }) => {
         }}
       />
 
-      <Stack.Screen
-        name='Notifications'
-        component={NotificationScreen}
-      />
+      <Stack.Screen name="Notifications" component={NotificationScreen} />
+
+      <Stack.Screen name="Search" component={SearchScreen} />
+
+      <Stack.Screen name="SearchContent" component={SearchedContentScreen} />
     </Stack.Navigator>
   );
 };

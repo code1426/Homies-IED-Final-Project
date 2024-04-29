@@ -10,6 +10,8 @@ import {
   ActivityIndicator,
 } from "react-native";
 
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
 import { useState, useContext } from "react";
 import { FirebaseDB, FirebaseAuth } from "../../firebase.config";
 import { serverTimestamp, setDoc, doc } from "firebase/firestore";
@@ -133,6 +135,11 @@ function AddPropertyScreen({ navigation }) {
     handleInputError(values);
     let isAllInputFilled;
     console.log(values);
+
+    values.titleLowerCase = values.title.toLowerCase()
+    values.descriptionLowerCase = values.description.toLowerCase()
+    values.propertyTypeLowerCase = values.propertyType.toLowerCase()
+    values.addressLowerCase = values.address.toLowerCase()
 
     for (let [key, val] of Object.entries(values)) {
       if (!val && key !== "thumbnail" && key !== "images") {
@@ -408,9 +415,12 @@ function AddPropertyScreen({ navigation }) {
 
   const formInitialValues = {
     title: null,
+    titleLowerCase: null,
     description: null,
+    descriptionLowerCase: null,
     rentPrice: "",
     propertyType: null,
+    propertyTypeLowerCase: null,
     registrationPrice: "",
     thumbnail: null,
     images: {
@@ -420,6 +430,7 @@ function AddPropertyScreen({ navigation }) {
     },
     features: [],
     address: null,
+    addressLowerCase: null,
     created_at: serverTimestamp(),
     uid: FirebaseAuth.currentUser.uid,
     email: FirebaseAuth.currentUser.email,
@@ -449,7 +460,7 @@ function AddPropertyScreen({ navigation }) {
     <SafeAreaView>
       <HeaderComponent title="Add Property" />
 
-      <ScrollView>
+      <KeyboardAwareScrollView>
         <View>
           <Formik
             initialValues={formInitialValues}
@@ -766,7 +777,7 @@ function AddPropertyScreen({ navigation }) {
             )}
           </Formik>
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 }
