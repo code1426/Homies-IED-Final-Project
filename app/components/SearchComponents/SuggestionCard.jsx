@@ -28,13 +28,10 @@ export default SuggestionCard;
 const styles = StyleSheet.create({
   container: {
     margin: 6,
-    // marginTop: -8,
     flexDirection: "row",
     width: "100%",
     height: 35,
-    // backgroundColor: "red",
     paddingHorizontal: 12,
-    // justifyContent: "center",
     alignSelf: "center",
     alignItems: "center",
     paddingVertical: 0,
@@ -46,7 +43,6 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
-    // borderBottomWidth: 1,
     borderColor: "#D9D9D9",
   },
   text: {

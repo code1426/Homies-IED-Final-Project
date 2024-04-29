@@ -58,6 +58,8 @@ const styles = StyleSheet.create({
     marginHorizontal: -10,
     alignSelf: "center",
     // top: 103,
+    borderWidth: 0.5,
+    borderColor: "#BFBFBF"
   },
   searchForContainer: {
     // backgroundColor: 'red',

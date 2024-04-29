@@ -44,9 +44,7 @@ const SearchScreen = ({ navigation }) => {
   }, [navigation]);
 
   return (
-    <SearchTermContext.Provider
-      value={{ searchTerm, setSearchTerm, inputRef }}
-    >
+    <SearchTermContext.Provider value={{ searchTerm, setSearchTerm, inputRef }}>
       <SafeAreaView>
         <InstantSearch
           future={{ preserveSharedStateOnUnmount: true }}
@@ -64,10 +62,10 @@ const SearchScreen = ({ navigation }) => {
               <SearchBar setIsSubmitted={setIsSubmitted} />
             </View>
             {isSubmitted ? (
-            <SearchContent hitComponent={SearchPostCard} />
-          ) : (
-            <Suggestions hitComponent={SuggestionCard} />
-          )}
+              <SearchContent hitComponent={SearchPostCard} />
+            ) : (
+              <Suggestions hitComponent={SuggestionCard} />
+            )}
             {/* <SearchContent hitComponent={SearchPostCard} /> */}
           </View>
         </InstantSearch>

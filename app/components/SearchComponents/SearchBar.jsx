@@ -36,12 +36,30 @@ const SearchBar = (props) => {
     }
   };
 
+  const handleSumbit = () => {
+    if (searchTerm) {
+      props.setIsSubmitted(true);
+    } else {
+      props.setIsSubmitted(false);
+    }
+  };
+
+  const handleClear = () => {
+    inputRef.current?.focus();
+    setQuery("");
+  };
+
   return (
     <View style={styles.searhBarContainer}>
+      <Image
+        style={styles.searchIcon}
+        source={require("../../assets/search.png")}
+      />
+      <Image style={styles.line} source={require("../../assets/line.png")} />
       <TextInput
         value={searchTerm}
         onFocus={() => props.setIsSubmitted(false)}
-        onSubmitEditing={() => props.setIsSubmitted(true)}
+        onSubmitEditing={() => handleSumbit()}
         onChangeText={setQuery}
         // clearButtonMode="while-editing"
         autoCapitalize="none"
@@ -53,7 +71,7 @@ const SearchBar = (props) => {
         style={styles.searchInput}
       />
       {searchTerm && (
-        <TouchableOpacity onPress={() => setQuery("")}>
+        <TouchableOpacity onPress={() => handleClear()}>
           <Image
             source={require("../../assets/clear-button.png")}
             style={styles.clearButton}
@@ -73,12 +91,14 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     backgroundColor: "white",
-    borderRadius: 20,
-    paddingHorizontal: 25,
+    borderRadius: 23,
+    paddingHorizontal: 10,
     paddingVertical: 6,
     marginRight: 19,
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 0.7,
+    borderColor: "midnightblue",
   },
   searchInput: {
     height: "100%",
@@ -93,9 +113,18 @@ const styles = StyleSheet.create({
     height: 25,
   },
   clearButton: {
-    width: 15,
-    height: 15,
-    marginLeft: 6,
-    marginRight: -6,
+    width: 16,
+    height: 16,
+    marginLeft: 8,
+    marginRight: 8,
+  },
+  searchIcon: {
+    width: 24,
+    height: 24,
+  },
+  line: {
+    height: 24,
+    width: 12,
+    marginRight: 6,
   },
 });

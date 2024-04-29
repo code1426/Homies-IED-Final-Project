@@ -24,7 +24,7 @@ function HomeScreen({ navigation }) {
   const [propertyList, setPropertyList] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const { addState } = useContext(AddPropertyContext)
+  const { addState } = useContext(AddPropertyContext);
 
   const propertyTypes = ["All", "Apartment", "Boarding House", "Dorm"];
 
@@ -134,10 +134,18 @@ function HomeScreen({ navigation }) {
                 style={[styles.searchbar, styles.shadow]}
                 onPress={() => navigation.navigate("Search")}
               >
+                <Image
+                  style={styles.searchIcon}
+                  source={require("../assets/search.png")}
+                />
+                <Image
+                  style={styles.line}
+                  source={require("../assets/line.png")}
+                />
                 <Text style={styles.searchText}>Search</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={styles.filter}
                 onPress={() => console.log("Filter tapped")}
               >
@@ -145,7 +153,7 @@ function HomeScreen({ navigation }) {
                   style={{ height: 20, width: 20, alignSelf: "center" }}
                   source={require("../assets/filter.png")}
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
 
             <View
@@ -222,25 +230,22 @@ const styles = StyleSheet.create({
     width: 37,
   },
   searchText: {
-    marginLeft: 20,
-    fontSize: 14,
-    fontWeight: "bold",
+    // marginLeft: 20,
+    fontSize: 16,
+    fontWeight: "500",
     color: "grey",
   },
-  searchbarContainer: {
-    height: 55,
-    width: "60%",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
   searchbar: {
-    height: 40,
-    width: "84%",
+    flexDirection: "row",
+    flex: 1,
+    height: 46,
     backgroundColor: "white",
-    borderRadius: 25,
-    marginRight: 12,
-    justifyContent: "center",
+    borderRadius: 23,
+    // marginRight: 12,
+    alignItems: "center",
+    paddingHorizontal: 10,
+    borderWidth: 0.7,
+    borderColor: "midnightblue",
   },
   filter: {
     height: 40,
@@ -259,6 +264,16 @@ const styles = StyleSheet.create({
     height: 100,
     justifyContent: "center",
     alignItems: "center",
+  },
+  searchIcon: {
+    width: 24,
+    height: 24,
+    marginLeft: 2,
+  },
+  line: {
+    width: 12,
+    height: 24,
+    marginRight: 6,
   },
 });
 
