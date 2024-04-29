@@ -43,7 +43,7 @@ const SearchBar = (props) => {
         onFocus={() => props.setIsSubmitted(false)}
         onSubmitEditing={() => props.setIsSubmitted(true)}
         onChangeText={setQuery}
-        clearButtonMode="while-editing"
+        // clearButtonMode="while-editing"
         autoCapitalize="none"
         autoCorrect={false}
         spellCheck={false}
