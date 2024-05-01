@@ -1,17 +1,23 @@
-import React, { useContext } from 'react';
-import { View, StyleSheet, Text, Image } from 'react-native';
-import { MessageContext, UserContext } from '../../../Contexts';
+import React, { useContext, useEffect, useRef } from "react";
+import { View, StyleSheet, Text, Image } from "react-native";
+import { MessageContext, UserContext } from "../../../Contexts";
 
 function Message({ message }) {
   const currentUser = useContext(UserContext);
   const { data } = useContext(MessageContext);
+  // const ref = useRef();
+
+  // useEffect(() => {
+  //   ref.current?.scrollIntoView({ behavior: "smooth" });
+  // }, [message]);
 
   return (
     <View
       style={[
         styles.container,
         message.senderId === currentUser.uid ? styles.you : styles.others,
-      ]}>
+      ]}
+    >
       <Image
         style={styles.profilePic}
         source={
@@ -31,33 +37,33 @@ function Message({ message }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'red',
-    flexDirection: 'row',
+    backgroundColor: "red",
+    flexDirection: "row",
     marginVertical: 5,
-    width: '70%'
+    width: "70%",
   },
   profilePic: {
-    alignSelf: 'center',
+    alignSelf: "center",
     width: 35,
     height: 35,
     borderRadius: 27.5,
     marginRight: 15,
-    resizeMode: 'cover',
+    resizeMode: "cover",
     // marginLeft: 10,
   },
   you: {
-    direction: 'rtl',
-    alignSelf:'flex-end'
+    direction: "rtl",
+    alignSelf: "flex-end",
   },
   others: {
-    direction: 'ltr',
+    direction: "ltr",
   },
   text: {
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderWidth: 0.5,
     borderRadius: 15,
-    width: 'auto',
+    width: "auto",
   },
 });
 export default Message;

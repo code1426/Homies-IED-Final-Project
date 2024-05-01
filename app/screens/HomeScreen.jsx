@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     // marginRight: 12,
     alignItems: "center",
     paddingHorizontal: 10,
-    borderWidth: 0.7,
+    borderWidth: 1,
     borderColor: "midnightblue",
   },
   filter: {
