@@ -5,11 +5,6 @@ import { MessageContext, UserContext } from "../../../Contexts";
 function Message({ message }) {
   const currentUser = useContext(UserContext);
   const { data } = useContext(MessageContext);
-  // const ref = useRef();
-
-  // useEffect(() => {
-  //   ref.current?.scrollIntoView({ behavior: "smooth" });
-  // }, [message]);
 
   return (
     <View
@@ -18,38 +13,75 @@ function Message({ message }) {
         message.senderId === currentUser.uid ? styles.you : styles.others,
       ]}
     >
-      <Image
-        style={styles.profilePic}
-        source={
-          // require('../../assets/placeholder.png') // placeholder
-          {
-            uri:
+      {message.senderId === currentUser.uid ? (
+        <>
+          
+          <Text
+            style={[
+              styles.text,
               message.senderId === currentUser.uid
-                ? currentUser.photoURL
-                : data.user.photoURL,
-          }
-        }
-      />
-      <Text style={styles.text}>{message.text}</Text>
+                ? { backgroundColor: "#B3E5FC" }
+                : { backgroundColor: "#F0F0F0" },
+            ]}
+          >
+            {message.text}
+          </Text>
+          <Image
+            style={styles.profilePic}
+            source={
+              require("../../assets/placeholder.png") // placeholder
+              // {
+              //   uri:
+              //     message.senderId === currentUser.uid
+              //       ? currentUser.photoURL
+              //       : data.user.photoURL,
+              // }
+            }
+          />
+        </>
+      ) : (
+        <>
+          <Image
+            style={styles.profilePic}
+            source={
+              require("../../assets/placeholder.png") // placeholder
+              // {
+              //   uri:
+              //     message.senderId === currentUser.uid
+              //       ? currentUser.photoURL
+              //       : data.user.photoURL,
+              // }
+            }
+          />
+          <Text
+            style={[
+              styles.text,
+              message.senderId === currentUser.uid
+                ? { backgroundColor: "#B3E5FC" }
+                : { backgroundColor: "#F0F0F0" },
+            ]}
+          >
+            {message.text}
+          </Text>
+        </>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "red",
     flexDirection: "row",
     marginVertical: 5,
-    width: "70%",
+    backgroundColor: 'red',
   },
   profilePic: {
     alignSelf: "center",
-    width: 35,
-    height: 35,
-    borderRadius: 27.5,
-    marginRight: 15,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     resizeMode: "cover",
-    // marginLeft: 10,
+    marginHorizontal: 4,
   },
   you: {
     direction: "rtl",
@@ -57,13 +89,16 @@ const styles = StyleSheet.create({
   },
   others: {
     direction: "ltr",
+    // alignSelf: "flex-end",
   },
   text: {
+    alignSelf: "center",
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderWidth: 0.5,
-    borderRadius: 15,
+    borderRadius: 14,
     width: "auto",
+    maxWidth: 200,
   },
 });
 export default Message;

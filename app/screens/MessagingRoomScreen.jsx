@@ -67,28 +67,30 @@ function MessagingRoomScreen({ navigation }) {
   const handleSend = async () => {
     try {
       setText("");
-      await updateDoc(doc(FirebaseDB, "Messages", data.MessageId), {
-        messages: arrayUnion({
-          id: Math.random().toString(16).slice(2),
-          text,
-          senderId: currentUser.uid,
-          data: Timestamp.now(),
-        }),
-      });
+      if (text !== "") {
+        await updateDoc(doc(FirebaseDB, "Messages", data.MessageId), {
+          messages: arrayUnion({
+            id: Math.random().toString(16).slice(2),
+            text,
+            senderId: currentUser.uid,
+            data: Timestamp.now(),
+          }),
+        });
 
-      await updateDoc(doc(FirebaseDB, "UserMessages", currentUser.uid), {
-        [data.MessageId + ".latestMessage"]: {
-          text,
-        },
-        [data.MessageId + ".date"]: serverTimestamp(),
-      });
+        await updateDoc(doc(FirebaseDB, "UserMessages", currentUser.uid), {
+          [data.MessageId + ".latestMessage"]: {
+            text,
+          },
+          [data.MessageId + ".date"]: serverTimestamp(),
+        });
 
-      await updateDoc(doc(FirebaseDB, "UserMessages", data.user.uid), {
-        [data.MessageId + ".latestMessage"]: {
-          text,
-        },
-        [data.MessageId + ".date"]: serverTimestamp(),
-      });
+        await updateDoc(doc(FirebaseDB, "UserMessages", data.user.uid), {
+          [data.MessageId + ".latestMessage"]: {
+            text,
+          },
+          [data.MessageId + ".date"]: serverTimestamp(),
+        });
+      }
     } catch (error) {
       console.log(error);
     }
@@ -108,7 +110,13 @@ function MessagingRoomScreen({ navigation }) {
         inverted
       />
       <View style={styles.inputContainer}>
-        <TextInput style={styles.input} onChangeText={setText} value={text} />
+        <TextInput
+          numberOfLines={4}
+          multiline={true}
+          style={styles.input}
+          onChangeText={setText}
+          value={text}
+        />
         <TouchableOpacity onPress={handleSend}>
           <Image
             source={require("../assets/send-message.png")}
@@ -121,41 +129,37 @@ function MessagingRoomScreen({ navigation }) {
 }
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    height: "100%",
+    flex: 1,
     backgroundColor: "white",
     flexDirection: "column",
   },
   room: {
-    backgroundColor: "pink",
-    // flex: 1,
-    // height: 400,
-    // alignContent: "flex-end",
-    // flexDirection: "column-reverse",
+    // backgroundColor: "white",
   },
   inputContainer: {
-    // alignSelf: "flex-end",
+    // marginLeft: 30,
+    flex: 1,
+    paddingHorizontal: 12,
     flexDirection: "row",
-    backgroundColor: "blue",
+    backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
     height: 72,
-    // position: "absolute",
-    // bottom: 0,
-    // left: 0,
-    // right: 0,
   },
   input: {
-    width: "80%",
-    height: "60%",
+    // height: 40,
+    flex: 1,
+    marginRight: 12,
     borderWidth: 1,
     borderRadius: 15,
-    paddingHorizontal: 8,
+    padding: 8,
+    minHeight: 40,
+    maxHeight: 150,
   },
   sendButton: {
     width: 25,
     height: 25,
-    margin: 10,
+    // marginHorizontal: 20,
   },
 });
 export default MessagingRoomScreen;

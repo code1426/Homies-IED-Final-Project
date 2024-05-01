@@ -25,6 +25,8 @@ const AppliedPostCard = ({ data, updateList }) => {
     isDeletedByOwner();
   }, []);
 
+  const getOwnerData = () => {}
+
   const isApplicantApproved = async () => {
     try {
       const postRef = doc(

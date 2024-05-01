@@ -15,7 +15,7 @@ import {
 
 function MessageCard({ name, profilePic, latestMessage, time, onPress }) {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView>
       <TouchableOpacity
         style={styles.pressableContent}
         onPress={onPress}>
@@ -27,16 +27,12 @@ function MessageCard({ name, profilePic, latestMessage, time, onPress }) {
           <Text style={styles.profileName}>{name}</Text>
           <Text
             style={styles.message}
-            numberOfLines={2}>
+            numberOfLines={1}>
             {latestMessage}
           </Text>
         </View>
-        <View style={[styles.updateSeen]}>
+        <View>
           <Text style={styles.timeUpdated}>{time}</Text>
-          <Image
-            source={profilePic}
-            style={styles.messageSeenProfileStyle}
-          />
         </View>
       </TouchableOpacity>
     </SafeAreaView>
@@ -44,30 +40,22 @@ function MessageCard({ name, profilePic, latestMessage, time, onPress }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: 'auto',
-    alignItems: 'stretch',
-    // flex: 1,
-    // flexDirection: 'column',
-  },
   pressableContent: {
-    height: 79,
+    height: 80,
     backgroundColor: 'white',
     flexDirection: 'row',
-    // justifyContent: 'space-evenly',
+    paddingHorizontal: 16,
+    alignItems: "center",
   },
   profilePicStyle: {
-    alignSelf: 'center',
-    width: 55,
-    height: 55,
-    borderRadius: 27.5,
-    marginLeft: 35,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     resizeMode: 'cover',
+    marginRight: 12,
   },
   messageContent: {
-    width: 227,
-    left: 16,
-    marginTop: 15,
+    flex: 1,
   },
   profileName: {
     fontSize: 16.5,
@@ -77,19 +65,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
   },
-  updateSeen: {
-    direction: 'rtl',
-    alignSelf: 'center',
-    right: 21,
-    position: 'absolute',
-  },
   timeUpdated: {
     fontSize: 12,
     fontWeight: 'bold',
     marginBottom: 6,
   },
   messageSeenProfileStyle: {
-    // alignSelf: 'center',
     width: 21,
     height: 21,
     borderRadius: 10.5,
