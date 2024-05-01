@@ -10,13 +10,12 @@ function Message({ message }) {
     <View
       style={[
         styles.container,
-        message.senderId === currentUser.uid && {alignSelf: "flex-end"},
+        message.senderId === currentUser.uid && { alignSelf: "flex-end" },
       ]}
     >
       {message.senderId === currentUser.uid ? (
         <>
-          
-          <Text
+          <View
             style={[
               styles.text,
               message.senderId === currentUser.uid
@@ -24,18 +23,18 @@ function Message({ message }) {
                 : { backgroundColor: "#F0F0F0" },
             ]}
           >
-            {message.text}
-          </Text>
+            <Text>{message.text}</Text>
+          </View>
           <Image
             style={styles.profilePic}
             source={
-              require("../../assets/placeholder.png") // placeholder
-              // {
-              //   uri:
-              //     message.senderId === currentUser.uid
-              //       ? currentUser.photoURL
-              //       : data.user.photoURL,
-              // }
+              // require("../../assets/placeholder.png") // placeholder
+              {
+                uri:
+                  message.senderId === currentUser.uid
+                    ? currentUser.photoURL
+                    : data.user.photoURL,
+              }
             }
           />
         </>
@@ -44,25 +43,25 @@ function Message({ message }) {
           <Image
             style={styles.profilePic}
             source={
-              require("../../assets/placeholder.png") // placeholder
-              // {
-              //   uri:
-              //     message.senderId === currentUser.uid
-              //       ? currentUser.photoURL
-              //       : data.user.photoURL,
-              // }
+              // require("../../assets/placeholder.png") // placeholder
+              {
+                uri:
+                  message.senderId === currentUser.uid
+                    ? currentUser.photoURL
+                    : data.user.photoURL,
+              }
             }
           />
-          <Text
+          <View
             style={[
-              styles.text,
               message.senderId === currentUser.uid
                 ? { backgroundColor: "#B3E5FC" }
-                : { backgroundColor: "#F0F0F0" },
+                : { backgroundColor: "#E0E0E0" },
+              styles.text,
             ]}
           >
-            {message.text}
-          </Text>
+            <Text>{message.text}</Text>
+          </View>
         </>
       )}
     </View>
@@ -81,7 +80,7 @@ const styles = StyleSheet.create({
     height: 30,
     borderRadius: 15,
     resizeMode: "cover",
-    marginHorizontal: 4,
+    marginHorizontal: 8,
   },
   you: {
     // direction: "rtl",
@@ -95,7 +94,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     paddingHorizontal: 10,
     paddingVertical: 5,
-    borderWidth: 0.5,
+    // borderWidth: 1,
     borderRadius: 14,
     width: "auto",
     maxWidth: 200,

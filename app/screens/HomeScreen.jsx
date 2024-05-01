@@ -17,7 +17,7 @@ import CategoryButton from "../components/CategoryButton.jsx";
 import { FirebaseDB } from "../../firebase.config";
 import { collection, getDocs, query, where } from "firebase/firestore";
 
-import { AddPropertyContext } from "../../Contexts.js";
+import { AddPropertyContext, UserContext } from "../../Contexts.js";
 
 function HomeScreen({ navigation }) {
   const [categoryName, setCategoryName] = useState("All");
@@ -25,6 +25,7 @@ function HomeScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
 
   const { addState } = useContext(AddPropertyContext);
+  const currentUser = useContext(UserContext);
 
   const propertyTypes = ["All", "Apartment", "Boarding House", "Dorm"];
 
@@ -103,7 +104,7 @@ function HomeScreen({ navigation }) {
                   borderRadius: 25,
                   marginTop: 12,
                 }}
-                source={require("../assets/profile.jpg")}
+                source={{ uri: currentUser.photoURL }}
               />
               <TouchableOpacity
                 onPress={() => navigation.navigate("Notifications")}

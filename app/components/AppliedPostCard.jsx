@@ -19,13 +19,21 @@ const AppliedPostCard = ({ data, updateList }) => {
   const currentUser = useContext(UserContext);
   const [isApproved, setIsApproved] = useState(false);
   const [isdeleted, setIsDeleted] = useState(false);
+  const [ownerData, setOwnerData] = useState(null);
 
   useEffect(() => {
+    getOwnerData();
     isApplicantApproved();
     isDeletedByOwner();
   }, []);
 
-  const getOwnerData = () => {}
+  const getOwnerData = async () => {
+    const ownerRef = doc(FirebaseDB, "Users", data.uid);
+    const snapshot = await getDoc(ownerRef);
+    if (snapshot.exists()) {
+      setOwnerData(snapshot.data());
+    }
+  };
 
   const isApplicantApproved = async () => {
     try {
@@ -138,9 +146,9 @@ const CancelButton = ({ onPress }) => {
   );
 };
 
-const MessageButton = ({}) => {
+const MessageButton = () => {
   return (
-    <TouchableOpacity style={styles.messageButton}>
+    <TouchableOpacity onPress={{}} style={styles.messageButton}>
       <Image
         style={{ width: 16, height: 16 }}
         source={require("../assets/navigationBarIcons/nonactiveMessages.png")}

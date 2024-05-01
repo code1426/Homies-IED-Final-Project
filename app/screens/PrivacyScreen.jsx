@@ -15,15 +15,7 @@ function PrivacySettingScreen({ navigation }) {
   const [privacy, setPrivacy] = useState(false);
   return (
     <SafeAreaView>
-      <HeaderComponent title='Privacy' />
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => navigation.goBack()}>
-        <Image
-          source={require('../assets/backIcon.png')}
-          style={styles.backButtonImage}
-        />
-      </TouchableOpacity>
+      <HeaderComponent backButtonOn={true} title='Privacy' />
       <View style={styles.container}>
         <TouchableOpacity onPress={() => setPrivacy(!privacy)}>
           <View style={{ flexDirection: 'row' }}>

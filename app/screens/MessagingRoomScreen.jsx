@@ -9,6 +9,8 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   FlatList,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 // import HeaderComponent from "../components/HeaderComponent";
 import MessagingRoomHeaderComponent from "../components/MessagingRoomHeaderComponent";
@@ -24,6 +26,7 @@ import {
 } from "firebase/firestore";
 import { FirebaseDB } from "../../firebase.config";
 import { useRef } from "react";
+import { KeyboardAwareFlatList } from "react-native-keyboard-aware-scroll-view";
 
 function MessagingRoomScreen({ navigation }) {
   const currentUser = useContext(UserContext);
@@ -38,15 +41,19 @@ function MessagingRoomScreen({ navigation }) {
   console.log(currentUser);
 
   useEffect(() => {
-    const unSub = onSnapshot(
-      doc(FirebaseDB, "Messages", data.MessageId),
-      (doc) => {
-        doc.exists() && setMessages(doc.data().messages.reverse());
-      }
-    );
-    return () => {
-      unSub();
-    };
+    try {
+      const unSub = onSnapshot(
+        doc(FirebaseDB, "Messages", data.MessageId),
+        (doc) => {
+          doc.exists() && setMessages(doc.data().messages.reverse());
+        }
+      );
+      return () => {
+        unSub();
+      };
+    } catch (e) {
+      console.log(e.message);
+    }
   }, [data.MessageId]);
 
   useEffect(() => {
@@ -98,39 +105,46 @@ function MessagingRoomScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <MessagingRoomHeaderComponent
-        title={data.user.displayName}
-        profilePic={{ uri: data.user.photoURL }}
-      />
-      <FlatList
-        keyboardDismissMode="interactive"
-        style={styles.room}
-        data={messages}
-        renderItem={({ item }) => <Message message={item} />}
-        inverted
-      />
-      <View style={styles.inputContainer}>
-        <TextInput
-          numberOfLines={4}
-          multiline={true}
-          style={styles.input}
-          onChangeText={setText}
-          value={text}
+      <KeyboardAvoidingView
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -55}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
+        <MessagingRoomHeaderComponent
+          title={data.user.displayName}
+          profilePic={{ uri: data.user.photoURL }}
         />
-        <TouchableOpacity onPress={handleSend}>
-          <Image
-            source={require("../assets/send-message.png")}
-            style={styles.sendButton}
+        <FlatList
+          keyboardDismissMode="interactive"
+          style={styles.room}
+          data={messages}
+          renderItem={({ item }) => <Message message={item} />}
+          inverted
+        />
+        <View style={styles.inputContainer}>
+          <TextInput
+            // textAlign="center"
+            // numberOfLines={4}
+            // multiline={true}
+            style={styles.input}
+            onChangeText={setText}
+            value={text}
           />
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity onPress={handleSend}>
+            <Image
+              source={require("../assets/send-message.png")}
+              style={styles.sendButton}
+            />
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "F5F5F5",
     flexDirection: "column",
   },
   room: {
@@ -141,12 +155,15 @@ const styles = StyleSheet.create({
     // flex: 1,
     paddingHorizontal: 12,
     flexDirection: "row",
-    // backgroundColor: "red",
+    // backgroundColor: "#E0E0E0",
     justifyContent: "center",
     alignItems: "center",
     height: 72,
   },
   input: {
+    justifyContent: "center",
+    alignItems: "center",
+    textAlignVertical: "center",
     height: 40,
     flex: 1,
     marginRight: 12,
@@ -154,7 +171,9 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 8,
     minHeight: 40,
-    maxHeight: 0,
+    fontSize: 16,
+    // backgroundColor: "red",
+    // maxHeight: 0,
   },
   sendButton: {
     width: 25,

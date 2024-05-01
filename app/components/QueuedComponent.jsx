@@ -110,8 +110,8 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
           [combinedID + '.userInfo']: {
             uid: applicant.uid,
             displayName: `${applicant.firstName} ${applicant.lastName}`, //'Kimly John Vergara', //applicant.displayName,
-            photoURL:
-              'https://firebasestorage.googleapis.com/v0/b/homies-ied-final-project.appspot.com/o/Users%2FphotoURL%2F1714273989060.jpg?alt=media&token=78cb3396-62d0-480e-baed-7acbf205a1f0', //applicant.photoURL
+            photoURL: applicant.photoURL
+              // 'https://firebasestorage.googleapis.com/v0/b/homies-ied-final-project.appspot.com/o/Users%2FphotoURL%2F1714273989060.jpg?alt=media&token=78cb3396-62d0-480e-baed-7acbf205a1f0', //applicant.photoURL
           },
           [combinedID + '.date']: serverTimestamp(),
         });
@@ -121,8 +121,8 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
           [combinedID + '.userInfo']: {
             uid: currentUser.uid,
             displayName: `${currentUser.firstName} ${currentUser.lastName}`, // currentUser.displayName,
-            photoURL:
-              'https://firebasestorage.googleapis.com/v0/b/homies-ied-final-project.appspot.com/o/Users%2FphotoURL%2F1714273989060.jpg?alt=media&token=78cb3396-62d0-480e-baed-7acbf205a1f0', //applicant.photoURL
+            photoURL: currentUser.photoURL
+              // 'https://firebasestorage.googleapis.com/v0/b/homies-ied-final-project.appspot.com/o/Users%2FphotoURL%2F1714273989060.jpg?alt=media&token=78cb3396-62d0-480e-baed-7acbf205a1f0', //applicant.photoURL
           },
           [combinedID + '.date']: serverTimestamp(),
         });
@@ -140,18 +140,10 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
         `OwnerPosts/${postData.postID}/Applicants`,
         applicant.uid
       );
-      const applicantRef = doc(
-        FirebaseDB,
-        `Users/${FirebaseAuth.currentUser.uid}/Applicants`,
-        applicant.uid
-      );
       await updateDoc(postRef, {
         isDeletedByOwner: 'yes',
       });
       updateList();
-      await updateDoc(applicantRef, {
-        isDeletedByOwner: 'yes',
-      });
       console.log('Removed Applicant');
     } catch (err) {
       console.log(err);

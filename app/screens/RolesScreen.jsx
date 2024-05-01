@@ -30,16 +30,7 @@ const RolesScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView>
-      <HeaderComponent title="Roles" />
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => navigation.navigate("Settings")}
-      >
-        <Image
-          source={require("../assets/backIcon.png")}
-          style={styles.backButtonImage}
-        />
-      </TouchableOpacity>
+      <HeaderComponent backButtonOn={true} title="Roles" />
       <View style={styles.container}>
         <TouchableOpacity
           onPress={async () => [

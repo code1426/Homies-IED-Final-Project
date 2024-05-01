@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from "react";
 import {
   Text,
   SafeAreaView,
@@ -6,14 +6,14 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
-} from 'react-native';
+} from "react-native";
 
-import HeaderComponent from '../components/HeaderComponent';
-import ButtonSettings from '../components/SettingsComponents/ButtonSettings';
+import HeaderComponent from "../components/HeaderComponent";
+import ButtonSettings from "../components/SettingsComponents/ButtonSettings";
 
-import { FirebaseAuth } from '../../firebase.config';
-import { UserContext } from '../../Contexts';
-import { useIsFocused } from '@react-navigation/native';
+import { FirebaseAuth } from "../../firebase.config";
+import { UserContext } from "../../Contexts";
+import { useIsFocused } from "@react-navigation/native";
 
 function SettingsScreen({ navigation }) {
   const currentUser = useContext(UserContext);
@@ -28,19 +28,24 @@ function SettingsScreen({ navigation }) {
   // const email = user?.email;
   // const contactNumber = '09123456789'; // should be changed to fetching
   // const location = 'somewhere'; // should be changed to fetching
-  const gCashSync = 'synced'; // should be changed to fetching
-  const businessPermit = 'verified'; // should be changed to fetching
+  const gCashSync = "synced"; // should be changed to fetching
+  const businessPermit = "verified"; // should be changed to fetching
 
   return (
     <SafeAreaView>
-      <HeaderComponent title='Settings' />
+      <HeaderComponent title="Settings" />
       <View style={styles.container}>
         <View style={styles.profileContainer}>
-          <Image
-            style={styles.image}
-            source={{ uri: userAuth.photoURL }}
-          />
-          <View>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Image style={styles.image} source={{ uri: userAuth.photoURL }} />
+          </View>
+          <View style={{ flex: 1 }}>
             <Text>{userAuth.displayName}</Text>
             <View>
               <Text>{currentUser.email}</Text>
@@ -50,32 +55,33 @@ function SettingsScreen({ navigation }) {
               <TouchableOpacity
                 style={styles.editButton}
                 onPress={() => {
-                  navigation.navigate('Edit Profile');
-                }}>
-                <Text style={{ textAlign: 'center' }}>Edit Profile</Text>
+                  navigation.navigate("Edit Profile");
+                }}
+              >
+                <Text style={{ textAlign: "center" }}>Edit Profile</Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
 
         <ButtonSettings
-          settingName='Privacy'
-          settingIcon={require('../assets/settingsIcons/privacyIcon.png')}
+          settingName="Privacy"
+          settingIcon={require("../assets/settingsIcons/privacyIcon.png")}
         />
         <ButtonSettings
-          settingName='Roles'
-          settingIcon={require('../assets/settingsIcons/roleChangeIcon.png')}
+          settingName="Roles"
+          settingIcon={require("../assets/settingsIcons/roleChangeIcon.png")}
         />
         <ButtonSettings
-          settingName='Notifications'
-          settingIcon={require('../assets/settingsIcons/notificationIcon.png')}
-          tailIcon={require('../assets/switchOff.png')}
-          tailIconActive={require('../assets/switchOn.png')}
+          settingName="Notifications"
+          settingIcon={require("../assets/settingsIcons/notificationIcon.png")}
+          tailIcon={require("../assets/switchOff.png")}
+          tailIconActive={require("../assets/switchOn.png")}
         />
         <ButtonSettings
-          settingName='Log Out'
-          settingIcon={require('../assets/settingsIcons/logOutIcon.png')}
-          tailIcon={require('../assets/settingsIcons/arrowHead.png')}
+          settingName="Log Out"
+          settingIcon={require("../assets/settingsIcons/logOutIcon.png")}
+          tailIcon={require("../assets/settingsIcons/arrowHead.png")}
         />
       </View>
     </SafeAreaView>
@@ -84,31 +90,32 @@ function SettingsScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
-    padding: 30,
-    height: '100%',
+    alignItems: "center",
+    padding: 20,
+    height: "100%",
   },
   profileContainer: {
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-evenly',
+    paddingHorizontal: 0,
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "space-evenly",
     marginBottom: 20,
   },
   image: {
     width: 130,
     height: 130,
     borderRadius: 65,
-    resizeMode: 'cover',
+    resizeMode: "cover",
   },
   editButton: {
-    backgroundColor: '#D5E7F0',
+    alignSelf: "center",
+    backgroundColor: "#D5E7F0",
     height: 25,
-    width: '100%',
-    justifyContent: 'center',
+    width: 120,
+    justifyContent: "center",
     borderRadius: 12.5,
     borderWidth: 1,
-    borderColor: '#85BCDC',
+    borderColor: "#85BCDC",
     marginTop: 10,
   },
 });

@@ -49,8 +49,8 @@ const styles = StyleSheet.create({
     // borderBottomColor: '#E5F0F6',
   },
   header: {
-    fontSize: 22,
-    fontWeight: "bold",
+    fontSize: 20,
+    fontWeight: "600",
   },
   profilePic: {
     alignSelf: "center",

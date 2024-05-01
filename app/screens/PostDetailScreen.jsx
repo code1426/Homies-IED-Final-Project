@@ -347,7 +347,7 @@ const PostDetailScreen = ({ navigation }) => {
             <Text>{isPropertyPinned ? "Pinned" : "Pin"}</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.reserveButton}>
+          {/* <TouchableOpacity style={styles.reserveButton}>
             <Image
               style={{ width: 25, height: 25 }}
               source={require("./../../app/assets/reserveIcon.png")}
@@ -356,7 +356,7 @@ const PostDetailScreen = ({ navigation }) => {
             <Text style={{ fontSize: 10 }}>{`(Php ${parseInt(
               parseFloat(data.registrationPrice) * 1.01
             )}.00)`}</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           {isApproved ? (
             <TouchableOpacity
               onPress={() => console.log("Message")}
@@ -388,7 +388,7 @@ const PostDetailScreen = ({ navigation }) => {
       {currentUser.role === "Owner" && data.uid === currentUser.uid && (
         <View style={styles.ownerFooterContainer}>
           <TouchableOpacity
-            style={[styles.editButtonContainer, { backgroundColor: "red" }]}
+            style={[styles.editButtonContainer, { backgroundColor: "#F43535" }]}
             onPress={() => {
               confirmDelete();
             }}
@@ -402,14 +402,14 @@ const PostDetailScreen = ({ navigation }) => {
             )}
           </TouchableOpacity>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={[styles.editButtonContainer, { flex: 2 }]}
             onPress={() => {}}
           >
             <Text style={{ color: "white", fontSize: 20, fontWeight: "700" }}>
               EDIT
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       )}
     </View>
@@ -545,7 +545,7 @@ const styles = StyleSheet.create({
   },
   editButtonContainer: {
     flex: 1,
-    backgroundColor: "#4285F4",
+    backgroundColor: "blue",
     alignItems: "center",
     justifyContent: "center",
     paddingBottom: 10,

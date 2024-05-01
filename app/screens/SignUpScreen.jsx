@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,23 +8,23 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
-} from 'react-native';
+} from "react-native";
 
-import { useRoute } from '@react-navigation/native';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
-import { FirebaseAuth, FirebaseDB } from '../../firebase.config';
-import { sendEmailVerification } from 'firebase/auth';
+import { useRoute } from "@react-navigation/native";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { FirebaseAuth, FirebaseDB } from "../../firebase.config";
+import { sendEmailVerification } from "firebase/auth";
 
 export default function SignUpScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
   const { params } = useRoute();
 
   const [form, setForm] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -38,24 +38,28 @@ export default function SignUpScreen({ navigation }) {
         email: form.email,
         role: params.role,
         location: null,
+        photoURL:
+          "https://firebasestorage.googleapis.com/v0/b/homies-ied-final-project.appspot.com/o/Users%2FphotoURL%2F1714523533825.jpg?alt=media&token=88f38ea0-1c36-4006-a186-663c97d4d054",
+        profileDescription: "",
+        isBusinessVerified: false,
       };
-      await setDoc(doc(FirebaseDB, 'Users', uid), user);
-      await setDoc(doc(FirebaseDB, 'UserMessages', uid), {});
+      await setDoc(doc(FirebaseDB, "Users", uid), user);
+      await setDoc(doc(FirebaseDB, "UserMessages", uid), {});
       setLoading(false);
     } catch (err) {
-      console.log('uploadUser Error:', err.message);
+      console.log("uploadUser Error:", err.message);
     }
   };
 
   const validateForm = () => {
     let errors = {};
-    if (!form.firstName) errors.firstName = 'First Name is required';
-    if (!form.lastName) errors.lastName = 'Last Name is required';
-    if (!form.email) errors.email = 'Email is required';
-    if (!form.password) errors.password = 'Password is required';
+    if (!form.firstName) errors.firstName = "First Name is required";
+    if (!form.lastName) errors.lastName = "Last Name is required";
+    if (!form.email) errors.email = "Email is required";
+    if (!form.password) errors.password = "Password is required";
     else if (form.password.length <= 8) {
-      errors.password = 'Password is Invalid';
-      console.log('Please enter a valid password');
+      errors.password = "Password is Invalid";
+      console.log("Please enter a valid password");
     }
     setErrors(errors);
     return Object.keys(errors).length === 0;
@@ -74,20 +78,20 @@ export default function SignUpScreen({ navigation }) {
         displayName: `${form.firstName} ${form.lastName}`,
       })
         .then(() => {
-          console.log('username set');
+          console.log("username set");
           uploadUserDetails(user.uid);
         })
         .then(() => {
           sendEmailVerification(FirebaseAuth.currentUser).then(() => {
-            console.log('Email verification sent');
+            console.log("Email verification sent");
             Alert.alert(
-              'Email verification sent!',
-              'Please check your email before signing in.',
+              "Email verification sent!",
+              "Please check your email before signing in.",
               [
                 {
-                  text: 'OK',
+                  text: "OK",
                   onPress: () => {
-                    navigation.navigate('SignIn');
+                    navigation.navigate("SignIn");
                     FirebaseAuth.signOut();
                   },
                 },
@@ -99,17 +103,17 @@ export default function SignUpScreen({ navigation }) {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      console.log('ERROR SIGN-UP:', error.message);
-      Alert.alert('Email already signed Up', 'Please proceed to sign in.');
+      console.log("ERROR SIGN-UP:", error.message);
+      Alert.alert("Email already signed Up", "Please proceed to sign in.");
     }
   };
 
   const resetForm = () => {
     setErrors({});
     setForm({
-      email: '',
-      password: '',
-      userName: '',
+      email: "",
+      password: "",
+      userName: "",
       PreferredRole: params.role,
     });
   };
@@ -127,29 +131,29 @@ export default function SignUpScreen({ navigation }) {
     <View style={styles.container}>
       <View>
         <Image
-          source={require('../assets/signup.png')}
+          source={require("../assets/signup.png")}
           style={styles.headerImg}
         />
       </View>
       <View style={styles.formContainer}>
-        <Text style={{ fontSize: 30, fontWeight: '600' }}>Sign Up</Text>
+        <Text style={{ fontSize: 30, fontWeight: "600" }}>Sign Up</Text>
         <View style={styles.form}>
           <View style={styles.inputContainer}>
             <View style={styles.nameInputsContainer}>
-              <View style={{ flex: 1, flexDirection: 'column' }}>
+              <View style={{ flex: 1, flexDirection: "column" }}>
                 <TextInput
                   style={[styles.input, styles.inputControl]}
-                  placeholder='First Name'
-                  placeholderTextColor='#6b7280'
+                  placeholder="First Name"
+                  placeholderTextColor="#6b7280"
                   value={form.firstName}
                   onChangeText={(firstName) => setForm({ ...form, firstName })}
                 />
               </View>
-              <View style={{ flex: 1, flexDirection: 'column' }}>
+              <View style={{ flex: 1, flexDirection: "column" }}>
                 <TextInput
                   style={[styles.input, styles.inputControl]}
-                  placeholder='Last Name'
-                  placeholderTextColor='#6b7280'
+                  placeholder="Last Name"
+                  placeholderTextColor="#6b7280"
                   value={form.lastName}
                   onChangeText={(lastName) => setForm({ ...form, lastName })}
                 />
@@ -171,8 +175,8 @@ export default function SignUpScreen({ navigation }) {
           <View style={styles.inputContainer}>
             <TextInput
               style={[styles.input, styles.inputControl]}
-              placeholder='Email'
-              placeholderTextColor='#6b7280'
+              placeholder="Email"
+              placeholderTextColor="#6b7280"
               value={form.email}
               onChangeText={(email) => setForm({ ...form, email })}
             />
@@ -183,8 +187,8 @@ export default function SignUpScreen({ navigation }) {
           <View style={styles.inputContainer}>
             <TextInput
               style={[styles.input, styles.inputControl]}
-              placeholder='Password'
-              placeholderTextColor='#6b7280'
+              placeholder="Password"
+              placeholderTextColor="#6b7280"
               value={form.password}
               secureTextEntry
               onChangeText={(password) => setForm({ ...form, password })}
@@ -194,12 +198,10 @@ export default function SignUpScreen({ navigation }) {
             )}
           </View>
 
-          <TouchableOpacity
-            style={styles.formAction}
-            onPress={handleSubmit}>
+          <TouchableOpacity style={styles.formAction} onPress={handleSubmit}>
             <View style={styles.btn}>
               {loading ? (
-                <ActivityIndicator color='white' />
+                <ActivityIndicator color="white" />
               ) : (
                 <Text style={styles.btnText}>Sign Up</Text>
               )}
@@ -212,8 +214,9 @@ export default function SignUpScreen({ navigation }) {
           <TouchableOpacity
             onPress={() => {
               resetForm();
-              navigation.navigate('SignIn');
-            }}>
+              navigation.navigate("SignIn");
+            }}
+          >
             <Text style={styles.signUpColor}>Sign In</Text>
           </TouchableOpacity>
         </View>
@@ -226,102 +229,102 @@ const styles = StyleSheet.create({
   container: {
     padding: 24,
     flex: 1,
-    backgroundColor: '#E8F4FF',
+    backgroundColor: "#E8F4FF",
     top: -50,
   },
   headerImg: {
-    alignSelf: 'center',
+    alignSelf: "center",
     // resizeMode: "cover",
     height: 330,
     width: 414,
   },
   formContainer: {
-    backgroundColor: '#FFF',
+    backgroundColor: "#FFF",
     borderRadius: 30,
     padding: 20,
-    position: 'absolute',
+    position: "absolute",
     top: 260,
     bottom: -50,
     left: 0,
     right: 0,
-    alignItems: 'center',
+    alignItems: "center",
   },
   form: {
     marginTop: 24,
-    width: '100%',
+    width: "100%",
   },
   formFooterContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     // position: 'absolute',
     marginTop: 140,
     // bottom: 50
   },
   formFooter: {
     fontSize: 13,
-    fontWeight: '500',
+    fontWeight: "500",
     letterSpacing: 0.15,
-    color: '#ABAEB6',
+    color: "#ABAEB6",
   },
   inputContainer: {
     marginBottom: 12,
   },
   input: {
     fontSize: 12,
-    fontWeight: '600',
-    color: '#ABAEB6',
+    fontWeight: "600",
+    color: "#ABAEB6",
     borderWidth: 1,
-    borderColor: '#ABAEB6',
+    borderColor: "#ABAEB6",
     borderRadius: 5,
   },
   inputLabel: {
     fontSize: 15,
-    fontWeight: '500',
-    color: '#000000',
+    fontWeight: "500",
+    color: "#000000",
     marginBottom: 8,
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: 20,
   },
   inputControl: {
     height: 54,
-    backgroundColor: '#EDF0F7',
+    backgroundColor: "#EDF0F7",
     paddingHorizontal: 16,
     borderRadius: 120,
     fontSize: 15,
-    fontWeight: '500',
-    color: '#222',
+    fontWeight: "500",
+    color: "#222",
   },
   formAction: {
     marginTop: 20,
   },
   btn: {
-    backgroundColor: '#243470',
+    backgroundColor: "#243470",
     borderWidth: 1,
-    borderColor: '#243470',
+    borderColor: "#243470",
     borderRadius: 120,
     height: 54,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   btnText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: '300',
+    fontWeight: "300",
   },
   signUpColor: {
-    color: '#243B7F',
+    color: "#243B7F",
     marginLeft: 5,
   },
   signInContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginHorizontal: 20,
     marginVertical: 60,
   },
   signInButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 120,
@@ -332,25 +335,25 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     marginRight: 0,
-    alignSelf: 'center',
-    resizeMode: 'contain',
+    alignSelf: "center",
+    resizeMode: "contain",
   },
   GoogleImg: {
     width: 20,
     height: 30,
     marginRight: 5,
-    alignSelf: 'center',
-    resizeMode: 'contain',
+    alignSelf: "center",
+    resizeMode: "contain",
   },
   errorText: {
-    color: 'red',
+    color: "red",
     marginBottom: 0,
     marginLeft: 16,
   },
   nameInputsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     columnGap: 8,
     // marginBottom: 4,
   },
