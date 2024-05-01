@@ -10,7 +10,7 @@ function Message({ message }) {
     <View
       style={[
         styles.container,
-        message.senderId === currentUser.uid ? styles.you : styles.others,
+        message.senderId === currentUser.uid && {alignSelf: "flex-end"},
       ]}
     >
       {message.senderId === currentUser.uid ? (
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     marginVertical: 5,
-    backgroundColor: 'red',
+    // backgroundColor: 'red',
   },
   profilePic: {
     alignSelf: "center",
@@ -84,11 +84,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
   you: {
-    direction: "rtl",
+    // direction: "rtl",
     alignSelf: "flex-end",
   },
   others: {
-    direction: "ltr",
+    // direction: "ltr",
     // alignSelf: "flex-end",
   },
   text: {
