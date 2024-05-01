@@ -109,8 +109,9 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
         await updateDoc(doc(FirebaseDB, 'UserMessages', currentUser.uid), {
           [combinedID + '.userInfo']: {
             uid: applicant.uid,
-            displayName: 'asdasd', //applicant.displayName,
-            photoURL: '../assets/settingsIcons/noProfilePlaceholder.png', //applicant.photoURL
+            displayName: `${applicant.firstName} ${applicant.lastName}`, //'Kimly John Vergara', //applicant.displayName,
+            photoURL:
+              'https://firebasestorage.googleapis.com/v0/b/homies-ied-final-project.appspot.com/o/Users%2FphotoURL%2F1714273989060.jpg?alt=media&token=78cb3396-62d0-480e-baed-7acbf205a1f0', //applicant.photoURL
           },
           [combinedID + '.date']: serverTimestamp(),
         });
@@ -119,11 +120,13 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
         await updateDoc(doc(FirebaseDB, 'UserMessages', applicant.uid), {
           [combinedID + '.userInfo']: {
             uid: currentUser.uid,
-            displayName: 'asdasd', //currentUser.displayName,
-            photoURL: currentUser.photoURL,
+            displayName: `${currentUser.firstName} ${currentUser.lastName}`, // currentUser.displayName,
+            photoURL:
+              'https://firebasestorage.googleapis.com/v0/b/homies-ied-final-project.appspot.com/o/Users%2FphotoURL%2F1714273989060.jpg?alt=media&token=78cb3396-62d0-480e-baed-7acbf205a1f0', //applicant.photoURL
           },
-          [combinedID + '.date']: serverTimestamp,
+          [combinedID + '.date']: serverTimestamp(),
         });
+        console.log('applicant message set');
       }
     } catch (error) {
       console.log(error);
