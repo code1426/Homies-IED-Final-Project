@@ -10,7 +10,7 @@ import AddPropertyScreen from '../screens/AddPropertyScreen';
 // StackNav Screens
 import HomeStackNav from '../screens/navigations/HomeStackNav';
 import ListingStackNav from '../screens/navigations/ListingStackNav';
-import MessageStackNav from '../screens/navigations/MessageStackNav';
+import MessageStackNav from '../screens/navigations/MessagesStackNav';
 import SettingStackNav from '../screens/navigations/SettingStackNav';
 
 const Tab = createBottomTabNavigator();
@@ -39,77 +39,77 @@ const addPropertyIcon = require('../assets/navigationBarIcons/addPropertyIcon.pn
 
 function NavBarOwners() {
   return (
-      <Tab.Navigator
-        initialRouteName={home}
-        screenOptions={({ route }) => ({
-          tabBarShowLabel: false,
-          headerShown: false,
-          tabBarIcon: ({ focused }) => {
-            let iconName;
-            let styleType;
-            let routeName = route.name;
+    <Tab.Navigator
+      initialRouteName={home}
+      screenOptions={({ route }) => ({
+        tabBarShowLabel: false,
+        headerShown: false,
+        tabBarIcon: ({ focused }) => {
+          let iconName;
+          let styleType;
+          let routeName = route.name;
 
-            if (routeName === home) {
-              iconName = focused ? activeHomeIcon : homeIcon;
-              styleType = styles.styleSmallIcons;
-            } else if (routeName === listing) {
-              iconName = focused ? activeListIcon : listIcon;
-              styleType = styles.styleSmallIcons;
-            } else if (routeName === messages) {
-              iconName = focused ? activeMessagesIcon : messagesIcon;
-              styleType = styles.styleSmallIcons;
-            } else if (routeName === settings) {
-              iconName = focused ? activeSettingsIcon : settingsIcon;
-              styleType = styles.styleSmallIcons;
-            } else if (routeName === addProperty) {
-              iconName = addPropertyIcon;
-              styleType = styles.styleMiddleIcon;
-            }
-            if (routeName != addProperty)
-              return (
-                <View>
+          if (routeName === home) {
+            iconName = focused ? activeHomeIcon : homeIcon;
+            styleType = styles.styleSmallIcons;
+          } else if (routeName === listing) {
+            iconName = focused ? activeListIcon : listIcon;
+            styleType = styles.styleSmallIcons;
+          } else if (routeName === messages) {
+            iconName = focused ? activeMessagesIcon : messagesIcon;
+            styleType = styles.styleSmallIcons;
+          } else if (routeName === settings) {
+            iconName = focused ? activeSettingsIcon : settingsIcon;
+            styleType = styles.styleSmallIcons;
+          } else if (routeName === addProperty) {
+            iconName = addPropertyIcon;
+            styleType = styles.styleMiddleIcon;
+          }
+          if (routeName != addProperty)
+            return (
+              <View>
+                <Image
+                  source={iconName}
+                  style={styleType}
+                  resizeMode='contain'
+                />
+              </View>
+            );
+          else
+            return (
+              <View style={[styles.midIcon]}>
+                <View style={[styles.midIconShadow]}>
                   <Image
                     source={iconName}
                     style={styleType}
                     resizeMode='contain'
                   />
                 </View>
-              );
-            else
-              return (
-                <View style={[styles.midIcon]}>
-                  <View style={[styles.midIconShadow]}>
-                    <Image
-                      source={iconName}
-                      style={styleType}
-                      resizeMode='contain'
-                    />
-                  </View>
-                </View>
-              );
-          },
-        })}>
-        <Tab.Screen
-          name={home}
-          component={HomeStackNav} // changed all components to stackNav
-        />
-        <Tab.Screen
-          name={listing}
-          component={ListingStackNav}
-        />
-        <Tab.Screen
-          name={addProperty}
-          component={AddPropertyScreen}
-        />
-        <Tab.Screen
-          name={messages}
-          component={MessageStackNav}
-        />
-        <Tab.Screen
-          name={settings}
-          component={SettingStackNav}
-        />
-      </Tab.Navigator>
+              </View>
+            );
+        },
+      })}>
+      <Tab.Screen
+        name={home}
+        component={HomeStackNav} // changed all components to stackNav
+      />
+      <Tab.Screen
+        name={listing}
+        component={ListingStackNav}
+      />
+      <Tab.Screen
+        name={addProperty}
+        component={AddPropertyScreen}
+      />
+      <Tab.Screen
+        name={messages}
+        component={MessageStackNav}
+      />
+      <Tab.Screen
+        name={settings}
+        component={SettingStackNav}
+      />
+    </Tab.Navigator>
   );
 }
 
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 15,
     borderRadius: 60,
-    bottom: 10, 
+    bottom: 10,
   },
   styleMiddleIcon: {
     width: 60,
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     shadowColor: '#7F5DF0',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.2,
-    shadowRadius: 3.5, 
+    shadowRadius: 3.5,
   },
 });
 

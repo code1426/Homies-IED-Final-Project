@@ -13,17 +13,23 @@ import {
 // latest_message is a string remove the {} and just use quotations
 // time is the time the last message has been sent remove the {} and just use quotations
 
-function Message({ name, profilePic, latestMessage, time }) {
+function MessageCard({ name, profilePic, latestMessage, time, onPress }) {
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity style={styles.pressableContent}>
+      <TouchableOpacity
+        style={styles.pressableContent}
+        onPress={onPress}>
         <Image
           source={profilePic}
           style={styles.profilePicStyle}
         />
         <View style={[styles.messageContent]}>
           <Text style={styles.profileName}>{name}</Text>
-          <Text style={styles.message}>{latestMessage}</Text>
+          <Text
+            style={styles.message}
+            numberOfLines={2}>
+            {latestMessage}
+          </Text>
         </View>
         <View style={[styles.updateSeen]}>
           <Text style={styles.timeUpdated}>{time}</Text>
@@ -91,4 +97,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Message;
+export default MessageCard;

@@ -8,7 +8,7 @@ import { Image, View, StyleSheet, Platform } from 'react-native';
 import HomeStackNav from '../screens/navigations/HomeStackNav';
 import PinnedStackNav from '../screens/navigations/PinnedStackNav';
 import AppliedStackNav from '../screens/navigations/AppliedStackNav';
-import MessageStackNav from '../screens/navigations/MessageStackNav';
+import MessageStackNav from '../screens/navigations/MessagesStackNav';
 import SettingStackNav from '../screens/navigations/SettingStackNav';
 
 const Tab = createBottomTabNavigator();
@@ -36,7 +36,6 @@ const activeSettingsIcon = require('../assets/navigationBarIcons/activeSettings.
 const activeAppliedIcon = require('../assets/navigationBarIcons/applied.png');
 
 function NavBarRenters() {
-
   return (
     <Tab.Navigator
       initialRouteName={home}
