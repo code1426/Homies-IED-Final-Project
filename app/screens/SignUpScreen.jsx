@@ -37,9 +37,9 @@ export default function SignUpScreen({ navigation }) {
         lastName: form.lastName,
         email: form.email,
         role: params.role,
-        location: null,
+        location: "Your Location",
         photoURL:
-          "https://firebasestorage.googleapis.com/v0/b/homies-ied-final-project.appspot.com/o/Users%2FphotoURL%2F1714523533825.jpg?alt=media&token=88f38ea0-1c36-4006-a186-663c97d4d054",
+          "https://firebasestorage.googleapis.com/v0/b/homies-ied-final-project.appspot.com/o/Users%2FphotoURL%2F1714614993869.jpg?alt=media&token=31747d4d-29eb-48a1-9ff0-763ad2d6055b",
         profileDescription: "",
         isBusinessVerified: false,
       };
@@ -76,6 +76,7 @@ export default function SignUpScreen({ navigation }) {
       const user = resp.user;
       await updateProfile(user, {
         displayName: `${form.firstName} ${form.lastName}`,
+        photoURL: "https://firebasestorage.googleapis.com/v0/b/homies-ied-final-project.appspot.com/o/Users%2FphotoURL%2F1714614993869.jpg?alt=media&token=31747d4d-29eb-48a1-9ff0-763ad2d6055b"
       })
         .then(() => {
           console.log("username set");

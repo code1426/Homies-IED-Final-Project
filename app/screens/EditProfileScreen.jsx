@@ -30,7 +30,15 @@ import {
 } from "firebase/auth";
 
 import HeaderComponent from "../components/HeaderComponent";
-import { updateDoc, doc, getDoc, deleteDoc } from "firebase/firestore";
+import {
+  updateDoc,
+  doc,
+  getDoc,
+  deleteDoc,
+  query,
+  collection,
+  where,
+} from "firebase/firestore";
 
 import * as ImagePicker from "expo-image-picker";
 import {
@@ -223,14 +231,26 @@ export default function EditProfileScreen({ navigation }) {
         userAuth.email,
         inputPasswordReqDelete
       );
-      await reauthenticateWithCredential(userAuth, credential).catch(
-        (error) => Alert.alert("Wrong Password", "Try again later.")
-        // console.log(error)
-      );
-      console.log("Reaunthenticated");
-      await handleDeleteAccount();
-      await deleteDoc(FirebaseDB, "Users", currentUser.uid);
-      console.log("Documents Deleted");
+      reauthenticateWithCredential(userAuth, credential)
+        .then(async () => {
+          console.log("Reaunthenticated");
+          // const q = query(
+          //   collection(FirebaseDB, "OwnerPosts"),
+          //   where("uid", "==", currentUser.uid)
+          // );
+          // const res = await getDoc(q);
+          // res.forEach(async (snapshot) => {
+          //   await deleteDoc(doc(FirebaseDB, "OwnerPosts", snapshot.id));
+          //   console.log("Document Deleted");
+          // });
+          await deleteDoc(doc(FirebaseDB, "Users", currentUser.uid));
+          await handleDeleteAccount();
+          console.log("Documents Deleted");
+        })
+        .catch((error) => {
+          Alert.alert("Wrong Password", "Try again later.");
+          console.log(error);
+        });
     } catch (error) {
       console.log("Change Password", error.message);
       Alert.alert("Wrong Password", "Try again later.");
@@ -460,6 +480,7 @@ export default function EditProfileScreen({ navigation }) {
                     style={styles.passwordReqDeletion}
                     placeholder="password"
                     onChangeText={setInputPasswordReqDelete}
+                    value={inputPasswordReqDelete}
                     secureTextEntry
                   />
                 </View>
