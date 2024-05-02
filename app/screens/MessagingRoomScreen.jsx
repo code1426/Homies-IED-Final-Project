@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -11,11 +11,11 @@ import {
   FlatList,
   KeyboardAvoidingView,
   Platform,
-} from "react-native";
+} from 'react-native';
 // import HeaderComponent from "../components/HeaderComponent";
-import MessagingRoomHeaderComponent from "../components/MessagingRoomHeaderComponent";
-import { MessageContext, UserContext } from "../../Contexts";
-import Message from "../components/MessagingComponents/Message";
+import MessagingRoomHeaderComponent from '../components/MessagingRoomHeaderComponent';
+import { MessageContext, UserContext } from '../../Contexts';
+import Message from '../components/MessagingComponents/Message';
 import {
   Timestamp,
   arrayUnion,
@@ -23,10 +23,11 @@ import {
   onSnapshot,
   serverTimestamp,
   updateDoc,
-} from "firebase/firestore";
-import { FirebaseDB } from "../../firebase.config";
-import { useRef } from "react";
-import { KeyboardAwareFlatList } from "react-native-keyboard-aware-scroll-view";
+} from 'firebase/firestore';
+import { FirebaseDB } from '../../firebase.config';
+import { useRef } from 'react';
+import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view';
+import { useNavigation } from '@react-navigation/native';
 
 function MessagingRoomScreen({ navigation }) {
   const currentUser = useContext(UserContext);
@@ -37,13 +38,13 @@ function MessagingRoomScreen({ navigation }) {
   // useEffect(() => {
   //   ref.current?.scrollIntoView({ behavior: "smooth" });
   // }, [messages]);
-
-  console.log(currentUser);
+  // console.log(currentUser);
+  console.log(data.MessageId);
 
   useEffect(() => {
     try {
       const unSub = onSnapshot(
-        doc(FirebaseDB, "Messages", data.MessageId),
+        doc(FirebaseDB, 'Messages', data.MessageId),
         (doc) => {
           doc.exists() && setMessages(doc.data().messages.reverse());
         }
@@ -59,7 +60,7 @@ function MessagingRoomScreen({ navigation }) {
   useEffect(() => {
     navigation.getParent()?.setOptions({
       tabBarStyle: {
-        display: "none",
+        display: 'none',
         bottom: 0,
       },
     });
@@ -70,12 +71,12 @@ function MessagingRoomScreen({ navigation }) {
   }, [navigation]);
 
   // Sending Message
-  const [text, setText] = useState("");
+  const [text, setText] = useState('');
   const handleSend = async () => {
     try {
-      setText("");
-      if (text !== "") {
-        await updateDoc(doc(FirebaseDB, "Messages", data.MessageId), {
+      setText('');
+      if (text !== '') {
+        await updateDoc(doc(FirebaseDB, 'Messages', data.MessageId), {
           messages: arrayUnion({
             id: Math.random().toString(16).slice(2),
             text,
@@ -84,20 +85,21 @@ function MessagingRoomScreen({ navigation }) {
           }),
         });
 
-        await updateDoc(doc(FirebaseDB, "UserMessages", currentUser.uid), {
-          [data.MessageId + ".latestMessage"]: {
+        await updateDoc(doc(FirebaseDB, 'UserMessages', currentUser.uid), {
+          [data.MessageId + '.latestMessage']: {
             text,
           },
-          [data.MessageId + ".date"]: serverTimestamp(),
+          [data.MessageId + '.date']: serverTimestamp(),
         });
 
-        await updateDoc(doc(FirebaseDB, "UserMessages", data.user.uid), {
-          [data.MessageId + ".latestMessage"]: {
+        await updateDoc(doc(FirebaseDB, 'UserMessages', data.user.uid), {
+          [data.MessageId + '.latestMessage']: {
             text,
           },
-          [data.MessageId + ".date"]: serverTimestamp(),
+          [data.MessageId + '.date']: serverTimestamp(),
         });
       }
+      console.log(data);
     } catch (error) {
       console.log(error);
     }
@@ -106,16 +108,15 @@ function MessagingRoomScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
-        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -55}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
-      >
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -55}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}>
         <MessagingRoomHeaderComponent
-          title={data.user.displayName}
+          title={data.user.firstName + ' ' + data.user.lastName}
           profilePic={{ uri: data.user.photoURL }}
         />
         <FlatList
-          keyboardDismissMode="interactive"
+          keyboardDismissMode='interactive'
           style={styles.room}
           data={messages}
           renderItem={({ item }) => <Message message={item} />}
@@ -132,7 +133,7 @@ function MessagingRoomScreen({ navigation }) {
           />
           <TouchableOpacity onPress={handleSend}>
             <Image
-              source={require("../assets/send-message.png")}
+              source={require('../assets/send-message.png')}
               style={styles.sendButton}
             />
           </TouchableOpacity>
@@ -144,8 +145,8 @@ function MessagingRoomScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "F5F5F5",
-    flexDirection: "column",
+    backgroundColor: 'F5F5F5',
+    flexDirection: 'column',
   },
   room: {
     // backgroundColor: "white",
@@ -154,16 +155,16 @@ const styles = StyleSheet.create({
     // marginLeft: 30,
     // flex: 1,
     paddingHorizontal: 12,
-    flexDirection: "row",
+    flexDirection: 'row',
     // backgroundColor: "#E0E0E0",
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     height: 72,
   },
   input: {
-    justifyContent: "center",
-    alignItems: "center",
-    textAlignVertical: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlignVertical: 'center',
     height: 40,
     flex: 1,
     marginRight: 12,

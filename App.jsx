@@ -22,6 +22,7 @@ import {
   AddPropertyContext,
   MessageContext,
 } from './Contexts.js';
+import ProfileDescriptionScreen from './app/screens/ProfileDescriptionScreen.jsx';
 
 const Stack = createNativeStackNavigator();
 
@@ -88,7 +89,6 @@ export default function App() {
   const [state, dispatch] = useReducer(MessageReducer, INITIAL_STATE);
 
   return (
-    
     <AddPropertyContext.Provider value={{ addState, setAddState }}>
       <AppliedContext.Provider value={{ appliedState, setAppliedState }}>
         <PinContext.Provider value={{ pinState, setPinState }}>
@@ -100,6 +100,7 @@ export default function App() {
                   screenOptions={{
                     headerShown: false,
                   }}>
+                  
                   {user && (
                     <>
                       {user.role === 'Owner' ? (

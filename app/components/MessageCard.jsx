@@ -45,7 +45,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flexDirection: 'row',
     paddingHorizontal: 16,
-    alignItems: "center",
+    alignItems: 'center',
+    // borderWidth: 0.5,
+    borderBottomWidth: 0.5
   },
   profilePicStyle: {
     width: 50,
