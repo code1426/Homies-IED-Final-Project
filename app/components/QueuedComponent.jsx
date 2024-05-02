@@ -17,12 +17,16 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import { FirebaseAuth, FirebaseDB } from '../../firebase.config';
-import { UserContext } from '../../Contexts';
+import { MessageContext, UserContext } from '../../Contexts';
+import { useNavigation } from '@react-navigation/native';
 
 const QueuedComponent = ({ applicant, postData, updateList }) => {
+  const navigation = useNavigation();
   const currentUser = useContext(UserContext);
+  const { dispatch } = useContext(MessageContext);
 
   const [isApproved, setIsApproved] = useState(false);
+  console.log(applicant);
 
   useEffect(() => {
     isApplicantApproved();
@@ -109,9 +113,10 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
         await updateDoc(doc(FirebaseDB, 'UserMessages', currentUser.uid), {
           [combinedID + '.userInfo']: {
             uid: applicant.uid,
-            displayName: `${applicant.firstName} ${applicant.lastName}`, //'Kimly John Vergara', //applicant.displayName,
-            photoURL: applicant.photoURL
-              // 'https://firebasestorage.googleapis.com/v0/b/homies-ied-final-project.appspot.com/o/Users%2FphotoURL%2F1714273989060.jpg?alt=media&token=78cb3396-62d0-480e-baed-7acbf205a1f0', //applicant.photoURL
+            firstName: applicant.firstName,
+            lastName: applicant.lastName,
+            photoURL: applicant.photoURL,
+            // 'https://firebasestorage.googleapis.com/v0/b/homies-ied-final-project.appspot.com/o/Users%2FphotoURL%2F1714273989060.jpg?alt=media&token=78cb3396-62d0-480e-baed-7acbf205a1f0', //applicant.photoURL
           },
           [combinedID + '.date']: serverTimestamp(),
         });
@@ -120,17 +125,26 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
         await updateDoc(doc(FirebaseDB, 'UserMessages', applicant.uid), {
           [combinedID + '.userInfo']: {
             uid: currentUser.uid,
-            displayName: `${currentUser.firstName} ${currentUser.lastName}`, // currentUser.displayName,
-            photoURL: currentUser.photoURL
-              // 'https://firebasestorage.googleapis.com/v0/b/homies-ied-final-project.appspot.com/o/Users%2FphotoURL%2F1714273989060.jpg?alt=media&token=78cb3396-62d0-480e-baed-7acbf205a1f0', //applicant.photoURL
+            firstName: currentUser.firstName,
+            lastName: currentUser.lastName,
+            photoURL: currentUser.photoURL,
+            // 'https://firebasestorage.googleapis.com/v0/b/homies-ied-final-project.appspot.com/o/Users%2FphotoURL%2F1714273989060.jpg?alt=media&token=78cb3396-62d0-480e-baed-7acbf205a1f0', //applicant.photoURL
           },
           [combinedID + '.date']: serverTimestamp(),
         });
         console.log('applicant message set');
       }
+
+      handleSelect(applicant);
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleSelect = (user) => {
+    console.log(user);
+    dispatch({ type: 'MESSAGE_PRESSED', payload: user });
+    navigation.navigate('MessagingRoom');
   };
 
   const handleDelete = async () => {
@@ -150,13 +164,19 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
     }
   };
 
+  const handleProfileDescription = () => {
+    navigation.push('ProfileDescriptionScreen', { applicant: applicant });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.profileContainer}>
-        <Image
-          style={styles.profileImage}
-          source={require('../assets/profile.jpg')}
-        />
+        <TouchableOpacity onPress={handleProfileDescription}>
+          <Image
+            style={styles.profileImage}
+            source={require('../assets/profile.jpg')}
+          />
+        </TouchableOpacity>
         <Text
           numberOfLines={1}
           style={styles.name}>

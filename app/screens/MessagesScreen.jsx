@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
-import MessageCard from "../components/MessageCard.jsx";
+import React, { useContext, useEffect, useState } from 'react';
+import MessageCard from '../components/MessageCard.jsx';
 import {
   View,
   Text,
@@ -7,9 +7,9 @@ import {
   Image,
   StyleSheet,
   Platform,
-} from "react-native";
+} from 'react-native';
 
-import HeaderComponent from "../components/HeaderComponent";
+import HeaderComponent from '../components/HeaderComponent';
 import {
   doc,
   getDoc,
@@ -17,11 +17,11 @@ import {
   onSnapshot,
   orderBy,
   query,
-} from "firebase/firestore";
-import { FirebaseDB } from "../../firebase.config.js";
-import { UserContext } from "../../Contexts.js";
-import { MessageContext } from "../../Contexts.js";
-import Message from "../components/MessagingComponents/Message.jsx";
+} from 'firebase/firestore';
+import { FirebaseDB } from '../../firebase.config.js';
+import { UserContext } from '../../Contexts.js';
+import { MessageContext } from '../../Contexts.js';
+import Message from '../components/MessagingComponents/Message.jsx';
 
 function MessagesScreen({ navigation }) {
   const currentUser = useContext(UserContext);
@@ -29,7 +29,7 @@ function MessagesScreen({ navigation }) {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    const q = query(doc(FirebaseDB, "UserMessages", currentUser.uid));
+    const q = query(doc(FirebaseDB, 'UserMessages', currentUser.uid));
     const unsub = onSnapshot(q, (doc) => {
       setMessages(doc.data());
     });
@@ -40,22 +40,26 @@ function MessagesScreen({ navigation }) {
 
   const handleSelect = (user) => {
     console.log(user);
-    dispatch({ type: "MESSAGE_PRESSED", payload: user });
-    navigation.navigate("MessagingRoom");
+    dispatch({ type: 'MESSAGE_PRESSED', payload: user });
+    navigation.navigate('MessagingRoom');
   };
 
   return (
     <SafeAreaView style={styles.screen}>
-      <HeaderComponent title="Messages" />
-      {Object.entries(messages)?.map(
+      <HeaderComponent title='Messages' />
+      {Object.entries(messages).map(
         (message) => (
-          console.log(message[1].latestMessage0),
+          console.log(message),
           (
             <MessageCard
               profilePic={{ uri: message[1].userInfo.photoURL }}
-              name={message[1].userInfo.displayName}
+              name={
+                message[1].userInfo.firstName +
+                ' ' +
+                message[1].userInfo.lastName
+              }
               latestMessage={message[1].latestMessage?.text}
-              time="8:15 PM"
+              time='8:15 PM'
               key={message[0]}
               onPress={() => {
                 handleSelect(message[1].userInfo);
@@ -64,6 +68,7 @@ function MessagesScreen({ navigation }) {
           )
         )
       )}
+      <MessageCard />
     </SafeAreaView>
   );
 }
