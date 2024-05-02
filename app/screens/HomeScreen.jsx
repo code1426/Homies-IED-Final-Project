@@ -10,12 +10,13 @@ import {
   Platform,
   RefreshControl,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import PostCard from "../components/PostCard";
 import CategoryButton from "../components/CategoryButton.jsx";
 
 import { FirebaseDB } from "../../firebase.config";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 
 import { AddPropertyContext, UserContext } from "../../Contexts.js";
 
@@ -37,12 +38,16 @@ function HomeScreen({ navigation }) {
     try {
       setPropertyList([]);
       setLoading(true);
-      const querySnapshot = await getDocs(collection(FirebaseDB, "OwnerPosts"));
+      const q = query(
+        collection(FirebaseDB, "OwnerPosts"),
+        orderBy("created_at", "desc")
+      );
+      const querySnapshot = await getDocs(q);
 
       querySnapshot.forEach((doc) => {
         setPropertyList((property) => [...property, doc.data()]);
-        setLoading(false);
       });
+      setLoading(false);
     } catch (err) {
       console.log(err).message;
       setLoading(false);
@@ -55,6 +60,7 @@ function HomeScreen({ navigation }) {
       setLoading(true);
       const q = query(
         collection(FirebaseDB, "OwnerPosts"),
+        // orderBy("created_at", "desc"),
         where("propertyType", "==", name)
       );
 
@@ -77,6 +83,7 @@ function HomeScreen({ navigation }) {
     setTimeout(() => {
       setCategoryName("All");
       getAllPropertyList();
+      setMessageState((state) => state + 1)
       setRefreshing(false);
     }, 750);
   }, []);
@@ -107,7 +114,12 @@ function HomeScreen({ navigation }) {
                 source={{ uri: currentUser.photoURL }}
               />
               <TouchableOpacity
-                onPress={() => navigation.navigate("Notifications")}
+                onPress={() =>
+                  Alert.alert(
+                    "Alert",
+                    "This notification feature is coming soon! We apologize for the inconvenience."
+                  )
+                }
               >
                 <Image
                   style={{

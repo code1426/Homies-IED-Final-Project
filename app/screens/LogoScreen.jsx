@@ -13,7 +13,7 @@ export default function LogoScreen({ navigation }) {
     }
   }, []);
 
-  const appLogo = require('../assets/homies-logo.png');
+  const appLogo = require('../assets/homies_Logo.png');
   return (
     <SafeAreaView style={styles.container}>
       <Image

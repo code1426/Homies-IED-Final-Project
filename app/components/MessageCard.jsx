@@ -32,7 +32,7 @@ function MessageCard({ name, profilePic, latestMessage, time, onPress }) {
           </Text>
         </View>
         <View>
-          <Text style={styles.timeUpdated}>{time}</Text>
+          <Text style={styles.timeUpdated}>{`${time[1]}:${time[2]}`}</Text>
         </View>
       </TouchableOpacity>
     </SafeAreaView>
@@ -47,7 +47,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     alignItems: 'center',
     // borderWidth: 0.5,
-    borderBottomWidth: 0.5
+    borderBottomWidth: 0.5,
+    borderColor: "#BDBDBD"
   },
   profilePicStyle: {
     width: 50,
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   timeUpdated: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: 'bold',
     marginBottom: 6,
   },

@@ -6,24 +6,24 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 
 import SelectButton from "../components/SelectButton";
 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 
 function PreferredRole({}) {
-
   const [selectedName, setSelectedName] = useState("");
   const navigation = useNavigation();
 
   const handleProceed = () => {
     if (selectedName) {
-      navigation.push("SignUp", {role: selectedName})
+      navigation.push("SignUp", { role: selectedName });
     } else {
-      alert("Please select a role")
+      alert("Please select a role");
     }
-  }
+  };
 
   return (
     <SafeAreaView style={{ height: 736, width: "100%" }}>
@@ -33,6 +33,15 @@ function PreferredRole({}) {
           source={require("../assets/signup.png")}
         />
       </View>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.goBack()}
+      >
+        <Image
+          source={require("../assets/backIcon.png")}
+          style={styles.backButton}
+        />
+      </TouchableOpacity>
       <View
         style={{
           height: "81%",
@@ -81,7 +90,10 @@ function PreferredRole({}) {
                   marginTop: "10%",
                 }}
               >
-                <SelectButton name='Renter' selectedName={selectedName}></SelectButton>
+                <SelectButton
+                  name="Renter"
+                  selectedName={selectedName}
+                ></SelectButton>
               </View>
               <View
                 style={{ height: "70%", width: "90%", alignSelf: "center" }}
@@ -109,7 +121,7 @@ function PreferredRole({}) {
 
             <TouchableOpacity
               style={styles.role}
-              onPress={()=> setSelectedName("Owner")}
+              onPress={() => setSelectedName("Owner")}
             >
               <View
                 style={{
@@ -119,7 +131,10 @@ function PreferredRole({}) {
                   marginTop: "10%",
                 }}
               >
-                <SelectButton name='Owner' selectedName={selectedName}></SelectButton>
+                <SelectButton
+                  name="Owner"
+                  selectedName={selectedName}
+                ></SelectButton>
               </View>
               <View
                 style={{ height: "70%", width: "90%", alignSelf: "center" }}
@@ -145,9 +160,7 @@ function PreferredRole({}) {
               </View>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            onPress={() => handleProceed()}
-          >
+          <TouchableOpacity onPress={() => handleProceed()}>
             <View
               style={{
                 height: 40,
@@ -184,6 +197,13 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     justifyContent: "space-evenly",
   },
+  backButton: {
+    width: 25,
+    height: 25,
+    position: "absolute",
+    top: Platform.OS === "android" ? 26 : 20,
+    left: 12,
+  }
 });
 
 export default PreferredRole;

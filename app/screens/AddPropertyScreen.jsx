@@ -45,7 +45,7 @@ function AddPropertyScreen({ navigation }) {
     ...styles.pickerContainer,
   });
   const [rentStyle, setRentStyle] = useState({ ...styles.rentInput });
-  const [regStyle, setRegStyle] = useState({ ...styles.regInput });
+  // const [regStyle, setRegStyle] = useState({ ...styles.regInput });
   const [imgStyle, setImgStyle] = useState({ ...styles.thumbnail });
   const [featureStyle, setFeatureStyle] = useState({
     ...styles.featuresContainer,
@@ -136,10 +136,10 @@ function AddPropertyScreen({ navigation }) {
     let isAllInputFilled;
     console.log(values);
 
-    values.titleLowerCase = values.title.toLowerCase()
-    values.descriptionLowerCase = values.description.toLowerCase()
-    values.propertyTypeLowerCase = values.propertyType.toLowerCase()
-    values.addressLowerCase = values.address.toLowerCase()
+    // values.titleLowerCase = values.title.toLowerCase()
+    // values.descriptionLowerCase = values.description.toLowerCase()
+    // values.propertyTypeLowerCase = values.propertyType.toLowerCase()
+    // values.addressLowerCase = values.address.toLowerCase()
 
     for (let [key, val] of Object.entries(values)) {
       if (!val && key !== "thumbnail" && key !== "images") {
@@ -149,7 +149,7 @@ function AddPropertyScreen({ navigation }) {
       } else isAllInputFilled = true;
     }
 
-    if (values.features == []) {
+    if (values.features.length === 0) {
       isAllInputFilled = false;
       return;
     }
@@ -164,24 +164,24 @@ function AddPropertyScreen({ navigation }) {
       });
       return;
     }
-    if (isNaN(values.registrationPrice)) {
-      isAllInputFilled = false;
-      setRegStyle({
-        ...styles.regInput,
-        borderWidth: 2,
-        borderColor: "#FF2525",
-      });
-      return;
-    }
-    if (parseInt(values.rentPrice) < parseInt(values.registrationPrice)) {
-      isAllInputFilled = false;
-      setRegStyle({
-        ...styles.regInput,
-        borderWidth: 2,
-        borderColor: "#FF2525",
-      });
-      return;
-    }
+    // if (isNaN(values.registrationPrice)) {
+    //   isAllInputFilled = false;
+    //   setRegStyle({
+    //     ...styles.regInput,
+    //     borderWidth: 2,
+    //     borderColor: "#FF2525",
+    //   });
+    //   return;
+    // }
+    // if (parseInt(values.rentPrice) < parseInt(values.registrationPrice)) {
+    //   isAllInputFilled = false;
+    //   setRegStyle({
+    //     ...styles.regInput,
+    //     borderWidth: 2,
+    //     borderColor: "#FF2525",
+    //   });
+    //   return;
+    // }
 
     try {
       setLoading(true);
@@ -322,27 +322,27 @@ function AddPropertyScreen({ navigation }) {
     } else {
       setRentStyle({ ...styles.rentInput });
     }
-    if (!values.registrationPrice) {
-      setRegStyle({
-        ...styles.regInput,
-        borderWidth: 2,
-        borderColor: "#FF2525",
-      });
-    } else {
-      setRegStyle({ ...styles.regInput });
-    }
-    if (
-      !values.registrationPrice ||
-      parseInt(values.rentPrice) < parseInt(values.registrationPrice)
-    ) {
-      setRegStyle({
-        ...styles.regInput,
-        borderWidth: 2,
-        borderColor: "#FF2525",
-      });
-    } else {
-      setRegStyle({ ...styles.regInput });
-    }
+    // if (!values.registrationPrice) {
+    //   setRegStyle({
+    //     ...styles.regInput,
+    //     borderWidth: 2,
+    //     borderColor: "#FF2525",
+    //   });
+    // } else {
+    //   setRegStyle({ ...styles.regInput });
+    // }
+    // if (
+    //   !values.registrationPrice ||
+    //   parseInt(values.rentPrice) < parseInt(values.registrationPrice)
+    // ) {
+    //   setRegStyle({
+    //     ...styles.regInput,
+    //     borderWidth: 2,
+    //     borderColor: "#FF2525",
+    //   });
+    // } else {
+    //   setRegStyle({ ...styles.regInput });
+    // }
     if (!values.thumbnail) {
       setImgStyle({
         ...styles.thumbnail,
@@ -359,14 +359,14 @@ function AddPropertyScreen({ navigation }) {
         borderColor: "#FF2525",
       });
     }
-    if (isNaN(values.registrationPrice)) {
-      setRegStyle({
-        ...styles.regInput,
-        borderWidth: 2,
-        borderColor: "#FF2525",
-      });
-    }
-    if (!values.features[0]) {
+    // if (isNaN(values.registrationPrice)) {
+    //   setRegStyle({
+    //     ...styles.regInput,
+    //     borderWidth: 2,
+    //     borderColor: "#FF2525",
+    //   });
+    // }
+    if (values.features.length === 0) {
       setFeatureStyle({
         ...styles.featuresContainer,
         borderWidth: 2,
@@ -415,13 +415,11 @@ function AddPropertyScreen({ navigation }) {
 
   const formInitialValues = {
     title: null,
-    titleLowerCase: null,
+    // titleLowerCase: null
     description: null,
-    descriptionLowerCase: null,
     rentPrice: "",
     propertyType: null,
-    propertyTypeLowerCase: null,
-    registrationPrice: "",
+    // registrationPrice: "",
     thumbnail: null,
     images: {
       image1: null,
@@ -430,12 +428,12 @@ function AddPropertyScreen({ navigation }) {
     },
     features: [],
     address: null,
-    addressLowerCase: null,
     created_at: serverTimestamp(),
     uid: FirebaseAuth.currentUser.uid,
     email: FirebaseAuth.currentUser.email,
     userName: FirebaseAuth.currentUser.displayName,
     postID: Math.random().toString(16).slice(2),
+    photoUrl: FirebaseAuth.currentUser.photoURL
   };
 
   const data = [
@@ -683,13 +681,12 @@ function AddPropertyScreen({ navigation }) {
                       }}
                       selectedTextStyle={{ color: "white" }}
                       activeColor="#E8E8E8"
-                      search={false}
+                      search={true}
                       data={data}
                       labelField="label"
                       valueField="value"
                       placeholder="Select"
                       value={values?.features}
-                      // value={["Room"]}
                       onChange={(item) => {
                         setFieldValue("features", item);
                       }}
@@ -712,8 +709,8 @@ function AddPropertyScreen({ navigation }) {
                     placeholder="Enter Address"
                     value={values?.address}
                     onChangeText={handleChange("address")}
-                    multiline={true}
-                    numberOfLines={2}
+                    // multiline={true}
+                    // numberOfLines={2}
                     maxLength={100}
                     autoCapitalize="sentences"
                   />
@@ -737,7 +734,7 @@ function AddPropertyScreen({ navigation }) {
                 </View>
 
                 {/* registration price container */}
-                <View style={styles.rentContainer}>
+                {/* <View style={styles.rentContainer}>
                   <Text style={{ fontSize: 22, fontWeight: "bold" }}>
                     Registration (Down Payment)
                   </Text>
@@ -755,7 +752,7 @@ function AddPropertyScreen({ navigation }) {
                       1.0% will be added as fee.
                     </Text>
                   </View>
-                </View>
+                </View> */}
 
                 {/* submit button */}
                 <TouchableOpacity
@@ -844,6 +841,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     borderRadius: 20,
     margin: 10,
+    marginTop: 40,
   },
   rentContainer: {
     flexDirection: "column",

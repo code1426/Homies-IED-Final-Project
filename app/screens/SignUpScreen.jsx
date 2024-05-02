@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Platform,
+  SafeAreaView,
 } from "react-native";
 
 import { useRoute } from "@react-navigation/native";
@@ -76,7 +78,8 @@ export default function SignUpScreen({ navigation }) {
       const user = resp.user;
       await updateProfile(user, {
         displayName: `${form.firstName} ${form.lastName}`,
-        photoURL: "https://firebasestorage.googleapis.com/v0/b/homies-ied-final-project.appspot.com/o/Users%2FphotoURL%2F1714614993869.jpg?alt=media&token=31747d4d-29eb-48a1-9ff0-763ad2d6055b"
+        photoURL:
+          "https://firebasestorage.googleapis.com/v0/b/homies-ied-final-project.appspot.com/o/Users%2FphotoURL%2F1714614993869.jpg?alt=media&token=31747d4d-29eb-48a1-9ff0-763ad2d6055b",
       })
         .then(() => {
           console.log("username set");
@@ -136,6 +139,15 @@ export default function SignUpScreen({ navigation }) {
           style={styles.headerImg}
         />
       </View>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.goBack()}
+      >
+        <Image
+          source={require("../assets/backIcon.png")}
+          style={styles.backButton}
+        />
+      </TouchableOpacity>
       <View style={styles.formContainer}>
         <Text style={{ fontSize: 30, fontWeight: "600" }}>Sign Up</Text>
         <View style={styles.form}>
@@ -358,4 +370,11 @@ const styles = StyleSheet.create({
     columnGap: 8,
     // marginBottom: 4,
   },
+  backButton: {
+    width: 25,
+    height: 25,
+    position: "absolute",
+    top: 46,
+    left: 12,
+  }
 });
