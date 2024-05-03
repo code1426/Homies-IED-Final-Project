@@ -60,7 +60,7 @@ const ViewProfileScreen = ({ setModalVisible }) => {
           <View style={styles.descriptionContainer}>
             <Text style={[styles.name, { marginBottom: 6, marginTop: 0, }]}>About</Text>
             <Text style={{ marginBottom: 2 }}>
-              {applicant.profileDescription}
+              {!applicant.profileDescription ? "User hasn't added a bio yet." : applicant.profileDescription}
             </Text>
           </View>
         </SafeAreaView>
