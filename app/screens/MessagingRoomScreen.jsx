@@ -12,6 +12,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Text,
+  ActivityIndicator,
 } from 'react-native';
 // import HeaderComponent from "../components/HeaderComponent";
 import MessagingRoomHeaderComponent from '../components/MessagingRoomHeaderComponent';
@@ -34,6 +35,8 @@ function MessagingRoomScreen({ navigation }) {
   const currentUser = useContext(UserContext);
   const { data } = useContext(MessageContext);
   const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   // const ref = useRef();
 
   // useEffect(() => {
@@ -92,8 +95,9 @@ function MessagingRoomScreen({ navigation }) {
         });
 
         await updateDoc(doc(FirebaseDB, 'UserMessages', currentUser.uid), {
-          [data.MessageId +
-          '.latestMessage']: `Reservation Offer: ${reserveFee}`,
+          [data.MessageId + '.latestMessage']: {
+            text: `Reservation Offer: Php ${reserveFee}`,
+          },
           [data.MessageId + '.date']: Timestamp.now()
             .toDate()
             .toString()
@@ -102,8 +106,9 @@ function MessagingRoomScreen({ navigation }) {
         });
 
         await updateDoc(doc(FirebaseDB, 'UserMessages', data.user.uid), {
-          [data.MessageId +
-          '.latestMessage']: `Reservation Offer: ${reserveFee}`,
+          [data.MessageId + '.latestMessage']: {
+            text: `Reservation Offer: Php ${reserveFee}`,
+          },
           [data.MessageId + '.date']: Timestamp.now()
             .toDate()
             .toString()
@@ -242,54 +247,61 @@ function MessagingRoomScreen({ navigation }) {
         )}
         {reservePopUp && (
           <View style={styles.popUpContainer}>
-            <View style={styles.popUp}>
-              <View style={{ paddingHorizontal: 20, paddingVertical: 20 }}>
-                <Text style={styles.popUpTitle}>Message Functions</Text>
-                <TextInput
-                  placeholder='How much?'
-                  style={styles.reserveFee}
-                  onChangeText={setReserveFee}
-                  value={reserveFee}
-                  keyboardType='numeric'
-                />
-              </View>
-              <View>
-                <View style={styles.popUpReserveButtons}>
-                  <TouchableOpacity
-                    style={styles.popUpReserveButton}
-                    onPress={() => {
-                      setReservePopUp(true);
-                      setPopUpFunctions(false);
-                    }}>
-                    <Text
-                      style={{
-                        textAlign: 'center',
+            {loading ? (
+              <ActivityIndicator
+                size='small'
+                color='white'
+              />
+            ) : (
+              <View style={styles.popUp}>
+                <View style={{ paddingHorizontal: 20, paddingVertical: 20 }}>
+                  <Text style={styles.popUpTitle}>Message Functions</Text>
+                  <TextInput
+                    placeholder='How much?'
+                    style={styles.reserveFee}
+                    onChangeText={setReserveFee}
+                    value={reserveFee}
+                    keyboardType='numeric'
+                  />
+                </View>
+                <View>
+                  <View style={styles.popUpReserveButtons}>
+                    <TouchableOpacity
+                      style={styles.popUpReserveButton}
+                      onPress={() => {
+                        setReservePopUp(false);
                       }}>
-                      Cancel
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[
-                      styles.popUpReserveButton,
-                      {
-                        backgroundColor: '#5edf95',
-                        borderBottomRightRadius: 15,
-                      },
-                    ]}
-                    onPress={async () => {
-                      await handleReserve();
-                      setReservePopUp(false);
-                    }}>
-                    <Text
-                      style={{
-                        textAlign: 'center',
+                      <Text
+                        style={{
+                          textAlign: 'center',
+                        }}>
+                        Cancel
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[
+                        styles.popUpReserveButton,
+                        {
+                          backgroundColor: '#5edf95',
+                          borderBottomRightRadius: 15,
+                        },
+                      ]}
+                      onPress={async () => {
+                        setLoading(true);
+                        await handleReserve();
+                        setReservePopUp(false);
                       }}>
-                      Offer
-                    </Text>
-                  </TouchableOpacity>
+                      <Text
+                        style={{
+                          textAlign: 'center',
+                        }}>
+                        Offer
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
-            </View>
+            )}
           </View>
         )}
       </KeyboardAvoidingView>

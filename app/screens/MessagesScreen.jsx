@@ -51,7 +51,7 @@ function MessagesScreen({ navigation }) {
   
     return (
       <SafeAreaView style={styles.screen}>
-        <HeaderComponent title="Messages" />
+        <HeaderComponent title="Messages" />  
         {Object.entries(messages).map((message) => (
           <MessageCard
             profilePic={{ uri: message[1].userInfo.photoURL }}
