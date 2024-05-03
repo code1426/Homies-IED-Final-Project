@@ -48,42 +48,27 @@ function MessagesScreen({ navigation }) {
     dispatch({ type: "MESSAGE_PRESSED", payload: user });
     navigation.navigate("MessagingRoom");
   };
-
-  return (
-    <SafeAreaView style={styles.screen}>
-      <HeaderComponent title="Messages" />
-      {Object.entries(messages).map(
-        (message) => (
-          console.log(
-            message[1].date.toDate().toString().split(" ")[4].split(":")
-          ),
-          (
-            <MessageCard
-              profilePic={{ uri: message[1].userInfo.photoURL }}
-              name={
-                message[1].userInfo.firstName +
-                " " +
-                message[1].userInfo.lastName
-              }
-              latestMessage={message[1].latestMessage?.text}
-              // time={message[1].date
-              //   ?.toDate()
-              //   .toString()
-              //   .split(" ")[4]
-              //   .split(":")}
-              time={["","8","15"]}
-              key={message[0]}
-              onPress={() => {
-                handleSelect(message[1].userInfo);
-              }}
-            />
-          )
-        )
-      )}
-      {/* <MessageCard /> */}
-    </SafeAreaView>
-  );
-}
+  
+    return (
+      <SafeAreaView style={styles.screen}>
+        <HeaderComponent title="Messages" />
+        {Object.entries(messages).map((message) => (
+          <MessageCard
+            profilePic={{ uri: message[1].userInfo.photoURL }}
+            name={
+              message[1].userInfo.firstName + " " + message[1].userInfo.lastName
+            }
+            latestMessage={message[1].latestMessage?.text}
+            time={message[1].date}
+            key={message[0]}
+            onPress={() => {
+              handleSelect(message[1].userInfo);
+            }}
+          />
+        ))}
+      </SafeAreaView>
+    );
+  }
 
 const styles = StyleSheet.create({
   screen: {

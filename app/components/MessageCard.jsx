@@ -32,7 +32,7 @@ function MessageCard({ name, profilePic, latestMessage, time, onPress }) {
           </Text>
         </View>
         <View>
-          <Text style={styles.timeUpdated}>{`${time[1]}:${time[2]}`}</Text>
+          <Text style={styles.timeUpdated}>{`${time[0]}:${time[1]}`}</Text>
         </View>
       </TouchableOpacity>
     </SafeAreaView>

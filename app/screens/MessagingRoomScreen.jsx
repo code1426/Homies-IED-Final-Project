@@ -89,14 +89,14 @@ function MessagingRoomScreen({ navigation }) {
           [data.MessageId + '.latestMessage']: {
             text,
           },
-          [data.MessageId + '.date']: serverTimestamp(),
+          [data.MessageId + '.date']: Timestamp.now().toDate().toString().split(" ")[4].split(":"),
         });
 
         await updateDoc(doc(FirebaseDB, 'UserMessages', data.user.uid), {
           [data.MessageId + '.latestMessage']: {
             text,
           },
-          [data.MessageId + '.date']: serverTimestamp(),
+          [data.MessageId + '.date']: Timestamp.now().toDate().toString().split(" ")[4].split(":"),
         });
       }
       console.log(data);
