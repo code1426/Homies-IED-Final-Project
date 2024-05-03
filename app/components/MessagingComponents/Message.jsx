@@ -81,9 +81,9 @@ function Message({ message }) {
                   Would you like to reserve the place for:
                 </Text>
                 <Text style={styles.reserveFee}>
+                  Php{' '}
                   {parseInt(message.reserveFee) +
                     parseInt(message.reserveFee) * 0.01}{' '}
-                  Pesos
                 </Text>
                 <View style={styles.reserveButton}>
                   <TouchableOpacity
@@ -94,7 +94,7 @@ function Message({ message }) {
                         [{ text: 'OK' }]
                       );
                     }}>
-                    <Text>Reserve</Text>
+                    <Text>Accept Offer</Text>
                   </TouchableOpacity>
                 </View>
               </View>
