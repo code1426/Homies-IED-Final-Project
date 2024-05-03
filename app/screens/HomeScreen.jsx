@@ -83,7 +83,6 @@ function HomeScreen({ navigation }) {
     setTimeout(() => {
       setCategoryName("All");
       getAllPropertyList();
-      setMessageState((state) => state + 1)
       setRefreshing(false);
     }, 750);
   }, []);

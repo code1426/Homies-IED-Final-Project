@@ -43,11 +43,18 @@ const AppliedPostCard = ({ data, updateList }) => {
 
   const navigation = useNavigation();
 
+  const [screenLoading, setScreenLoading] = useState(true);
+
   useEffect(() => {
-    getOwnerData();
-    isApplicantApproved();
-    isDeletedByOwner();
+    initialize();
   }, []);
+
+  const initialize = async () => {
+    await getOwnerData();
+    await isApplicantApproved();
+    await isDeletedByOwner();
+    setScreenLoading(false);
+  };
 
   // console.log(ownerData);
 
@@ -221,23 +228,32 @@ const AppliedPostCard = ({ data, updateList }) => {
     <View style={styles.container}>
       <PostCard data={data} />
       <View style={styles.statusContainer}>
-        <View style={styles.buttonsContainer}>
-          {isdeleted ? (
-            <Button title="Unavailable" bgc="#F44336" color="white" />
-          ) : (
-            <Button
-              title={isApproved ? "Approved" : "Queued"}
-              bgc={isApproved ? "limegreen" : "#4285F4"}
-              color="white"
-            />
-          )}
+        {screenLoading ? (
+          <ActivityIndicator style={{alignSelf: "center", flex: 1}} size="small" color="midnightblue" />
+        ) : (
+          <>
+            <View style={styles.buttonsContainer}>
+              {isdeleted ? (
+                <Button title="Unavailable" bgc="#F44336" color="white" />
+              ) : (
+                <Button
+                  title={isApproved ? "Approved" : "Queued"}
+                  bgc={isApproved ? "limegreen" : "#4285F4"}
+                  color="white"
+                />
+              )}
 
-          {isApproved ? (
-            <MessageButton loading={messageLoading} onPress={handleMessage} />
-          ) : (
-            <CancelButton onPress={handleCancel} />
-          )}
-        </View>
+              {isApproved ? (
+                <MessageButton
+                  loading={messageLoading}
+                  onPress={handleMessage}
+                />
+              ) : (
+                <CancelButton onPress={handleCancel} />
+              )}
+            </View>
+          </>
+        )}
       </View>
     </View>
   );
@@ -306,6 +322,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   statusContainer: {
+    flex: 1,
     borderRadius: 20,
     flexDirection: "row",
     position: "absolute",

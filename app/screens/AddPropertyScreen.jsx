@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import { useState, useContext } from "react";
 import { FirebaseDB, FirebaseAuth } from "../../firebase.config";
@@ -433,7 +433,7 @@ function AddPropertyScreen({ navigation }) {
     email: FirebaseAuth.currentUser.email,
     userName: FirebaseAuth.currentUser.displayName,
     postID: Math.random().toString(16).slice(2),
-    photoUrl: FirebaseAuth.currentUser.photoURL
+    photoUrl: FirebaseAuth.currentUser.photoURL,
   };
 
   const data = [
@@ -732,27 +732,6 @@ function AddPropertyScreen({ navigation }) {
                     <Text style={{ marginLeft: 8 }}>Monthly</Text>
                   </View>
                 </View>
-
-                {/* registration price container */}
-                {/* <View style={styles.rentContainer}>
-                  <Text style={{ fontSize: 22, fontWeight: "bold" }}>
-                    Registration (Down Payment)
-                  </Text>
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <TextInput
-                      style={regStyle}
-                      placeholder="Enter Amount"
-                      value={values?.registrationPrice}
-                      onChangeText={handleChange("registrationPrice")}
-                      numberOfLines={1}
-                      maxLength={5}
-                      keyboardType="numeric"
-                    />
-                    <Text style={{ marginLeft: 8, fontSize: 12 }}>
-                      1.0% will be added as fee.
-                    </Text>
-                  </View>
-                </View> */}
 
                 {/* submit button */}
                 <TouchableOpacity

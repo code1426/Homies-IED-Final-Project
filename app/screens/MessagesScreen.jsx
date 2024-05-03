@@ -7,6 +7,7 @@ import {
   Image,
   StyleSheet,
   Platform,
+  ActivityIndicator
 } from "react-native";
 
 import HeaderComponent from "../components/HeaderComponent";
@@ -32,11 +33,14 @@ function MessagesScreen({ navigation }) {
 
   const { setMessageState } = useContext(MessageStateContext);
 
+  const [screenLoading, setScreenLoading] = useState(true);
+
   useEffect(() => {
     setMessageState((state) => state + 1);
     const q = query(doc(FirebaseDB, "UserMessages", currentUser.uid));
     const unsub = onSnapshot(q, (doc) => {
       setMessages(doc.data());
+      setScreenLoading(false);
     });
     return () => {
       unsub();
@@ -48,10 +52,11 @@ function MessagesScreen({ navigation }) {
     dispatch({ type: "MESSAGE_PRESSED", payload: user });
     navigation.navigate("MessagingRoom");
   };
-  
+
+  if (!screenLoading) {
     return (
       <SafeAreaView style={styles.screen}>
-        <HeaderComponent title="Messages" />  
+        <HeaderComponent title="Messages" />
         {Object.entries(messages).map((message) => (
           <MessageCard
             profilePic={{ uri: message[1].userInfo.photoURL }}
@@ -68,7 +73,20 @@ function MessagesScreen({ navigation }) {
         ))}
       </SafeAreaView>
     );
+  } else {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <ActivityIndicator size="large" color="midnightblue" />
+      </View>
+    );
   }
+}
 
 const styles = StyleSheet.create({
   screen: {

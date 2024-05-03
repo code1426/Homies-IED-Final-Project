@@ -18,7 +18,7 @@ const ViewProfileScreen = ({ setModalVisible }) => {
     setModalVisible(false);
     setTimeout(() => {
       setApplicant(null);
-    }, 20);
+    }, 0);
   };
 
   const { applicant, setApplicant } = useContext(ApplicantContext);
@@ -58,9 +58,13 @@ const ViewProfileScreen = ({ setModalVisible }) => {
             </View>
           </View>
           <View style={styles.descriptionContainer}>
-            <Text style={[styles.name, { marginBottom: 6, marginTop: 0, }]}>About</Text>
+            <Text style={[styles.name, { marginBottom: 6, marginTop: 0 }]}>
+              About
+            </Text>
             <Text style={{ marginBottom: 2 }}>
-              {!applicant.profileDescription ? "User hasn't added a bio yet." : applicant.profileDescription}
+              {!applicant.profileDescription
+                ? "User hasn't added a bio yet."
+                : applicant.profileDescription}
             </Text>
           </View>
         </SafeAreaView>
@@ -73,14 +77,14 @@ export default ViewProfileScreen;
 
 const styles = StyleSheet.create({
   container: {
-    maxHeight: 400,
-    width: "100%",
+    // maxHeight: 400,
+    width: "95%",
     backgroundColor: "white",
     borderRadius: 40,
     marginTop: 100,
     alignSelf: "center",
     paddingHorizontal: 12,
-    paddingBottom: 12,
+    // paddingBottom: 12,
     // paddingTop: -26,
   },
   image: {
@@ -94,7 +98,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 18,
-    marginBottom: -2,
+    // marginBottom: -2,
     // marginTop: 20,
   },
   textInfoContainer: {
@@ -117,11 +121,12 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     width: "100%",
     minHeight: 80,
-    maxHeight: 220,
+    maxHeight: 420,
     borderRadius: 30,
     // padding: 20
     paddingVertical: 12,
     paddingHorizontal: 20,
+    marginBottom: 12,
   },
   icon: {
     width: 13,
