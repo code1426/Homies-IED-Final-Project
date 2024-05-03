@@ -624,8 +624,8 @@ function AddPropertyScreen({ navigation }) {
                     value={values?.description}
                     onChangeText={handleChange("description")}
                     multiline={true}
-                    numberOfLines={5}
-                    maxLength={600}
+                    // numberOfLines={5}
+                    maxLength={2000}
                     autoCapitalize="sentences"
                   />
                 </View>
@@ -787,7 +787,7 @@ const styles = StyleSheet.create({
   descriptionInput: {
     fontSize: 18,
     minHeight: 150,
-    maxHeight: 600,
+    // maxHeight: 600,
     width: "100%",
     backgroundColor: "#DBDBDB",
     borderWidth: 0,

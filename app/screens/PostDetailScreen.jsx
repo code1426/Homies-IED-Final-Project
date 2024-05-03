@@ -652,7 +652,8 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   description: {
-    color: "gray",
+    color: "#545454",
+    // color: "gray",
     fontSize: 16,
     marginBottom: 10,
   },
