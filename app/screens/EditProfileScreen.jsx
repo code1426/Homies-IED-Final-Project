@@ -465,6 +465,7 @@ export default function EditProfileScreen({ navigation }) {
                 }}
               >
                 <Text style={[styles.deleteAcc]}>Delete Account</Text>
+                
               </TouchableOpacity>
             </View>
           </View>
