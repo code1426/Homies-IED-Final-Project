@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -11,13 +11,13 @@ import {
   Alert,
   ScrollView,
   ActivityIndicator,
-} from "react-native";
-import { UserContext } from "../../Contexts";
+} from 'react-native';
+import { UserContext } from '../../Contexts';
 import {
   FirebaseAuth,
   FirebaseDB,
   firebaseStorage,
-} from "../../firebase.config";
+} from '../../firebase.config';
 import {
   RecaptchaVerifier,
   sendEmailVerification,
@@ -27,9 +27,9 @@ import {
   reauthenticateWithCredential,
   updatePassword,
   deleteUser,
-} from "firebase/auth";
+} from 'firebase/auth';
 
-import HeaderComponent from "../components/HeaderComponent";
+import HeaderComponent from '../components/HeaderComponent';
 import {
   updateDoc,
   doc,
@@ -38,24 +38,36 @@ import {
   query,
   collection,
   where,
-} from "firebase/firestore";
+  onSnapshot,
+} from 'firebase/firestore';
 
-import * as ImagePicker from "expo-image-picker";
+import * as ImagePicker from 'expo-image-picker';
 import {
   getDownloadURL,
   ref,
   uploadBytes,
   uploadBytesResumable,
-} from "firebase/storage";
-import { useIsFocused } from "@react-navigation/native";
-import { bgCyan } from "colorette";
+} from 'firebase/storage';
+import { useIsFocused } from '@react-navigation/native';
+import { bgCyan } from 'colorette';
 
 export default function EditProfileScreen({ navigation }) {
   const currentUser = useContext(UserContext);
   const [loading, setLoading] = useState(false);
+  const [newCurrentUser, setNewCurrentUser] = useState(currentUser);
+  console.log(newCurrentUser);
 
   //  refresh
   const [count, setCount] = useState(0);
+
+  const getUserData = async () => {
+    const ownerRef = doc(FirebaseDB, 'Users', currentUser.uid);
+
+    const snapshot = await getDoc(ownerRef);
+    if (snapshot.exists()) {
+      setNewCurrentUser(snapshot.data());
+    }
+  };
 
   // useEffect(() => {
   //   setTimeout(() => {
@@ -63,15 +75,34 @@ export default function EditProfileScreen({ navigation }) {
   //   }, 5000);
   // });
   // const timer = setTimeout(setRefresh(), 5000);
+  // useEffect(() => {
+  //   try {
+  //     const unSub = onSnapshot(
+  //       doc(FirebaseDB, 'Messages', newCurrentUser.uid),
+  //       (doc) => {
+  //         doc.exists() && setNewCurrentUser(doc.data());
+  //       }
+  //     );
+  //     return () => {
+  //       unSub();
+  //     };
+  //   } catch (e) {
+  //     console.log(e.message);
+  //   }
+  // }, [newCurrentUser.uid]);
 
   useEffect(() => {
     userAuth;
   }, [count, useIsFocused()]);
 
+  useEffect(() => {
+    getUserData();
+  }, []);
+
   const userAuth = FirebaseAuth.currentUser;
   // DisplayName
-  const nameSeparated = userAuth.displayName.split(" ");
-  const userFirstName = nameSeparated.slice(0, -1).join(" ");
+  const nameSeparated = userAuth.displayName.split(' ');
+  const userFirstName = nameSeparated.slice(0, -1).join(' ');
   const userLastName = nameSeparated.slice(-1).toString();
 
   const [firstName, onChangeFirstName] = useState(userFirstName);
@@ -79,18 +110,18 @@ export default function EditProfileScreen({ navigation }) {
 
   // Password
   const [passwords, onChangePassword] = useState({
-    currentPassword: "",
-    newPassword: "",
+    currentPassword: '',
+    newPassword: '',
   });
   const [passwordErrors, setPasswordErrors] = useState({});
 
   const validatePassword = () => {
     let passwordErrors = {};
-    if (passwords.currentPassword === "")
-      passwordErrors.currentPassword = "Please type in your Current Password.";
+    if (passwords.currentPassword === '')
+      passwordErrors.currentPassword = 'Please type in your Current Password.';
     // TypeError: Cannot read property 'length' of undefined
     if (passwords.newPassword.length <= 8) {
-      passwordErrors.newPassword = "New Password is Invalid.";
+      passwordErrors.newPassword = 'New Password is Invalid.';
     }
     setPasswordErrors(passwordErrors);
     return Object.keys(passwordErrors).length === 0;
@@ -105,17 +136,17 @@ export default function EditProfileScreen({ navigation }) {
       await reauthenticateWithCredential(userAuth, credential).catch((error) =>
         setPasswordErrors({
           ...passwordErrors,
-          currentPassword: "Wrong Password",
+          currentPassword: 'Wrong Password',
         })
       );
       await updatePassword(userAuth, passwords.newPassword).catch((error) =>
         Alert.alert(error.message)
       );
     } catch (error) {
-      console.log("Change Password", error.message);
+      console.log('Change Password', error.message);
       setPasswordErrors({
         ...passwordErrors,
-        currentPassword: "Wrong Password",
+        currentPassword: 'Wrong Password',
       });
     }
   };
@@ -128,7 +159,7 @@ export default function EditProfileScreen({ navigation }) {
         setPasswordLoading(true);
         await handleInputPassword();
         resetPasswordValidation();
-        Alert.alert("Success", "Changed password successfully!");
+        Alert.alert('Success', 'Changed password successfully!');
         setPasswordLoading(false);
       } else setPasswordLoading;
     } catch (e) {
@@ -138,19 +169,22 @@ export default function EditProfileScreen({ navigation }) {
 
   const resetPasswordValidation = () => {
     setPasswordErrors({});
-    onChangePassword({ currentPassword: "", newPassword: "" });
+    onChangePassword({ currentPassword: '', newPassword: '' });
   };
 
   // Location
-  const firestoreLocation = currentUser.location;
+  const firestoreLocation = newCurrentUser.location;
+  console.log(firestoreLocation);
 
-  const [location, onChangeLocation] = useState(firestoreLocation);
+  const [location, onChangeLocation] = useState(newCurrentUser.location);
+  console.log(location);
+
   const [locationLoading, setLocationLoading] = useState(false);
 
   const handleChangeLocation = async () => {
     setLocationLoading(true);
     try {
-      await updateDoc(doc(FirebaseDB, "Users", currentUser.uid), {
+      await updateDoc(doc(FirebaseDB, 'Users', currentUser.uid), {
         location: location,
       });
       setLocationLoading(false);
@@ -173,7 +207,7 @@ export default function EditProfileScreen({ navigation }) {
       });
       if (!result.canceled) {
         setProfilePic(result.assets[0].uri);
-        console.log("Image Picker");
+        console.log('Image Picker');
       }
     } catch (error) {
       console.log(error.message);
@@ -184,28 +218,28 @@ export default function EditProfileScreen({ navigation }) {
     setLoading(true);
     try {
       const profilePicRes = await fetch(profile);
-      console.log("Fetched");
+      console.log('Fetched');
 
       const profileBlob = await profilePicRes.blob();
-      console.log("Blobbed");
+      console.log('Blobbed');
 
       const profilePicRef = ref(
         firebaseStorage,
-        "Users/photoURL/" + Date.now() + ".jpg"
+        'Users/photoURL/' + Date.now() + '.jpg'
       );
 
       await uploadBytesResumable(profilePicRef, profileBlob);
-      console.log("Uploaded");
+      console.log('Uploaded');
 
       const profilePicURL = await getDownloadURL(profilePicRef);
-      console.log("Downloaded");
+      console.log('Downloaded');
 
       await updateProfile(userAuth, { photoURL: profilePicURL });
-      await updateDoc(doc(FirebaseDB, "Users", currentUser.uid), {
+      await updateDoc(doc(FirebaseDB, 'Users', currentUser.uid), {
         photoURL: profilePicURL,
       });
       currentUser.photoURL = profilePicURL;
-      console.log("Changed Successfully");
+      console.log('Changed Successfully');
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -219,7 +253,7 @@ export default function EditProfileScreen({ navigation }) {
   const handleDeleteAccount = async () => {
     try {
       await deleteUser(userAuth);
-      console.log("Account Deleted");
+      console.log('Account Deleted');
     } catch (error) {
       console.log(error);
     }
@@ -233,7 +267,7 @@ export default function EditProfileScreen({ navigation }) {
       );
       reauthenticateWithCredential(userAuth, credential)
         .then(async () => {
-          console.log("Reaunthenticated");
+          console.log('Reaunthenticated');
           // const q = query(
           //   collection(FirebaseDB, "OwnerPosts"),
           //   where("uid", "==", currentUser.uid)
@@ -243,17 +277,17 @@ export default function EditProfileScreen({ navigation }) {
           //   await deleteDoc(doc(FirebaseDB, "OwnerPosts", snapshot.id));
           //   console.log("Document Deleted");
           // });
-          await deleteDoc(doc(FirebaseDB, "Users", currentUser.uid));
+          await deleteDoc(doc(FirebaseDB, 'Users', currentUser.uid));
           await handleDeleteAccount();
-          console.log("Documents Deleted");
+          console.log('Documents Deleted');
         })
         .catch((error) => {
-          Alert.alert("Wrong Password", "Try again later.");
+          Alert.alert('Wrong Password', 'Try again later.');
           console.log(error);
         });
     } catch (error) {
-      console.log("Change Password", error.message);
-      Alert.alert("Wrong Password", "Try again later.");
+      console.log('Change Password', error.message);
+      Alert.alert('Wrong Password', 'Try again later.');
       setPopUp(!popUp);
     }
   };
@@ -273,6 +307,23 @@ export default function EditProfileScreen({ navigation }) {
     }
   };
 
+  // Profile Description
+  const [profileDescription, setProfileDescription] = useState();
+  const [profileDescriptionLoading, setProfileDescriptionLoading] =
+    useState(false);
+
+  const handleChangeProfileDescription = async () => {
+    try {
+      setProfileDescriptionLoading(true);
+      await updateDoc(doc(FirebaseDB, 'Users', currentUser.uid), {
+        profileDescription: profileDescription,
+      });
+      setProfileDescriptionLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <ScrollView scrollEnabled={popUp ? false : true}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -283,19 +334,21 @@ export default function EditProfileScreen({ navigation }) {
                 ? false
                 : true
             }
-            title="Profile Details"
+            title='Profile Details'
           />
           <View style={styles.formContainer}>
             <View
-              style={{ flexDirection: "column", alignItems: "center", flex: 1 }}
-            >
+              style={{
+                flexDirection: 'column',
+                alignItems: 'center',
+                flex: 1,
+              }}>
               <View
                 style={{
                   flex: 1,
-                  alignItems: "center",
+                  alignItems: 'center',
                   marginBottom: 12,
-                }}
-              >
+                }}>
                 <Text style={[styles.text, { marginBottom: 12 }]}>
                   Profile Picture
                 </Text>
@@ -304,8 +357,7 @@ export default function EditProfileScreen({ navigation }) {
                     {
                       await pickProfilePic(), console.log(profile);
                     }
-                  }}
-                >
+                  }}>
                   <Image
                     style={[styles.image]}
                     source={
@@ -319,19 +371,17 @@ export default function EditProfileScreen({ navigation }) {
               <View
                 style={{
                   flex: 1,
-                  alignItems: "center",
+                  alignItems: 'center',
                   marginBottom: 12,
-                }}
-              >
+                }}>
                 <TouchableOpacity
                   style={styles.buttonProfile}
-                  onPress={handleChangeProfile}
-                >
+                  onPress={handleChangeProfile}>
                   {loading ? (
                     <ActivityIndicator
-                      size="small"
-                      color="midnightblue"
-                      style={{ alignSelf: "center" }}
+                      size='small'
+                      color='midnightblue'
+                      style={{ alignSelf: 'center' }}
                     />
                   ) : (
                     <Text style={styles.changeProfileButton}>
@@ -341,6 +391,27 @@ export default function EditProfileScreen({ navigation }) {
                 </TouchableOpacity>
               </View>
             </View>
+            <Text style={styles.text}>Profile Description</Text>
+            <TextInput
+              style={styles.profileDescription}
+              placeholder={newCurrentUser.profileDescription}
+              multiline={true}
+              onChangeText={setProfileDescription}
+              value={profileDescription}
+            />
+            <TouchableOpacity
+              style={styles.editContainer}
+              onPress={handleChangeProfileDescription}>
+              {profileDescriptionLoading ? (
+                <ActivityIndicator
+                  size='small'
+                  color='midnightblue'
+                  style={{ alignSelf: 'center' }}
+                />
+              ) : (
+                <Text style={styles.edit}>Edit Profile Description</Text>
+              )}
+            </TouchableOpacity>
             <Text style={styles.text}>Email Adress</Text>
             <Text style={styles.emailAdress}>{userAuth.email}</Text>
             <Text style={styles.text}>Name</Text>
@@ -348,26 +419,25 @@ export default function EditProfileScreen({ navigation }) {
               style={styles.input}
               placeholder={userFirstName}
               onChangeText={onChangeFirstName}
-              placeholderTextColor="#6b7280"
-              autoCapitalize="words"
+              placeholderTextColor='#6b7280'
+              autoCapitalize='words'
             />
 
             <TextInput
               style={styles.input}
               placeholder={userLastName}
               onChangeText={onChangeLastName}
-              placeholderTextColor="#6b7280"
-              autoCapitalize="words"
+              placeholderTextColor='#6b7280'
+              autoCapitalize='words'
             />
             <TouchableOpacity
               style={styles.editContainer}
-              onPress={handleEditName}
-            >
+              onPress={handleEditName}>
               {nameLoading ? (
                 <ActivityIndicator
-                  size="small"
-                  color="midnightblue"
-                  style={{ alignSelf: "center" }}
+                  size='small'
+                  color='midnightblue'
+                  style={{ alignSelf: 'center' }}
                 />
               ) : (
                 <Text style={styles.edit}>Edit Name</Text>
@@ -376,42 +446,44 @@ export default function EditProfileScreen({ navigation }) {
             <Text style={styles.text}>Current Password</Text>
             <TextInput
               style={styles.input}
-              placeholder={""}
+              placeholder={''}
               onChangeText={(currentPassword) => [
                 onChangePassword({ ...passwords, currentPassword }),
                 console.log(passwords),
               ]}
               value={passwords.currentPassword}
               secureTextEntry
-              placeholderTextColor="#6b7280"
+              placeholderTextColor='#6b7280'
             />
             {passwordErrors.currentPassword && (
-              <Text style={[styles.errorText, { marginTop: "3%" }]}>
+              <Text style={[styles.errorText, { marginTop: '3%' }]}>
                 {passwordErrors.currentPassword}
               </Text>
             )}
-            <Text style={[styles.text, { marginTop: "3%" }]}>New Password</Text>
+            <Text style={[styles.text, { marginTop: '3%' }]}>New Password</Text>
             <TextInput
               style={styles.input}
-              placeholder={""}
+              placeholder={''}
               onChangeText={(newPassword) =>
                 onChangePassword({ ...passwords, newPassword })
               }
               value={passwords.newPassword}
               secureTextEntry
-              placeholderTextColor="#6b7280"
+              placeholderTextColor='#6b7280'
             />
             {passwordErrors.newPassword && (
-              <Text style={[styles.errorText, { marginTop: "3%" }]}>
+              <Text style={[styles.errorText, { marginTop: '3%' }]}>
                 {passwordErrors.newPassword}
               </Text>
             )}
             <TouchableOpacity
               style={styles.editContainer}
-              onPress={handleChangePassword}
-            >
+              onPress={handleChangePassword}>
               {passwordLoading ? (
-                <ActivityIndicator color="midnightblue" size="small" />
+                <ActivityIndicator
+                  color='midnightblue'
+                  size='small'
+                />
               ) : (
                 <Text style={styles.edit}>Change Password</Text>
               )}
@@ -421,20 +493,23 @@ export default function EditProfileScreen({ navigation }) {
             <Text style={styles.text}>Location</Text>
             <TextInput
               style={styles.input}
-              placeholder={!location ? "Enter Your Location" : location}
-              placeholderTextColor="#6b7280"
+              placeholder={
+                !newCurrentUser.location
+                  ? 'Enter Your Location'
+                  : newCurrentUser.location
+              }
+              placeholderTextColor='#6b7280'
               onChangeText={(location) => onChangeLocation(location)}
               // value=""
             />
             <TouchableOpacity
               style={styles.editContainer}
-              onPress={handleChangeLocation}
-            >
+              onPress={handleChangeLocation}>
               {locationLoading ? (
                 <ActivityIndicator
-                  size="small"
-                  color="midnightblue"
-                  style={{ alignSelf: "center" }}
+                  size='small'
+                  color='midnightblue'
+                  style={{ alignSelf: 'center' }}
                 />
               ) : (
                 <Text style={styles.edit}>Edit Location</Text>
@@ -462,10 +537,8 @@ export default function EditProfileScreen({ navigation }) {
                 style={styles.deleteButton}
                 onPress={() => {
                   setPopUp(!popUp);
-                }}
-              >
+                }}>
                 <Text style={[styles.deleteAcc]}>Delete Account</Text>
-                
               </TouchableOpacity>
             </View>
           </View>
@@ -479,7 +552,7 @@ export default function EditProfileScreen({ navigation }) {
                   </Text>
                   <TextInput
                     style={styles.passwordReqDeletion}
-                    placeholder="password"
+                    placeholder='password'
                     onChangeText={setInputPasswordReqDelete}
                     value={inputPasswordReqDelete}
                     secureTextEntry
@@ -490,14 +563,13 @@ export default function EditProfileScreen({ navigation }) {
                     <TouchableOpacity
                       onPress={() => {
                         setPopUp(!popUp);
-                      }}
-                    >
+                      }}>
                       <Text style={[styles.popUpButton, { right: 10 }]}>
                         Cancel
                       </Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={handleDeletionProcess}>
-                      <Text style={[styles.popUpButton, { color: "red" }]}>
+                      <Text style={[styles.popUpButton, { color: 'red' }]}>
                         Delete
                       </Text>
                     </TouchableOpacity>
@@ -516,139 +588,139 @@ const styles = {
   container: {
     flex: 1,
     // marginBottom: 100,
-    backgroundColor: "ECEFF6",
+    backgroundColor: 'ECEFF6',
   },
   formContainer: {
-    backgroundColor: "ECEFF6",
-    marginLeft: "10%",
-    marginRight: "10%",
+    backgroundColor: 'ECEFF6',
+    marginLeft: '10%',
+    marginRight: '10%',
   },
   input: {
     fontSize: 14,
-    fontWeight: "600",
-    color: "black",
+    fontWeight: '600',
+    color: 'black',
     borderWidth: 1.2,
-    borderColor: "black",
+    borderColor: 'black',
     borderRadius: 10,
-    paddingVertical: "4%",
-    paddingHorizontal: "3%",
-    marginTop: "3%",
+    paddingVertical: '4%',
+    paddingHorizontal: '3%',
+    marginTop: '3%',
   },
   text: {
     marginTop: 12,
-    fontWeight: "600",
+    fontWeight: '600',
     // marginBottom: 12,
   },
   emailAdress: {
     fontSize: 12,
-    fontWeight: "600",
-    color: "#ABAEB6",
+    fontWeight: '600',
+    color: '#ABAEB6',
     borderWidth: 1,
-    borderColor: "black",
+    borderColor: 'black',
     borderRadius: 10,
-    paddingVertical: "4%",
-    paddingHorizontal: "3%",
-    marginTop: "3%",
-    color: "#6b7280",
-    marginBottom: "3%",
+    paddingVertical: '4%',
+    paddingHorizontal: '3%',
+    marginTop: '3%',
+    color: '#6b7280',
+    marginBottom: '3%',
   },
   editContainer: {
-    backgroundColor: "#ABDCFF",
+    backgroundColor: '#ABDCFF',
     marginTop: 12,
     borderWidth: 1,
-    borderColor: "black",
+    borderColor: 'black',
     borderRadius: 15,
     width: 160,
     paddingVertical: 4,
-    textAlign: "center",
-    alignSelf: "flex-end",
-    justifyContent: "center",
-    alignItems: "center",
+    textAlign: 'center',
+    alignSelf: 'flex-end',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   edit: {
-    fontWeight: "700",
+    fontWeight: '700',
   },
   deleteButton: {
-    alignSelf: "center",
+    alignSelf: 'center',
     borderWidth: 1,
-    borderColor: "black",
+    borderColor: 'black',
     borderRadius: 15,
     width: 170,
     height: 32,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "red",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'red',
     marginTop: 50,
     marginBottom: 50,
   },
   deleteAcc: {
-    fontWeight: "800",
-    textAlign: "center",
-    color: "white",
+    fontWeight: '800',
+    textAlign: 'center',
+    color: 'white',
   },
   changeProfileButton: {
-    fontWeight: "800",
+    fontWeight: '800',
   },
   buttonProfile: {
-    borderColor: "black",
+    borderColor: 'black',
     borderRadius: 15,
     borderWidth: 1,
     height: 33,
     width: 160,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#ABDCFF",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ABDCFF',
     // marginTop: 50,
   },
   image: {
     width: 130,
     height: 130,
     borderRadius: 100,
-    resizeMode: "cover",
+    resizeMode: 'cover',
   },
   LocationTexts: {
-    marginTop: "4%",
+    marginTop: '4%',
     borderWidth: 1,
-    borderColor: "black",
+    borderColor: 'black',
     borderRadius: 8,
-    paddingVertical: "1%",
-    paddingHorizontal: "7%",
-    fontWeight: "600",
-    textAlign: "center",
-    color: "#6b7280",
+    paddingVertical: '1%',
+    paddingHorizontal: '7%',
+    fontWeight: '600',
+    textAlign: 'center',
+    color: '#6b7280',
   },
   locationContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: "4%",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: '4%',
   },
   GcashAndBusinessPermit: {
-    marginTop: "4%",
-    textAlign: "center",
+    marginTop: '4%',
+    textAlign: 'center',
   },
   ChangeAccount: {
     borderWidth: 1,
-    borderColor: "black",
+    borderColor: 'black',
     borderRadius: 15,
-    backgroundColor: "#D5E7F0",
-    justifyContent: "center",
-    alignItems: "center",
-    fontWeight: "100",
-    borderColor: "#85BCDC",
+    backgroundColor: '#D5E7F0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontWeight: '100',
+    borderColor: '#85BCDC',
     width: 160,
     height: 30,
     marginVertical: 8,
   },
   Verified: {
     borderWidth: 1,
-    borderColor: "black",
+    borderColor: 'black',
     borderRadius: 15,
-    backgroundColor: "#D5E7F0",
-    justifyContent: "center",
-    fontWeight: "100",
-    borderColor: "#85BCDC",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: '#D5E7F0',
+    justifyContent: 'center',
+    fontWeight: '100',
+    borderColor: '#85BCDC',
+    justifyContent: 'center',
+    alignItems: 'center',
     width: 160,
     height: 30,
     marginVertical: 8,
@@ -656,67 +728,77 @@ const styles = {
   backButtonImage: {
     width: 25,
     height: 25,
-    position: "absolute",
+    position: 'absolute',
   },
   errorText: {
-    color: "red",
+    color: 'red',
     marginBottom: 0,
     marginLeft: 16,
   },
   popUpContainer: {
     flex: 1,
-    backgroundColor: "rgba(52, 52, 52, 0.8)",
+    backgroundColor: 'rgba(52, 52, 52, 0.8)',
     // paddingHorizontal: "15%",
-    height: "100%",
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
-    alignSelf: "center",
+    height: '100%',
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    alignSelf: 'center',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
   },
   popUp: {
-    position: "absolute",
-    backgroundColor: "lightgray",
-    borderColor: "black",
+    position: 'absolute',
+    backgroundColor: 'lightgray',
+    borderColor: 'black',
     borderWidth: 0.6,
     borderRadius: 15,
-    width: "auto",
-    height: "auto",
+    width: 'auto',
+    height: 'auto',
     bottom: 350,
   },
   popUpTitle: {
     // backgroundColor: 'pink',
     fontSize: 20,
-    fontWeight: "bold",
-    textAlign: "center",
+    fontWeight: 'bold',
+    textAlign: 'center',
     // top: -10,
   },
   popUpDescription: {
-    textAlign: "center",
+    textAlign: 'center',
     paddingVertical: 5,
     fontSize: 12,
   },
   passwordReqDeletion: {
     fontSize: 12,
-    fontWeight: "600",
-    color: "black",
+    fontWeight: '600',
+    color: 'black',
     borderWidth: 0.8,
-    borderColor: "black",
+    borderColor: 'black',
     borderRadius: 10,
-    paddingVertical: "2%",
-    paddingHorizontal: "3%",
-    marginTop: "3%",
+    paddingVertical: '2%',
+    paddingHorizontal: '3%',
+    marginTop: '3%',
     top: 10,
     width: 200,
   },
   popUpButtons: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
     borderTopWidth: 0.6,
   },
-  popUpButton: { paddingVertical: 10 },
+  popUpButton: {
+    paddingVertical: 10,
+  },
+  profileDescription: {
+    minHeight: 200,
+    width: 'auto',
+    borderWidth: 1,
+    borderRadius: 15,
+    marginTop: 10,
+    padding: 10,
+  },
 };
