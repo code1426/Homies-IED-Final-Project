@@ -6,7 +6,7 @@ import PostCard from "./PostCard";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { FirebaseDB } from "../../firebase.config";
 
-const PostQueueCard = ({ data }) => {
+const PostQueueCard = ({ data, visible }) => {
   const [applicantList, setApplicantList] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -51,6 +51,7 @@ const PostQueueCard = ({ data }) => {
                 postData={data}
                 key={index}
                 applicant={applicant}
+                visible={visible}
               />
             ))
           ) : (

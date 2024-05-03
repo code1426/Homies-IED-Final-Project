@@ -22,6 +22,7 @@ import {
   AddPropertyContext,
   MessageContext,
   MessageStateContext,
+  ApplicantContext,
 } from "./Contexts.js";
 import ProfileDescriptionScreen from "./app/screens/ProfileDescriptionScreen.jsx";
 
@@ -90,59 +91,69 @@ export default function App() {
 
   const [state, dispatch] = useReducer(MessageReducer, INITIAL_STATE);
 
-  return (
-    <MessageStateContext.Provider value={{ messageState, setMessageState }}>
-      <AddPropertyContext.Provider value={{ addState, setAddState }}>
-        <AppliedContext.Provider value={{ appliedState, setAppliedState }}>
-          <PinContext.Provider value={{ pinState, setPinState }}>
-            <UserContext.Provider value={user}>
-              <MessageContext.Provider value={{ data: state, dispatch }}>
-                <NavigationContainer>
-                  <Stack.Navigator
-                    initialRouteName="LogoScreen"
-                    screenOptions={{
-                      headerShown: false,
-                    }}
-                  >
-                    {user && (
-                      <>
-                        {user.role === "Owner" ? (
-                          <Stack.Screen
-                            name="NavBarOwners"
-                            component={NavBarOwners}
-                          />
-                        ) : (
-                          <Stack.Screen
-                            name="NavBarRenters"
-                            component={NavBarRenters}
-                          />
-                        )}
-                      </>
-                    )}
+  const [applicant, setApplicant] = useState(null);
 
-                    {!user && (
-                      <>
-                        <Stack.Screen
-                          name="LogoScreen"
-                          component={LogoScreen}
-                        />
-                        <Stack.Screen name="SignIn" component={SignInScreen} />
-                        <Stack.Screen name="SignUp" component={SignUpScreen} />
-                        <Stack.Screen
-                          name="ForgotPassword"
-                          component={ForgotPasswordScreen}
-                        />
-                        <Stack.Screen name="Role" component={PreferredRole} />
-                      </>
-                    )}
-                  </Stack.Navigator>
-                </NavigationContainer>
-              </MessageContext.Provider>
-            </UserContext.Provider>
-          </PinContext.Provider>
-        </AppliedContext.Provider>
-      </AddPropertyContext.Provider>
-    </MessageStateContext.Provider>
+  return (
+    <ApplicantContext.Provider value={{ applicant, setApplicant }}>
+      <MessageStateContext.Provider value={{ messageState, setMessageState }}>
+        <AddPropertyContext.Provider value={{ addState, setAddState }}>
+          <AppliedContext.Provider value={{ appliedState, setAppliedState }}>
+            <PinContext.Provider value={{ pinState, setPinState }}>
+              <UserContext.Provider value={user}>
+                <MessageContext.Provider value={{ data: state, dispatch }}>
+                  <NavigationContainer>
+                    <Stack.Navigator
+                      initialRouteName="LogoScreen"
+                      screenOptions={{
+                        headerShown: false,
+                      }}
+                    >
+                      {user && (
+                        <>
+                          {user.role === "Owner" ? (
+                            <Stack.Screen
+                              name="NavBarOwners"
+                              component={NavBarOwners}
+                            />
+                          ) : (
+                            <Stack.Screen
+                              name="NavBarRenters"
+                              component={NavBarRenters}
+                            />
+                          )}
+                        </>
+                      )}
+
+                      {!user && (
+                        <>
+                          <Stack.Screen
+                            name="LogoScreen"
+                            component={LogoScreen}
+                          />
+                          <Stack.Screen
+                            name="SignIn"
+                            component={SignInScreen}
+                          />
+                          <Stack.Screen
+                            name="SignUp"
+                            component={SignUpScreen}
+                          />
+                          <Stack.Screen
+                            name="ForgotPassword"
+                            component={ForgotPasswordScreen}
+                          />
+                          <Stack.Screen name="Role" component={PreferredRole} />
+                        </>
+                      )}
+                    </Stack.Navigator>
+                  </NavigationContainer>
+                </MessageContext.Provider>
+              </UserContext.Provider>
+            </PinContext.Provider>
+          </AppliedContext.Provider>
+        </AddPropertyContext.Provider>
+      </MessageStateContext.Provider>
+    </ApplicantContext.Provider>
   );
 }
 

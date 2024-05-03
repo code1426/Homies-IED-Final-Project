@@ -22,15 +22,22 @@ import {
   MessageContext,
   UserContext,
   MessageStateContext,
-} from '../../Contexts';
-import { useNavigation } from '@react-navigation/native';
+  ApplicantContext,
+} from "../../Contexts";
+import { useNavigation } from "@react-navigation/native";
 
-const QueuedComponent = ({ applicant, postData, updateList }) => {
+const QueuedComponent = ({
+  applicant,
+  postData,
+  updateList,
+  visible: setPopUpVisible,
+}) => {
   const navigation = useNavigation();
   const currentUser = useContext(UserContext);
   const { dispatch } = useContext(MessageContext);
 
   const { messageState } = useContext(MessageStateContext);
+  const { setApplicant } = useContext(ApplicantContext);
 
   const [isApproved, setIsApproved] = useState(false);
   console.log(applicant);
@@ -188,23 +195,26 @@ const QueuedComponent = ({ applicant, postData, updateList }) => {
   };
 
   const handleProfileDescription = () => {
-    navigation.push('ProfileDescriptionScreen', { applicant: applicant });
+    setApplicant(applicant)
+    setTimeout(()=> {
+      setPopUpVisible(true)
+    }, 0)
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.profileContainer}>
-        <TouchableOpacity onPress={handleProfileDescription}>
+        <TouchableOpacity onPress={() => handleProfileDescription()}>
           <Image
             style={styles.profileImage}
-            source={require('../assets/profile.jpg')}
+            source={{uri : applicant.photoURL}}
           />
         </TouchableOpacity>
-        <Text
-          numberOfLines={1}
-          style={styles.name}>
+        <TouchableOpacity onPress={() => handleProfileDescription()}>
+        <Text numberOfLines={1} style={styles.name}>
           {applicant.firstName}
         </Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.buttonsContainer}>

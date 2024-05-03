@@ -6,3 +6,4 @@ export const AddPropertyContext = createContext();
 export const SearchTermContext = createContext();
 export const MessageContext = createContext();
 export const MessageStateContext = createContext();
+export const ApplicantContext = createContext();
