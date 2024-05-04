@@ -484,7 +484,7 @@ const PostDetailScreen = ({ navigation }) => {
             {isApproved ? (
               <TouchableOpacity
                 onPress={handleMessage}
-                style={{ ...styles.applyButton, backgroundColor: "#lightblue" }}
+                style={{ ...styles.applyButton, backgroundColor: "#5898F0" }}
               >
                 {messageLoading ? (
                   <ActivityIndicator size="small" color="white" />
