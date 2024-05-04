@@ -87,7 +87,7 @@ function MessagingRoomScreen({ navigation }) {
         await updateDoc(doc(FirebaseDB, 'Messages', data.MessageId), {
           messages: arrayUnion({
             id: Math.random().toString(16).slice(2),
-            reserveFee,
+            reserveFee: parseInt(reserveFee) + parseInt(reserveFee) * 0.01,
             senderId: currentUser.uid,
             date: Timestamp.now(),
             reserveMode: true,
@@ -96,7 +96,9 @@ function MessagingRoomScreen({ navigation }) {
 
         await updateDoc(doc(FirebaseDB, 'UserMessages', currentUser.uid), {
           [data.MessageId + '.latestMessage']: {
-            text: `Reservation Offer: Php ${reserveFee}`,
+            text: `Reservation Offer: Php ${
+              parseInt(reserveFee) + parseInt(reserveFee) * 0.01
+            }`,
           },
           [data.MessageId + '.date']: Timestamp.now()
             .toDate()
@@ -107,7 +109,9 @@ function MessagingRoomScreen({ navigation }) {
 
         await updateDoc(doc(FirebaseDB, 'UserMessages', data.user.uid), {
           [data.MessageId + '.latestMessage']: {
-            text: `Reservation Offer: Php ${reserveFee}`,
+            text: `Reservation Offer: Php ${
+              parseInt(reserveFee) + parseInt(reserveFee) * 0.01
+            }`,
           },
           [data.MessageId + '.date']: Timestamp.now()
             .toDate()
@@ -311,7 +315,7 @@ function MessagingRoomScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'F5F5F5',
+    backgroundColor: '#F5F5F5',
     flexDirection: 'column',
   },
   room: {

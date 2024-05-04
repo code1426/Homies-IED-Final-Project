@@ -6,9 +6,9 @@ import {
   Image,
   SafeAreaView,
   TouchableOpacity,
-} from "react-native";
-import React from "react";
-import { useNavigation } from "@react-navigation/native";
+} from 'react-native';
+import React from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 const MessagingRoomHeaderComponent = ({ title, profilePic }) => {
   const navigation = useNavigation();
@@ -17,10 +17,9 @@ const MessagingRoomHeaderComponent = ({ title, profilePic }) => {
     <SafeAreaView style={styles.headerContainer}>
       <TouchableOpacity
         style={styles.backButton}
-        onPress={() => navigation.goBack()}
-      >
+        onPress={() => navigation.goBack()}>
         <Image
-          source={require("../assets/backIcon.png")}
+          source={require('../assets/backIcon.png')}
           style={styles.backButtonImage}
         />
       </TouchableOpacity>
@@ -38,27 +37,27 @@ export default MessagingRoomHeaderComponent;
 
 const styles = StyleSheet.create({
   headerContainer: {
-    backgroundColor: "#0093D6",
-    marginTop: Platform.OS === "android" ? 26 : 0,
-    alignItems: "center",
+    backgroundColor: '#8bb5ef',
+    marginTop: Platform.OS === 'android' ? 26 : 0,
+    alignItems: 'center',
     // justifyContent: 'center',
     height: 72,
-    flexDirection: "row",
+    flexDirection: 'row',
     paddingHorizontal: 20,
     // borderBottomWidth: 10,
     // borderBottomColor: '#E5F0F6',
   },
   header: {
     fontSize: 20,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   profilePic: {
-    alignSelf: "center",
+    alignSelf: 'center',
     width: 50,
     height: 50,
     borderRadius: 25,
     marginRight: 15,
-    resizeMode: "cover",
+    resizeMode: 'cover',
     // marginLeft: 10,
   },
   backButton: {
