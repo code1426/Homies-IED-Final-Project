@@ -33,6 +33,11 @@ function Message({ message }) {
                 <Text style={[styles.reservationTitle, { fontSize: 15 }]}>
                   Reservation Offer Sent
                 </Text>
+                <Text style={styles.reserveFee}>
+                  Php{' '}
+                  {parseInt(message.reserveFee) +
+                    parseInt(message.reserveFee) * 0.01}{' '}
+                </Text>
               </View>
             ) : (
               <Text>{message.text}</Text>
