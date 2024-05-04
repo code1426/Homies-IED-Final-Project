@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'absolute',
     alignSelf: 'center',
-    paddingHorizontal: 100,
+    paddingHorizontal: '25%',
     top: 0,
     left: 0,
     right: 0,
