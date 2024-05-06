@@ -12,7 +12,7 @@ import {
 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-import { useState, useContext } from "react";
+import { useState, useContext, useRef, useEffect } from "react";
 import { FirebaseDB, FirebaseAuth } from "../../firebase.config";
 import { serverTimestamp, setDoc, doc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
@@ -28,6 +28,7 @@ import HeaderComponent from "../components/HeaderComponent";
 import { firebaseStorage } from "../../firebase.config";
 
 import { AddPropertyContext } from "../../Contexts";
+import { useIsFocused } from "@react-navigation/native";
 
 function AddPropertyScreen({ navigation }) {
   const [thumbnail, setThumbnail] = useState(null);
@@ -136,11 +137,6 @@ function AddPropertyScreen({ navigation }) {
     let isAllInputFilled;
     console.log(values);
 
-    // values.titleLowerCase = values.title.toLowerCase()
-    // values.descriptionLowerCase = values.description.toLowerCase()
-    // values.propertyTypeLowerCase = values.propertyType.toLowerCase()
-    // values.addressLowerCase = values.address.toLowerCase()
-
     for (let [key, val] of Object.entries(values)) {
       if (!val && key !== "thumbnail" && key !== "images") {
         isAllInputFilled = false;
@@ -164,24 +160,6 @@ function AddPropertyScreen({ navigation }) {
       });
       return;
     }
-    // if (isNaN(values.registrationPrice)) {
-    //   isAllInputFilled = false;
-    //   setRegStyle({
-    //     ...styles.regInput,
-    //     borderWidth: 2,
-    //     borderColor: "#FF2525",
-    //   });
-    //   return;
-    // }
-    // if (parseInt(values.rentPrice) < parseInt(values.registrationPrice)) {
-    //   isAllInputFilled = false;
-    //   setRegStyle({
-    //     ...styles.regInput,
-    //     borderWidth: 2,
-    //     borderColor: "#FF2525",
-    //   });
-    //   return;
-    // }
 
     try {
       setLoading(true);
@@ -282,6 +260,8 @@ function AddPropertyScreen({ navigation }) {
     } catch (error) {
       console.log(error.message, "main");
       setLoading(false);
+    } finally {
+      submitRef.current = true;
     }
   };
 
@@ -289,7 +269,7 @@ function AddPropertyScreen({ navigation }) {
     if (!values.title) {
       setTitleStyle({
         ...styles.titleInput,
-        borderBottomWidth: 2,
+        borderBottomWidth: 1.5,
         borderColor: "#FF2525",
       });
     } else {
@@ -298,7 +278,7 @@ function AddPropertyScreen({ navigation }) {
     if (!values.description) {
       setDescStyle({
         ...styles.descriptionInput,
-        borderWidth: 2,
+        borderWidth: 1.5,
         borderColor: "#FF2525",
       });
     } else {
@@ -307,7 +287,7 @@ function AddPropertyScreen({ navigation }) {
     if (!values.propertyType) {
       setPropertyStyle({
         ...styles.pickerContainer,
-        borderWidth: 2,
+        borderWidth: 1.5,
         borderColor: "#FF2525",
       });
     } else {
@@ -316,37 +296,16 @@ function AddPropertyScreen({ navigation }) {
     if (!values.rentPrice) {
       setRentStyle({
         ...styles.rentInput,
-        borderWidth: 2,
+        borderWidth: 1.5,
         borderColor: "#FF2525",
       });
     } else {
       setRentStyle({ ...styles.rentInput });
     }
-    // if (!values.registrationPrice) {
-    //   setRegStyle({
-    //     ...styles.regInput,
-    //     borderWidth: 2,
-    //     borderColor: "#FF2525",
-    //   });
-    // } else {
-    //   setRegStyle({ ...styles.regInput });
-    // }
-    // if (
-    //   !values.registrationPrice ||
-    //   parseInt(values.rentPrice) < parseInt(values.registrationPrice)
-    // ) {
-    //   setRegStyle({
-    //     ...styles.regInput,
-    //     borderWidth: 2,
-    //     borderColor: "#FF2525",
-    //   });
-    // } else {
-    //   setRegStyle({ ...styles.regInput });
-    // }
     if (!values.thumbnail) {
       setImgStyle({
         ...styles.thumbnail,
-        borderWidth: 2,
+        borderWidth: 1.5,
         borderColor: "#FF2525",
       });
     } else {
@@ -355,21 +314,14 @@ function AddPropertyScreen({ navigation }) {
     if (isNaN(values.rentPrice)) {
       setRentStyle({
         ...styles.rentInput,
-        borderWidth: 2,
+        borderWidth: 1.5,
         borderColor: "#FF2525",
       });
     }
-    // if (isNaN(values.registrationPrice)) {
-    //   setRegStyle({
-    //     ...styles.regInput,
-    //     borderWidth: 2,
-    //     borderColor: "#FF2525",
-    //   });
-    // }
     if (values.features.length === 0) {
       setFeatureStyle({
         ...styles.featuresContainer,
-        borderWidth: 2,
+        borderWidth: 1.5,
         borderColor: "#FF2525",
       });
     } else {
@@ -378,7 +330,7 @@ function AddPropertyScreen({ navigation }) {
     if (!values.images.image1) {
       setImage1Style({
         ...styles.image1,
-        borderWidth: 2,
+        borderWidth: 1.5,
         borderColor: "#FF2525",
       });
     } else {
@@ -387,7 +339,7 @@ function AddPropertyScreen({ navigation }) {
     if (!values.images.image2) {
       setImage2Style({
         ...styles.image2,
-        borderWidth: 2,
+        borderWidth: 1.5,
         borderColor: "#FF2525",
       });
     } else {
@@ -396,7 +348,7 @@ function AddPropertyScreen({ navigation }) {
     if (!values.images.image3) {
       setImage3Style({
         ...styles.image3,
-        borderWidth: 2,
+        borderWidth: 1.5,
         borderColor: "#FF2525",
       });
     } else {
@@ -405,7 +357,7 @@ function AddPropertyScreen({ navigation }) {
     if (!values.address) {
       setAddressStyle({
         ...styles.addressInput,
-        borderWidth: 2,
+        borderWidth: 1.5,
         borderColor: "#FF2525",
       });
     } else {
@@ -454,6 +406,8 @@ function AddPropertyScreen({ navigation }) {
     { label: "Metered Electricity", value: "Metered Electricity" },
   ];
 
+  const submitRef = useRef(false);
+
   return (
     <SafeAreaView>
       <HeaderComponent title="Add Property" />
@@ -465,18 +419,23 @@ function AddPropertyScreen({ navigation }) {
             onSubmit={(value, resetForm) => {
               onSubmitMethod(value, resetForm);
             }}
-            // validate={(values) => {
-            // const errors={}
+            validate={(values) => {
+              const errors = {};
 
-            // for (let [key, val] of Object.entries(values)) {
-            //   if (!val) {
-            //     errors[key] = `${key} is required`
-            //   }
-            // }
-            // console.log(errors)
-            // // handleInputError(values)
-            // return errors
-            // }}
+              for (let [key, val] of Object.entries(values)) {
+                if (key !== "thumbnail") {
+                  if (!val || values.length === 0) {
+                    errors[key] = `${key} is required`;
+                  }
+                }
+              }
+              console.log(errors);
+              if (!submitRef.current) {
+                handleInputError(values);
+              }
+
+              return errors;
+            }}
           >
             {/* handle form */}
             {({
@@ -607,6 +566,7 @@ function AddPropertyScreen({ navigation }) {
                 <View>
                   <Text style={styles.title}>Title</Text>
                   <TextInput
+                    onFocus={() => (submitRef.current = false)}
                     style={titleStyle}
                     placeholder="Enter Title"
                     value={values?.title}
@@ -642,9 +602,10 @@ function AddPropertyScreen({ navigation }) {
                     Property Type
                   </Text>
                   <Dropdown
+                    // mode="modal"
                     style={propertyStyle}
                     containerStyle={{ borderRadius: 10 }}
-                    activeColor="#E8E8E8"
+                    activeColor="#4285F4"
                     data={propertyTypes}
                     search={false}
                     maxHeight={300}
@@ -671,21 +632,31 @@ function AddPropertyScreen({ navigation }) {
                   </Text>
                   <View>
                     <MultiSelect
+                      mode="modal"
                       style={featureStyle}
-                      containerStyle={{ borderRadius: 10 }}
+                      containerStyle={{
+                        borderRadius: 10,
+                        maxHeight: 450,
+                        marginBottom: 10,
+                      }}
                       selectedStyle={{
                         marginHorizontal: 2,
                         marginTop: 2,
-                        borderRadius: 14,
-                        backgroundColor: "#00A4FF",
+                        borderRadius: 15,
+                        backgroundColor: "#4285F4",
                       }}
-                      selectedTextStyle={{ color: "white" }}
-                      activeColor="#E8E8E8"
+                      inputSearchStyle={{ borderRadius: 10 }}
+                      selectedTextStyle={{ color: "white", fontSize: 14 }}
+                      activeColor="#4285F4"
+                      dropdownPosition="auto"
+                      searchPlaceholder="Search..."
+                      maxHeight={450}
                       search={true}
                       data={data}
                       labelField="label"
                       valueField="value"
                       placeholder="Select"
+                      keyboardAvoiding={true}
                       value={values?.features}
                       onChange={(item) => {
                         setFieldValue("features", item);
@@ -713,6 +684,7 @@ function AddPropertyScreen({ navigation }) {
                     // numberOfLines={2}
                     maxLength={100}
                     autoCapitalize="sentences"
+                    clearButtonMode="while-editing"
                   />
                 </View>
 
@@ -728,6 +700,8 @@ function AddPropertyScreen({ navigation }) {
                       numberOfLines={1}
                       maxLength={5}
                       keyboardType="numeric"
+                      inputMode="numeric"
+                      clearButtonMode="while-editing"
                     />
                     <Text style={{ marginLeft: 8 }}>Monthly</Text>
                   </View>

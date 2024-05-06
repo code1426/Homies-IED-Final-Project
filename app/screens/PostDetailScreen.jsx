@@ -548,15 +548,6 @@ const PostDetailScreen = ({ navigation }) => {
                 </Text>
               )}
             </TouchableOpacity>
-
-            {/* <TouchableOpacity
-            style={[styles.editButtonContainer, { flex: 2 }]}
-            onPress={() => {}}
-          >
-            <Text style={{ color: "white", fontSize: 20, fontWeight: "700" }}>
-              EDIT
-            </Text>
-          </TouchableOpacity> */}
           </View>
         )}
       </View>
@@ -652,7 +643,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   description: {
-    color: "#545454",
+    color: "black",
     // color: "gray",
     fontSize: 16,
     marginBottom: 10,
