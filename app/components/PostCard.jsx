@@ -1,9 +1,9 @@
 import { StyleSheet, View, TouchableOpacity, Image, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useRef, useState } from "react";
 
-function PostCard({ data }) {
+function PostCard({ data, shadow = true }) {
   const navigation = useNavigation();
-  // data.rentPrice.toLocaleString()
 
   return (
     <TouchableOpacity
@@ -13,7 +13,19 @@ function PostCard({ data }) {
         })
       }
     >
-      <View style={styles.container}>
+      <View
+        style={
+          shadow
+            ? {
+                ...styles.container,
+                shadowColor: "black",
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.15,
+                shadowRadius: 10,
+              }
+            : styles.container
+        }
+      >
         <Image
           style={{ height: 160, width: "100%", borderRadius: 20 }}
           source={{ uri: data?.thumbnail }}
@@ -24,7 +36,13 @@ function PostCard({ data }) {
             <Text style={styles.postTitle} numberOfLines={1}>
               {data?.title}
             </Text>
-            <View style={{ flexDirection: "row", alignSelf:'flex-start', alignItems: 'center' }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignSelf: "flex-start",
+                alignItems: "center",
+              }}
+            >
               <Image
                 style={styles.locationIcon}
                 source={require("../assets/location-Icon.png")}
@@ -34,7 +52,9 @@ function PostCard({ data }) {
           </View>
 
           <View style={{ alignItems: "center", marginBottom: 20, flex: 2 }}>
-            <Text style={styles.price}>{`Php ${parseFloat(data?.rentPrice).toLocaleString()}`}</Text>
+            <Text style={styles.price}>{`Php ${parseFloat(
+              data?.rentPrice
+            ).toLocaleString()}`}</Text>
             <Text style={styles.monthly}>monthly</Text>
           </View>
         </View>
@@ -48,16 +68,12 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 20,
     marginBottom: 24,
+    borderColor: "#BFBFBF",
   },
   textsContainer: {
     justifyContent: "space-between",
     padding: 12,
     flexDirection: "row",
-  },
-  shadow: {
-    shadowColor: "grey",
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 10,
   },
   postTitle: {
     fontWeight: "bold",
@@ -89,7 +105,7 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     resizeMode: "contain",
-    marginRight: 4
+    marginRight: 4,
   },
 });
 export default PostCard;

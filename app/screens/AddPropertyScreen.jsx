@@ -580,6 +580,7 @@ function AddPropertyScreen({ navigation }) {
                   <Text style={styles.description}>Description</Text>
                   <TextInput
                     style={descStyle}
+                    placeholderTextColor="#707070"
                     placeholder="List key features and amenities (bedrooms, bathrooms, air-conditioned, etc.)"
                     value={values?.description}
                     onChangeText={handleChange("description")}
@@ -752,6 +753,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     alignSelf: "center",
     marginBottom: 40,
+    borderColor: "gray"
   },
   description: {
     fontSize: 22,
@@ -763,19 +765,22 @@ const styles = StyleSheet.create({
     minHeight: 150,
     // maxHeight: 600,
     width: "100%",
-    backgroundColor: "#DBDBDB",
+    backgroundColor: "#E5E5E5",
     borderWidth: 0,
     borderRadius: 10,
     alignSelf: "center",
     marginBottom: 40,
     padding: 12,
     textAlignVertical: "top",
+    borderColor: "gray",
   },
   pickerContainer: {
     borderWidth: 1,
     padding: 8,
     borderRadius: 10,
     marginBottom: 20,
+    // backgroundColor: "#E5E5E5",
+    borderColor: "gray",
   },
   featuresContainer: {
     borderWidth: 1,
@@ -783,6 +788,9 @@ const styles = StyleSheet.create({
     padding: 8,
     marginBottom: 4,
     marginBottom: 4,
+    // backgroundColor: "#E5E5E5",
+    borderColor: "gray",
+    
   },
   addPropertybutton: {
     flex: 1,
@@ -810,6 +818,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 8,
     padding: 8,
+    borderColor: "gray",
   },
   regInput: {
     fontSize: 16,
@@ -889,5 +898,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 8,
     marginBottom: 20,
+    // backgroundColor: "#E5E5E5",
+    borderColor: "gray",
   },
 });

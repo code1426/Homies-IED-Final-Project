@@ -49,7 +49,6 @@ export default Suggestions;
 
 const styles = StyleSheet.create({
   suggestionsContainer: {
-    // position: 'absolute',
     borderRadius: 10,
     marginVertical: 12,
     backgroundColor: "white",
@@ -57,20 +56,14 @@ const styles = StyleSheet.create({
     maxHeight: 350,
     marginHorizontal: -10,
     alignSelf: "center",
-    // top: 103,
     borderWidth: 0.5,
-    borderColor: "#BFBFBF"
+    borderColor: "#BFBFBF",
   },
   searchForContainer: {
-    // backgroundColor: 'red',
     flexDirection: "row",
     marginLeft: 12,
     height: 30,
     alignItems: "center",
-    shadowColor: "#171717",
-    shadowOffset: { width: -2, height: -4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
   },
   text: {
     fontSize: 14,

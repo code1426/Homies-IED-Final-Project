@@ -639,7 +639,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginVertical: 8,
     minHeight: 80,
-    backgroundColor: "#DBDBDB",
+    backgroundColor: "#E5E5E5",
     borderRadius: 15,
   },
   description: {

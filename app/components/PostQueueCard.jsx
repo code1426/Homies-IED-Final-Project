@@ -35,7 +35,7 @@ const PostQueueCard = ({ data, visible }) => {
 
   return (
     <View style={styles.container}>
-      <PostCard data={data} />
+      <PostCard data={data} shadow={false} />
       <View>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>Queue</Text>
@@ -77,6 +77,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginVertical: 10,
     borderRadius: 20,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
   },
   titleContainer: {
     marginTop: -40,

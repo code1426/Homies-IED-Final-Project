@@ -226,7 +226,7 @@ const AppliedPostCard = ({ data, updateList }) => {
 
   return (
     <View style={styles.container}>
-      <PostCard data={data} />
+      <PostCard data={data} shadow={false} />
       <View style={styles.statusContainer}>
         {screenLoading ? (
           <ActivityIndicator style={{alignSelf: "center", flex: 1}} size="small" color="midnightblue" />
@@ -300,7 +300,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginVertical: 10,
     borderRadius: 20,
-    position: "relative",
+    // position: "relative",
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
   },
   titleContainer: {
     marginTop: -40,

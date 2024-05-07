@@ -77,6 +77,8 @@ const SearchScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 30,
+    // backgroundColor: 'red',
+    backgroundColor: "rgb(242, 242, 242)"
   },
   header: {
     marginHorizontal: -20,
