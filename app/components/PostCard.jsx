@@ -3,6 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 
 function PostCard({ data }) {
   const navigation = useNavigation();
+  // data.rentPrice.toLocaleString()
 
   return (
     <TouchableOpacity
@@ -33,7 +34,7 @@ function PostCard({ data }) {
           </View>
 
           <View style={{ alignItems: "center", marginBottom: 20, flex: 2 }}>
-            <Text style={styles.price}>{`Php ${data?.rentPrice}`}</Text>
+            <Text style={styles.price}>{`Php ${parseFloat(data?.rentPrice).toLocaleString()}`}</Text>
             <Text style={styles.monthly}>monthly</Text>
           </View>
         </View>

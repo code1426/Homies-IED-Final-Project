@@ -421,7 +421,7 @@ const PostDetailScreen = ({ navigation }) => {
                   </View>
 
                   <View style={{ alignItems: "center", flex: 2 }}>
-                    <Text style={styles.price}>{`Php ${data?.rentPrice}`}</Text>
+                    <Text style={styles.price}>{`Php ${parseFloat(data?.rentPrice).toLocaleString()}`}</Text>
                     <Text style={styles.monthly}>monthly</Text>
                   </View>
                 </View>
@@ -721,6 +721,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     // borderTopWidth: 1,
     borderColor: "#BDBDBD",
+    marginBottom: 12,
     // backgroundColor: "gray"
   },
   profile: {

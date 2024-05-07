@@ -311,7 +311,7 @@ function AddPropertyScreen({ navigation }) {
     } else {
       setImgStyle({ ...styles.thumbnail });
     }
-    if (isNaN(values.rentPrice)) {
+    if (isNaN(values.rentPrice) || values.rentPrice <= 0) {
       setRentStyle({
         ...styles.rentInput,
         borderWidth: 1.5,
@@ -602,7 +602,6 @@ function AddPropertyScreen({ navigation }) {
                     Property Type
                   </Text>
                   <Dropdown
-                    // mode="modal"
                     style={propertyStyle}
                     containerStyle={{ borderRadius: 10 }}
                     activeColor="#4285F4"
@@ -648,6 +647,7 @@ function AddPropertyScreen({ navigation }) {
                       inputSearchStyle={{ borderRadius: 10 }}
                       selectedTextStyle={{ color: "white", fontSize: 14 }}
                       activeColor="#4285F4"
+                      // activeColor="limegreen"
                       dropdownPosition="auto"
                       searchPlaceholder="Search..."
                       maxHeight={450}
