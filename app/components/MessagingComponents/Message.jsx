@@ -13,6 +13,18 @@ function Message({ message }) {
   const currentUser = useContext(UserContext);
   const { data } = useContext(MessageContext);
 
+  const [paymentLoading, setPaymentLoading] = useState(false);
+
+  const handlePayment = () => {
+    setPaymentLoading(false);
+    Alert.alert('Payment Successful', '', {
+      text: 'OK',
+      onPress: () => {
+        console.log('Ok Pressed');
+      },
+    });
+  };
+
   return (
     <View
       style={[
@@ -33,7 +45,9 @@ function Message({ message }) {
                 <Text style={[styles.reservationTitle, { fontSize: 15 }]}>
                   Reservation Offer Sent
                 </Text>
-                <Text style={styles.reserveFee}>Php {parseFloat(message.reserveFee).toLocaleString()}</Text>
+                <Text style={styles.reserveFee}>
+                  Php {parseFloat(message.reserveFee).toLocaleString()}
+                </Text>
               </View>
             ) : (
               <Text>{message.text}</Text>
@@ -83,17 +97,16 @@ function Message({ message }) {
                 </Text>
                 <Text style={styles.reserveFee}>
                   Php{' '}
-                  {parseFloat(parseFloat(message.reserveFee) +
-                    parseFloat(message.reserveFee) * 0.01).toLocaleString()}
+                  {parseFloat(
+                    parseFloat(message.reserveFee) +
+                      parseFloat(message.reserveFee) * 0.01
+                  ).toLocaleString()}
                 </Text>
                 <View style={styles.reserveButton}>
                   <TouchableOpacity
                     onPress={() => {
-                      Alert.alert(
-                        'No GCash Function Yet',
-                        'Try Again Next Time',
-                        [{ text: 'OK' }]
-                      );
+                      setPaymentLoading(true);
+                      setTimeout(handlePayment, 3000);
                     }}>
                     <Text>Accept Offer</Text>
                   </TouchableOpacity>
