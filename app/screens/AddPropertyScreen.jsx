@@ -415,13 +415,11 @@ function AddPropertyScreen({ navigation }) {
     { label: "Near WIT", value: "Near WIT" },
     { label: "Near WVSU", value: "Near WVSU" },
     { label: "No Curfew", value: "No Curfew" },
-    { label: "Own Sub-meter", value: "Own Sub-meter" },
     { label: "Pets Allowed", value: "Pets Allowed" },
     { label: "Piso Wi-Fi", value: "Piso Wi-Fi" },
     { label: "Room", value: "Room" },
     { label: "Shared Room", value: "Shared Room" },
     { label: "Visitors Allowed", value: "Visitors Allowed" }
-
   ];
 
   const submitRef = useRef(false);

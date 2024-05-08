@@ -16,6 +16,7 @@ import { UserContext } from "../../Contexts";
 import {
   FirebaseAuth,
   FirebaseDB,
+  firebaseDatabase,
   firebaseStorage,
 } from "../../firebase.config";
 import {
@@ -39,6 +40,7 @@ import {
   collection,
   where,
   onSnapshot,
+  getDocs,
 } from "firebase/firestore";
 
 import * as ImagePicker from "expo-image-picker";
@@ -187,6 +189,7 @@ export default function EditProfileScreen({ navigation }) {
       await updateDoc(doc(FirebaseDB, "Users", currentUser.uid), {
         location: location,
       });
+      currentUser.location = location;
       setLocationLoading(false);
     } catch (e) {
       console.log(e.message);
@@ -259,6 +262,36 @@ export default function EditProfileScreen({ navigation }) {
     }
   };
 
+  const handleDeletePosts = async () => {
+    try {
+      const q = query(
+        collection(FirebaseDB, "OwnerPosts"),
+        where("uid", "==", currentUser.uid)
+      );
+
+      const responses = await getDocs(q);
+      responses.forEach(async (snapshot) => {
+        await deleteDoc(doc(FirebaseDB, "OwnerPosts", snapshot.id));
+        console.log("POST DATA:", snapshot.data());
+        console.log("DOCUMENT DELETED");
+
+        // const applicants = await getDocs(
+        //   query(
+        //     collection(FirebaseDB, `Users/${snapshot.data().uid}/Applied`),
+        //     where("postID", "==", snapshot.id)
+        //   )
+        // );
+        // applicants.forEach(async (snapshot1) => {
+        //   await deleteDoc(doc(FirebaseDB, `Users//Applied`, snapshot.id));
+        //   console.log("APPLICANT DATA:", snapshot1.data());
+        //   console.log("APPLICANT DELETED");
+        // });
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   const handleDeletionProcess = async () => {
     try {
       const credential = EmailAuthProvider.credential(
@@ -268,15 +301,7 @@ export default function EditProfileScreen({ navigation }) {
       reauthenticateWithCredential(userAuth, credential)
         .then(async () => {
           console.log("Reaunthenticated");
-          // const q = query(
-          //   collection(FirebaseDB, "OwnerPosts"),
-          //   where("uid", "==", currentUser.uid)
-          // );
-          // const res = await getDoc(q);
-          // res.forEach(async (snapshot) => {
-          //   await deleteDoc(doc(FirebaseDB, "OwnerPosts", snapshot.id));
-          //   console.log("Document Deleted");
-          // });
+          await handleDeletePosts();
           await deleteDoc(doc(FirebaseDB, "Users", currentUser.uid));
           await handleDeleteAccount();
           console.log("Documents Deleted");
@@ -321,6 +346,8 @@ export default function EditProfileScreen({ navigation }) {
       setProfileDescriptionLoading(false);
     } catch (error) {
       console.log(error);
+    } finally {
+      setProfileDescriptionLoading(false);
     }
   };
 

@@ -421,7 +421,9 @@ const PostDetailScreen = ({ navigation }) => {
                   </View>
 
                   <View style={{ alignItems: "center", flex: 2 }}>
-                    <Text style={styles.price}>{`Php ${parseFloat(data?.rentPrice).toLocaleString()}`}</Text>
+                    <Text style={styles.price}>{`Php ${parseFloat(
+                      data?.rentPrice
+                    ).toLocaleString()}`}</Text>
                     <Text style={styles.monthly}>monthly</Text>
                   </View>
                 </View>
@@ -567,10 +569,72 @@ const PostDetailScreen = ({ navigation }) => {
   }
 };
 
+function Icon({ title }) {
+  let source;
+
+  if (title === "2 BedRooms") source = require("../assets/2_Bedrooms.png");
+  else if (title === "3 BedRooms") source = require("../assets/3_Bedrooms.png");
+  else if (title === "4 BedRooms") source = require("../assets/4_Bedrooms.png");
+  else if (title === "Air Conditioned")
+    source = require("../assets/Air_Conditioned.png");
+  else if (title === "Bed Space") source = require("../assets/Bed_Space.png");
+  else if (title === "Boys Only") source = require("../assets/Boys_Only.png");
+  else if (title === "CCTV Monitored")
+    source = require("../assets/CCTV_Monitored.png");
+  else if (title === "Common CR") source = require("../assets/Common_CR.png");
+  else if (title === "Common Kitchen Area")
+    source = require("../assets/Common_Kitchen_Area.png");
+  else if (title === "Common Laundry Area")
+    source = require("../assets/Common_Laundry_Area.png");
+  else if (title === "Fire Alarm System")
+    source = require("../assets/Fire_Alarm_System.png");
+  else if (title === "Free Water") source = require("../assets/Free_Water.png");
+  else if (title === "Free Wi-Fi") source = require("../assets/Piso_Wi-Fi.png");
+  else if (title === "Girls Only") source = require("../assets/Girls_Only.png");
+  else if (title === "Metered Electricity")
+    source = require("../assets/Metered_Electricity.png");
+  else if (title === "Near CPU") source = require("../assets/Near_CPU.png");
+  else if (title === "Near San Ag")
+    source = require("../assets/Near_San_Ag.png");
+  else if (title === "Near WIT") source = require("../assets/Near_WIT.png");
+  else if (title === "Near WVSU") source = require("../assets/Near_WVSU.png");
+  else if (title === "No Curfew") source = require("../assets/No_Curfew.png");
+  else if (title === "Pets Allowed")
+    source = require("../assets/Pets_Allowed.png");
+  else if (title === "Piso Wi-Fi") source = require("../assets/Piso_Wi-Fi.png");
+  else if (title === "Room") source = require("../assets/Room.png");
+  else if (title === "Shared Room")
+    source = require("../assets/Shared_Room.png");
+  else if (title === "Visitors Allowed")
+    source = require("../assets/Visitors_Allowed.png");
+
+  return (
+    <View style={iconStyles.container}>
+      <Image style={iconStyles.container} source={source} />
+    </View>
+  );
+}
+
+const iconStyles = StyleSheet.create({
+  container: {
+    width: 24,
+    height: 24,
+    resizeMode: "contain",
+    alignSelf: "center",
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 4,
+    marginRight: -6,
+  },
+});
+
 function FeaturesComponent({ title }) {
   return (
     <View
       style={{
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
         backgroundColor: "#C6E1F1",
         borderColor: "#B1D5E9",
         borderWidth: 1,
@@ -583,7 +647,16 @@ function FeaturesComponent({ title }) {
         left: 15,
       }}
     >
-      <Text style={{ paddingVertical: 4, paddingHorizontal: 20, fontSize: 12 }}>
+      {(title !== "Dorm" && title !== "Apartment" && title !== "Boarding House")  && <Icon title={title} />}
+
+      <Text
+        style={{
+          paddingVertical: 4,
+          paddingHorizontal: 20,
+          fontSize: 13,
+          fontWeight: "600",
+        }}
+      >
         {title}
       </Text>
     </View>
