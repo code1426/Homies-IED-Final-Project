@@ -1,4 +1,13 @@
-import React from 'react';
+import { update } from 'firebase/database';
+import {
+  deleteDoc,
+  deleteField,
+  doc,
+  onSnapshot,
+  query,
+  updateDoc,
+} from 'firebase/firestore';
+import React, { useContext, useState } from 'react';
 import {
   SafeAreaView,
   Image,
@@ -7,16 +16,60 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+import { FirebaseDB } from '../../firebase.config';
+import { UserContext } from '../../Contexts';
 
 // name is just a string of a name of the person
 // profilePic property must have a req('img') as input
 // latest_message is a string remove the {} and just use quotations
 // time is the time the last message has been sent remove the {} and just use quotations
 
-function MessageCard({ name, profilePic, latestMessage, time, onPress }) {
+function MessageCard({
+  name,
+  profilePic,
+  latestMessage,
+  time,
+  onPress,
+  editMode,
+  messageId,
+  userMessageId,
+}) {
+  const currentUser = useContext(UserContext);
+  // get UserMessages Data
+  // const [messages, setMessages] = useState();
+  // useEffect(() => {
+  //   const q = query(doc(FirebaseDB, 'UserMessages', currentUser.uid));
+  //   const unsub = onSnapshot(q, (doc) => {
+  //     setMessages(doc.data());
+  //   });
+  //   return () => {
+  //     unsub();
+  //   };
+  // }, [currentUser.uid]);
+
+  const handleDeleteMessages = async () => {
+    try {
+      console.log('Deletion Start');
+      console.log(messageId);
+      await deleteDoc(doc(FirebaseDB, 'Messages', messageId));
+      console.log('Messages Deleted');
+      await updateDoc(doc(FirebaseDB, 'UserMessages', currentUser.uid), {
+        [messageId]: deleteField(),
+      });
+      await updateDoc(doc(FirebaseDB, 'UserMessages', userMessageId), {
+        [messageId]: deleteField(),
+      });
+      console.log('UserMessage Deleted');
+      console.log('Deletion Successful');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <SafeAreaView>
       <TouchableOpacity
+        disabled={editMode}
         style={styles.pressableContent}
         onPress={onPress}>
         <Image
@@ -32,7 +85,16 @@ function MessageCard({ name, profilePic, latestMessage, time, onPress }) {
           </Text>
         </View>
         <View>
-          <Text style={styles.timeUpdated}>{`${time[0]}:${time[1]}`}</Text>
+          {editMode === true ? (
+            <TouchableOpacity onPress={handleDeleteMessages}>
+              <Image
+                style={styles.delete}
+                source={require('../assets/delete.png')}
+              />
+            </TouchableOpacity>
+          ) : (
+            <Text style={styles.timeUpdated}>{`${time[0]}:${time[1]}`}</Text>
+          )}
         </View>
       </TouchableOpacity>
     </SafeAreaView>
@@ -48,7 +110,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // borderWidth: 0.5,
     borderBottomWidth: 0.5,
-    borderColor: "#BDBDBD"
+    borderColor: '#BDBDBD',
   },
   profilePicStyle: {
     width: 50,
@@ -73,10 +135,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 6,
   },
-  messageSeenProfileStyle: {
-    width: 21,
-    height: 21,
-    borderRadius: 10.5,
+  delete: {
+    width: 30,
+    height: 30,
     resizeMode: 'cover',
   },
 });
