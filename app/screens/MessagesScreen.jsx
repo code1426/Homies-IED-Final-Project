@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
-import MessageCard from "../components/MessageCard.jsx";
+import React, { useContext, useEffect, useState } from 'react';
+import MessageCard from '../components/MessageCard.jsx';
 import {
   View,
   Text,
@@ -7,10 +7,10 @@ import {
   Image,
   StyleSheet,
   Platform,
-  ActivityIndicator
-} from "react-native";
+  ActivityIndicator,
+} from 'react-native';
 
-import HeaderComponent from "../components/HeaderComponent";
+import HeaderComponent from '../components/HeaderComponent';
 import {
   doc,
   getDoc,
@@ -18,13 +18,13 @@ import {
   onSnapshot,
   orderBy,
   query,
-} from "firebase/firestore";
-import { FirebaseDB } from "../../firebase.config.js";
-import { UserContext } from "../../Contexts.js";
-import { MessageContext } from "../../Contexts.js";
-import Message from "../components/MessagingComponents/Message.jsx";
+} from 'firebase/firestore';
+import { FirebaseDB } from '../../firebase.config.js';
+import { UserContext } from '../../Contexts.js';
+import { MessageContext } from '../../Contexts.js';
+import Message from '../components/MessagingComponents/Message.jsx';
 
-import { MessageStateContext } from "../../Contexts.js";
+import { MessageStateContext } from '../../Contexts.js';
 
 function MessagesScreen({ navigation }) {
   const currentUser = useContext(UserContext);
@@ -37,7 +37,7 @@ function MessagesScreen({ navigation }) {
 
   useEffect(() => {
     setMessageState((state) => state + 1);
-    const q = query(doc(FirebaseDB, "UserMessages", currentUser.uid));
+    const q = query(doc(FirebaseDB, 'UserMessages', currentUser.uid));
     const unsub = onSnapshot(q, (doc) => {
       setMessages(doc.data());
       setScreenLoading(false);
@@ -49,19 +49,27 @@ function MessagesScreen({ navigation }) {
 
   const handleSelect = (user) => {
     console.log(user);
-    dispatch({ type: "MESSAGE_PRESSED", payload: user });
-    navigation.navigate("MessagingRoom");
+    dispatch({ type: 'MESSAGE_PRESSED', payload: user });
+    navigation.navigate('MessagingRoom');
   };
+
+  const [editMode, setEditMode] = useState(false);
 
   if (!screenLoading) {
     return (
       <SafeAreaView style={styles.screen}>
-        <HeaderComponent title="Messages" />
+        <HeaderComponent
+          title='Messages'
+          editModeHeader={true}
+          onPressEdit={() => {
+            setEditMode(!editMode);
+          }}
+        />
         {Object.entries(messages).map((message) => (
           <MessageCard
             profilePic={{ uri: message[1].userInfo.photoURL }}
             name={
-              message[1].userInfo.firstName + " " + message[1].userInfo.lastName
+              message[1].userInfo.firstName + ' ' + message[1].userInfo.lastName
             }
             latestMessage={message[1].latestMessage?.text}
             time={message[1].date}
@@ -69,6 +77,9 @@ function MessagesScreen({ navigation }) {
             onPress={() => {
               handleSelect(message[1].userInfo);
             }}
+            editMode={editMode}
+            messageId={message[0]}
+            userMessageId={message[1].userInfo.uid}
           />
         ))}
       </SafeAreaView>
@@ -78,11 +89,13 @@ function MessagesScreen({ navigation }) {
       <View
         style={{
           flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <ActivityIndicator size="large" color="midnightblue" />
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <ActivityIndicator
+          size='large'
+          color='midnightblue'
+        />
       </View>
     );
   }
