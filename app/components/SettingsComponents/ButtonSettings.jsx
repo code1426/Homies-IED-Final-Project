@@ -73,6 +73,12 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     // flexDirection: 'column',
     // direction: 'ltr',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.15,
+    shadowColor: "black",
+    shadowRadius: 2,
+
+    
   },
   content: {
     // height: 'auto',
