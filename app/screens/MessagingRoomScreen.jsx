@@ -96,7 +96,7 @@ function MessagingRoomScreen({ navigation }) {
 
         await updateDoc(doc(FirebaseDB, 'UserMessages', currentUser.uid), {
           [data.MessageId + '.latestMessage']: {
-            text: `Reservation Offer: Php ${parseInt(reserveFee) * 1.01}`,
+            text: `Reservation Offer: Php ${(parseFloat(reserveFee) * 1.01).toLocaleString()}`,
           },
           [data.MessageId + '.date']: Timestamp.now()
             .toDate()
@@ -107,7 +107,7 @@ function MessagingRoomScreen({ navigation }) {
 
         await updateDoc(doc(FirebaseDB, 'UserMessages', data.user.uid), {
           [data.MessageId + '.latestMessage']: {
-            text: `Reservation Offer: Php ${parseInt(reserveFee) * 1.01}`,
+            text: `Reservation Offer: Php ${(parseFloat(reserveFee) * 1.01).toLocaleString()}`,
           },
           [data.MessageId + '.date']: Timestamp.now()
             .toDate()
@@ -211,7 +211,7 @@ function MessagingRoomScreen({ navigation }) {
           <View style={styles.popUpContainer}>
             <View style={styles.popUp}>
               <View style={{ paddingHorizontal: 20, paddingVertical: 20 }}>
-                <Text style={styles.popUpTitle}>Message Functions</Text>
+                <Text style={styles.popUpTitle}>    Reservation    </Text>
               </View>
               <View>
                 <View style={styles.popUpButtons}>

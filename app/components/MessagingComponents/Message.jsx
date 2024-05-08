@@ -33,7 +33,7 @@ function Message({ message }) {
                 <Text style={[styles.reservationTitle, { fontSize: 15 }]}>
                   Reservation Offer Sent
                 </Text>
-                <Text style={styles.reserveFee}>Php {message.reserveFee}</Text>
+                <Text style={styles.reserveFee}>Php {parseFloat(message.reserveFee).toLocaleString()}</Text>
               </View>
             ) : (
               <Text>{message.text}</Text>
@@ -83,8 +83,8 @@ function Message({ message }) {
                 </Text>
                 <Text style={styles.reserveFee}>
                   Php{' '}
-                  {parseInt(message.reserveFee) +
-                    parseInt(message.reserveFee) * 0.01}{' '}
+                  {parseFloat(parseFloat(message.reserveFee) +
+                    parseFloat(message.reserveFee) * 0.01).toLocaleString()}
                 </Text>
                 <View style={styles.reserveButton}>
                   <TouchableOpacity

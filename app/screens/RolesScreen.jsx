@@ -33,7 +33,7 @@ const RolesScreen = ({ navigation }) => {
       <HeaderComponent backButtonOn={true} title="Roles" />
       <View style={styles.container}>
         <TouchableOpacity
-          onPress={async () => [
+          onPress={() => [
             Alert.alert(
               "Do you want to Change Roles?",
               "Changing will log you out of your account.",
@@ -46,8 +46,8 @@ const RolesScreen = ({ navigation }) => {
                 },
                 {
                   text: "Yes",
-                  onPress: () => {
-                    updateRole();
+                  onPress: async () => {
+                    await updateRole();
                     FirebaseAuth.signOut();
                   },
                 },
