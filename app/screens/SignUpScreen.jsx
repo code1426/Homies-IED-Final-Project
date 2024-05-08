@@ -44,6 +44,7 @@ export default function SignUpScreen({ navigation }) {
           "https://firebasestorage.googleapis.com/v0/b/homies-ied-final-project.appspot.com/o/Users%2FphotoURL%2F1714614993869.jpg?alt=media&token=31747d4d-29eb-48a1-9ff0-763ad2d6055b",
         profileDescription: "",
         isBusinessVerified: false,
+        permitPhotoURL: null,
       };
       await setDoc(doc(FirebaseDB, "Users", uid), user);
       await setDoc(doc(FirebaseDB, "UserMessages", uid), {});

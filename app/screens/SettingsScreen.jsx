@@ -28,8 +28,8 @@ function SettingsScreen({ navigation }) {
   // const email = user?.email;
   // const contactNumber = '09123456789'; // should be changed to fetching
   // const location = 'somewhere'; // should be changed to fetching
-  const gCashSync = "synced"; // should be changed to fetching
-  const businessPermit = "verified"; // should be changed to fetching
+  const gCashSync = "Gcash"; // should be changed to fetching
+  const businessPermit = currentUser.isBusinessVerified ? "Verified" : "Unverified"; // should be changed to fetching
 
   return (
     <SafeAreaView>

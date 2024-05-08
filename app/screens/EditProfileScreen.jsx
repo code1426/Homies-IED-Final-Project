@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -324,6 +324,73 @@ export default function EditProfileScreen({ navigation }) {
     }
   };
 
+  useEffect(() => {
+    IsPermitSubmitted();
+  }, []);
+
+  const IsPermitSubmitted = async () => {
+    try {
+      const userRef = doc(FirebaseDB, "Users", currentUser.uid);
+      const response = await getDoc(userRef);
+      const data = response.data();
+      if (data.permitPhotoURL) {
+        console.log("permitURL",data.permitPhotoURL)
+        setIsPermitSubmitted(true);
+        console.log("from ispermitSubmitted", isPermitSubmitted);
+      } else {
+        console.log("from ispermitSubmitted", isPermitSubmitted);
+        setIsPermitSubmitted(false);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const [isPermitSubmitted, setIsPermitSubmitted] = useState(false);
+  const [permitLoading, setPermitLoading] = useState(false);
+
+  const pickPermitImage = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [3, 4],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        setPermitLoading(true);
+
+        const permit = result.assets[0].uri;
+        const permitRes = await fetch(permit);
+        const permitBlob = await permitRes.blob();
+
+        const storagePermitRef = ref(
+          firebaseStorage,
+          "Users/permit/" + Date.now() + ".jpg"
+        );
+
+        await uploadBytesResumable(storagePermitRef, permitBlob);
+        const permitURL = await getDownloadURL(storagePermitRef, permitBlob);
+
+        await updateDoc(doc(FirebaseDB, "Users", currentUser.uid), {
+          permitPhotoURL: permitURL,
+        });
+
+        setIsPermitSubmitted(true);
+        console.log(permitURL);
+        console.log("submitted:", isPermitSubmitted);
+      } else {
+        setPermitLoading(false);
+        console.log("Canceled");
+      }
+    } catch (error) {
+      console.log(error.message);
+    } finally {
+      setPermitLoading(false);
+    }
+  };
+
   return (
     <ScrollView scrollEnabled={popUp ? false : true}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -533,11 +600,58 @@ export default function EditProfileScreen({ navigation }) {
                 </View>
               </View>
               <View style={styles.GcashAndBusinessPermit}>
-                <Text style={styles.text}>Business Permit Verified</Text>
+                {/* <Text style={styles.text}>Business Permit Verified</Text>
                 <View style={styles.Verified}>
                   <TouchableOpacity>
                     <Text>Verified</Text>
                   </TouchableOpacity>
+                </View> */}
+
+                <Text style={styles.text}>Business Permit Verification</Text>
+                <TouchableOpacity
+                  onPress={pickPermitImage}
+                  style={styles.imageContainer}
+                >
+                  {permitLoading ? (
+                    <ActivityIndicator
+                      style={{ flex: 1, alignSelf: "center" }}
+                      color="midnightblue"
+                      size="large"
+                    />
+                  ) : (
+                    <Image
+                      source={
+                        isPermitSubmitted
+                          ? require("../assets/check_icon.png")
+                          : require("../assets/upload_icon.png")
+                      }
+                      style={styles.permitImage}
+                    />
+                  )}
+
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      marginTop: 10,
+                      color: "grey",
+                    }}
+                  >
+                    Upload Business Permit
+                  </Text>
+                </TouchableOpacity>
+                <View
+                  style={[
+                    styles.Verified,
+                    currentUser.isBusinessVerified || {
+                      backgroundColor: "#D5E7F0",
+                      borderColor: "#85BCDC",
+                      borderWidth: 1,
+                    },
+                  ]}
+                >
+                  <Text style={{ textAlign: "center" }}>
+                    {currentUser.isBusinessVerified ? "Verfied" : "Unverified"}
+                  </Text>
                 </View>
               </View>
               <TouchableOpacity
@@ -721,18 +835,17 @@ const styles = {
     marginVertical: 8,
   },
   Verified: {
-    borderWidth: 1,
-    borderColor: "black",
-    borderRadius: 15,
-    backgroundColor: "#D5E7F0",
-    justifyContent: "center",
-    fontWeight: "100",
-    borderColor: "#85BCDC",
-    justifyContent: "center",
-    alignItems: "center",
-    width: 160,
-    height: 30,
-    marginVertical: 8,
+    // borderWidth: 0,
+    // borderColor: "black",
+    // borderRadius: 15,
+    // backgroundColor: "red",
+    // justifyContent: "center",
+    // fontWeight: "100",
+    // justifyContent: "center",
+    // alignItems: "center",
+    // width: 160,
+    // height: 30,
+    // marginVertical: 8,
   },
   backButtonImage: {
     width: 25,
@@ -809,5 +922,50 @@ const styles = {
     borderRadius: 15,
     marginTop: 10,
     padding: 10,
+  },
+
+  imageContainer: {
+    postion: "relative",
+    justifyContent: "center",
+    width: 300,
+    height: 160,
+    marginTop: 20,
+    borderRadius: 25,
+    alignSelf: "center",
+    backgroundColor: "aliceblue",
+    padding: 25,
+    borderColor: "grey",
+    borderWidth: 1,
+  },
+  permitImage: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    borderRadius: 30,
+    // resizeMode: "cover",
+    objectFit: "contain",
+  },
+  addIcon: {
+    width: "100%",
+    height: "100%",
+  },
+  imageAddIconContainer: {
+    position: "absolute",
+    width: 20,
+    height: 20,
+    alignSelf: "center",
+  },
+
+  Verified: {
+    borderWidth: 1,
+    borderRadius: 15,
+    backgroundColor: "limegreen",
+    justifyContent: "center",
+    fontWeight: "100",
+    borderColor: "green",
+    alignSelf: "center",
+    width: 160,
+    height: 30,
+    marginVertical: 8,
   },
 };
