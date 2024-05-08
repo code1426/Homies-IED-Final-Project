@@ -160,7 +160,7 @@ export default function SignInScreen({ navigation }) {
           <TouchableOpacity
             onPress={() => {
               resetForm();
-              navigation.navigate("Role");
+              navigation.navigate("Slide1");
             }}
           >
             <Text style={styles.signUpColor}>Sign Up</Text>

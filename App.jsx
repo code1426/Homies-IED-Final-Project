@@ -14,6 +14,9 @@ import SignUpScreen from "./app/screens/SignUpScreen";
 import PreferredRole from "./app/screens/PreferredRole";
 import LogoScreen from "./app/screens/LogoScreen";
 import ForgotPasswordScreen from "./app/screens/ForgotPasswordScreen.jsx";
+import IntroSlide1 from "./app/screens/IntroSlide1.jsx";
+import IntroSlide2 from "./app/screens/IntroSlide2.jsx";
+import IntroSlide3 from "./app/screens/IntroSlide3.jsx";
 
 import {
   UserContext,
@@ -92,12 +95,12 @@ export default function App() {
   const MyTheme = {
     dark: false,
     colors: {
-      primary: 'rgb(255, 45, 85)',
-      background: 'rgb(242, 242, 242)',
-      card: 'rgb(255, 255, 255)',
-      text: 'rgb(28, 28, 30)',
-      border: 'rgb(199, 199, 204)',
-      notification: 'rgb(255, 69, 58)',
+      primary: "rgb(255, 45, 85)",
+      background: "rgb(242, 242, 242)",
+      card: "rgb(255, 255, 255)",
+      text: "rgb(28, 28, 30)",
+      border: "rgb(199, 199, 204)",
+      notification: "rgb(255, 69, 58)",
     },
   };
 
@@ -155,6 +158,9 @@ export default function App() {
                             component={ForgotPasswordScreen}
                           />
                           <Stack.Screen name="Role" component={PreferredRole} />
+                          <Stack.Screen name="Slide1" component={IntroSlide1} />
+                          <Stack.Screen name="Slide2" component={IntroSlide2} />
+                          <Stack.Screen name="Slide3" component={IntroSlide3} />
                         </>
                       )}
                     </Stack.Navigator>

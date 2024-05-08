@@ -48,7 +48,7 @@ import {
   uploadBytes,
   uploadBytesResumable,
 } from "firebase/storage";
-import { useIsFocused } from "@react-navigation/native";
+import { useIsFocused, useRoute } from "@react-navigation/native";
 import { bgCyan } from "colorette";
 
 export default function EditProfileScreen({ navigation }) {
@@ -334,7 +334,7 @@ export default function EditProfileScreen({ navigation }) {
       const response = await getDoc(userRef);
       const data = response.data();
       if (data.permitPhotoURL) {
-        console.log("permitURL",data.permitPhotoURL)
+        console.log("permitURL", data.permitPhotoURL);
         setIsPermitSubmitted(true);
         console.log("from ispermitSubmitted", isPermitSubmitted);
       } else {
@@ -376,6 +376,8 @@ export default function EditProfileScreen({ navigation }) {
         await updateDoc(doc(FirebaseDB, "Users", currentUser.uid), {
           permitPhotoURL: permitURL,
         });
+
+        currentUser.permitPhotoURL = permitURL;
 
         setIsPermitSubmitted(true);
         console.log(permitURL);

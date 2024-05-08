@@ -134,22 +134,10 @@ function AddPropertyScreen({ navigation }) {
   const currentUser = useContext(UserContext)
 
   const onSubmitMethod = async (values, Method) => {
-    if (!currentUser.isBusinessVerified) {
-      Alert.alert(
-        "Error",
-        "You need to verify your business permit before posting a property.",
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              navigation.navigate("Edit Profile");
-            },
-          },
-        ]
-      );
-      return;
-    }
 
+    if (!currentUser.isBusinessVerified) {
+      return
+    }
 
     handleInputError(values);
     let isAllInputFilled;
@@ -462,6 +450,23 @@ function AddPropertyScreen({ navigation }) {
               console.log(errors);
               if (!submitRef.current) {
                 handleInputError(values);
+              }
+
+              if (!currentUser.isBusinessVerified) {
+                Alert.alert(
+                  "Error",
+                  "You need to verify your business permit before posting a property.",
+                  [
+                    {
+                      text: "OK",
+                      onPress: () => {
+                        // navigation.navigate("SettingsStackNav");
+                        // navigation.navigate("EditProfile");
+                      },
+                    },
+                  ]
+                );
+                return errors;
               }
 
               return errors;
