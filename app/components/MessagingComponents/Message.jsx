@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -6,8 +6,9 @@ import {
   Image,
   TouchableOpacity,
   Alert,
-} from 'react-native';
-import { MessageContext, UserContext } from '../../../Contexts';
+  ActivityIndicator,
+} from "react-native";
+import { MessageContext, UserContext } from "../../../Contexts";
 
 function Message({ message }) {
   const currentUser = useContext(UserContext);
@@ -17,36 +18,38 @@ function Message({ message }) {
 
   const handlePayment = () => {
     setPaymentLoading(false);
-    Alert.alert('Payment Successful', '', {
-      text: 'OK',
+    Alert.alert("Payment Successful", "", [{
+      text: "OK",
       onPress: () => {
-        console.log('Ok Pressed');
+        console.log("Ok Pressed");
       },
-    });
+    }]);
   };
 
   return (
     <View
       style={[
         styles.container,
-        message.senderId === currentUser.uid && { alignSelf: 'flex-end' },
-      ]}>
+        message.senderId === currentUser.uid && { alignSelf: "flex-end" },
+      ]}
+    >
       {message.senderId === currentUser.uid ? (
         <>
           <View
             style={[
               styles.text,
               message.senderId === currentUser.uid
-                ? { backgroundColor: '#B3E5FC' }
-                : { backgroundColor: '#F0F0F0' },
-            ]}>
+                ? { backgroundColor: "#B3E5FC" }
+                : { backgroundColor: "#F0F0F0" },
+            ]}
+          >
             {message.reserveMode === true ? (
               <View style={styles.reservation}>
                 <Text style={[styles.reservationTitle, { fontSize: 15 }]}>
                   Reservation Offer Sent
                 </Text>
                 <Text style={styles.reserveFee}>
-                  Php {parseFloat(message.reserveFee).toLocaleString()}
+                  Php {parseInt(message.reserveFee).toLocaleString()}
                 </Text>
               </View>
             ) : (
@@ -83,10 +86,11 @@ function Message({ message }) {
           <View
             style={[
               message.senderId === currentUser.uid
-                ? { backgroundColor: '#B3E5FC' }
-                : { backgroundColor: '#E0E0E0' },
+                ? { backgroundColor: "#B3E5FC" }
+                : { backgroundColor: "#E0E0E0" },
               styles.text,
-            ]}>
+            ]}
+          >
             {message.reserveMode === true ? (
               <View style={styles.reservation}>
                 <Text style={[styles.reservationTitle, { fontSize: 20 }]}>
@@ -96,8 +100,8 @@ function Message({ message }) {
                   Would you like to reserve the place for:
                 </Text>
                 <Text style={styles.reserveFee}>
-                  Php{' '}
-                  {parseFloat(
+                  Php{" "}
+                  {parseInt(
                     parseFloat(message.reserveFee) +
                       parseFloat(message.reserveFee) * 0.01
                   ).toLocaleString()}
@@ -107,8 +111,13 @@ function Message({ message }) {
                     onPress={() => {
                       setPaymentLoading(true);
                       setTimeout(handlePayment, 3000);
-                    }}>
-                    <Text>Accept Offer</Text>
+                    }}
+                  >
+                    {paymentLoading ? (
+                      <ActivityIndicator style={{flex: 1, alignSelf: "center"}} color="white" size="small" />
+                    ) : (
+                      <Text>Accept Offer</Text>
+                    )}
                   </TouchableOpacity>
                 </View>
               </View>
@@ -124,43 +133,43 @@ function Message({ message }) {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginVertical: 5,
     // backgroundColor: 'red',
   },
   profilePic: {
-    alignSelf: 'center',
+    alignSelf: "center",
     width: 30,
     height: 30,
     borderRadius: 15,
-    resizeMode: 'cover',
+    resizeMode: "cover",
     marginHorizontal: 8,
   },
   you: {
     // direction: "rtl",
-    alignSelf: 'flex-end',
+    alignSelf: "flex-end",
   },
   others: {
     // direction: "ltr",
     // alignSelf: "flex-end",
   },
   text: {
-    alignSelf: 'center',
+    alignSelf: "center",
     paddingHorizontal: 10,
     paddingVertical: 5,
     // borderWidth: 1,
     borderRadius: 14,
-    width: 'auto',
+    width: "auto",
     maxWidth: 200,
   },
   reservation: {
     padding: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'column',
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "column",
   },
   reservationTitle: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     paddingBottom: 5,
   },
   reservationDescription: {
@@ -171,11 +180,16 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   reserveButton: {
+    width: 110,
+    height: 30,
     padding: 5,
     borderWidth: 0.5,
-    flexDirection: 'row',
-    borderRadius: 5,
-    backgroundColor: '#5edf95',
+    flexDirection: "row",
+    borderRadius: 6,
+    backgroundColor: "#5edf95",
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
   },
 });
 export default Message;

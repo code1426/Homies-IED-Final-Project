@@ -27,7 +27,7 @@ import { Dropdown, MultiSelect } from "react-native-element-dropdown";
 import HeaderComponent from "../components/HeaderComponent";
 import { firebaseStorage } from "../../firebase.config";
 
-import { AddPropertyContext } from "../../Contexts";
+import { AddPropertyContext, UserContext } from "../../Contexts";
 import { useIsFocused } from "@react-navigation/native";
 
 function AddPropertyScreen({ navigation }) {
@@ -46,7 +46,6 @@ function AddPropertyScreen({ navigation }) {
     ...styles.pickerContainer,
   });
   const [rentStyle, setRentStyle] = useState({ ...styles.rentInput });
-  // const [regStyle, setRegStyle] = useState({ ...styles.regInput });
   const [imgStyle, setImgStyle] = useState({ ...styles.thumbnail });
   const [featureStyle, setFeatureStyle] = useState({
     ...styles.featuresContainer,
@@ -132,7 +131,26 @@ function AddPropertyScreen({ navigation }) {
     }
   };
 
+  const currentUser = useContext(UserContext)
+
   const onSubmitMethod = async (values, Method) => {
+    if (!currentUser.isBusinessVerified) {
+      Alert.alert(
+        "Error",
+        "You need to verify your business permit before posting a property.",
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              navigation.navigate("Edit Profile");
+            },
+          },
+        ]
+      );
+      return;
+    }
+
+
     handleInputError(values);
     let isAllInputFilled;
     console.log(values);
@@ -389,21 +407,33 @@ function AddPropertyScreen({ navigation }) {
   };
 
   const data = [
-    { label: "Bed Space", value: "Bed Space" },
-    { label: "Room", value: "Room" },
-    { label: "Shared Room", value: "Shared Room" },
-    { label: "Air Conditioned", value: "Air Conditioned" },
-    { label: "CCTV Monitored", value: "CCTV Monitored" },
-    { label: "Common Laundry Area", value: "Common Laundry Area" },
-    { label: "Common Kitchen Area", value: "Common Kitchen Area" },
-    { label: "Piso Wi-Fi", value: "Piso Wi-Fi" },
-    { label: "Own Sub-meter", value: "Own Sub-meter" },
     { label: "2 BedRooms", value: "2 BedRooms" },
     { label: "3 BedRooms", value: "3 BedRooms" },
     { label: "4 BedRooms", value: "4 BedRooms" },
+    { label: "Air Conditioned", value: "Air Conditioned" },
+    { label: "Bed Space", value: "Bed Space" },
+    { label: "Boys Only", value: "Boys Only" },
+    { label: "CCTV Monitored", value: "CCTV Monitored" },
+    { label: "Common CR", value: "Common CR" },
+    { label: "Common Kitchen Area", value: "Common Kitchen Area" },
+    { label: "Common Laundry Area", value: "Common Laundry Area" },
     { label: "Fire Alarm System", value: "Fire Alarm System" },
     { label: "Free Water", value: "Free Water" },
+    { label: "Free Wi-Fi", value: "Free Wi-Fi" },
+    { label: "Girls Only", value: "Girls Only" },
     { label: "Metered Electricity", value: "Metered Electricity" },
+    { label: "Near CPU", value: "Near CPU" },
+    { label: "Near San Ag", value: "Near San Ag" },
+    { label: "Near WIT", value: "Near WIT" },
+    { label: "Near WVSU", value: "Near WVSU" },
+    { label: "No Curfew", value: "No Curfew" },
+    { label: "Own Sub-meter", value: "Own Sub-meter" },
+    { label: "Pets Allowed", value: "Pets Allowed" },
+    { label: "Piso Wi-Fi", value: "Piso Wi-Fi" },
+    { label: "Room", value: "Room" },
+    { label: "Shared Room", value: "Shared Room" },
+    { label: "Visitors Allowed", value: "Visitors Allowed" }
+
   ];
 
   const submitRef = useRef(false);
