@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import React, {useContext} from "react";
-
 import { SearchTermContext } from "../../../Contexts";
 
 const SuggestionCard = ({ hit }) => {

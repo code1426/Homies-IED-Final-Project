@@ -6,9 +6,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import React, { useState, useEffect } from "react";
-
 import { useInfiniteHits } from "react-instantsearch-core";
-
 import { SearchTermContext } from "../../../Contexts";
 
 const SearchContent = ({ hitComponent: Hit, ...props }) => {
@@ -24,13 +22,17 @@ const SearchContent = ({ hitComponent: Hit, ...props }) => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-    }, 125);
+    }, 375);
   }, []);
 
   return (
     <>
       {loading ? (
-        <ActivityIndicator style={{marginTop: 20}} color="midnightblue" size="large" />
+        <ActivityIndicator
+          style={{ marginTop: 20 }}
+          color="midnightblue"
+          size="large"
+        />
       ) : (
         <>
           <View style={styles.searchResultContainer}>
@@ -79,7 +81,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     height: 30,
     alignItems: "center",
-    // backgroundColor: 'red',
     borderBottomWidth: 1,
     marginBottom: 8,
     borderColor: "#BFBFBF",

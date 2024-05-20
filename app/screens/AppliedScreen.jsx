@@ -11,7 +11,7 @@ import {
 import { getDocs, collection } from "firebase/firestore";
 
 import HeaderComponent from "../components/HeaderComponent";
-import PostCard from "../components/PostCard";
+import PostCard from "../components/homeComponents/PostCard";
 import { FirebaseDB } from "../../firebase.config";
 import { UserContext, AppliedContext } from "../../Contexts";
 
@@ -20,7 +20,7 @@ import AppliedPostCard from "../components/AppliedPostCard";
 function AppliedScreen(props) {
   const [appliedPropertyList, setAppliedPropertyList] = useState([]);
   const currentUser = useContext(UserContext);
-  const { appliedState } = useContext(AppliedContext)
+  const { appliedState } = useContext(AppliedContext);
   const [loading, setLoading] = useState(false);
 
   const [refreshing, setRefreshing] = React.useState(false);
@@ -103,7 +103,6 @@ const styles = StyleSheet.create({
     height: 100,
     justifyContent: "center",
     alignItems: "center",
-    // backgroundColor: 'red'
   },
   appliedContainer: {
     flexDirection: "column",

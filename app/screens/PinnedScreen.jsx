@@ -10,13 +10,11 @@ import {
 } from "react-native";
 
 import HeaderComponent from "../components/HeaderComponent";
-import PostCard from "../components/PostCard";
+import PostCard from "../components/homeComponents/PostCard";
 import { FirebaseDB } from "../../firebase.config";
 import { collection, getDocs } from "firebase/firestore";
-
 import { useState, useEffect } from "react";
-import { AppliedContext, PinContext, UserContext } from "../../Contexts";
-import { useIsFocused } from "@react-navigation/native";
+import { PinContext, UserContext } from "../../Contexts";
 
 function PinnedScreen() {
   const currentUser = useContext(UserContext);
@@ -100,7 +98,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     marginTop: 12,
     marginBottom: 30,
-    // backgroundColor: "red"
   },
   placeHolderContainer: {
     flex: 1,

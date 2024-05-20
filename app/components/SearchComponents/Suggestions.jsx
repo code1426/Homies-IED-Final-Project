@@ -1,9 +1,6 @@
 import { StyleSheet, Text, View, FlatList } from "react-native";
 import React from "react";
-import SuggestionCard from "./SuggestionCard";
-
 import { useInfiniteHits } from "react-instantsearch-core";
-
 import { SearchTermContext } from "../../../Contexts";
 
 const Suggestions = ({ hitComponent: Hit, ...props }) => {

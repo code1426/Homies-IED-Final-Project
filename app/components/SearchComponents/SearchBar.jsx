@@ -5,14 +5,12 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { useSearchBox } from "react-instantsearch-core";
-
 import { SearchTermContext } from "../../../Contexts";
 
 const SearchBar = (props) => {
   const { query, refine } = useSearchBox(props);
-
   const { searchTerm, setSearchTerm, inputRef } = useContext(SearchTermContext);
 
   useEffect(() => {

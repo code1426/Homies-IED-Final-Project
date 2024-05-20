@@ -8,8 +8,6 @@ import {
   Image,
   Alert,
 } from "react-native";
-import QueuedComponent from "./QueuedComponent";
-import PostCard from "./PostCard";
 
 import {
   doc,
@@ -18,8 +16,9 @@ import {
   setDoc,
   updateDoc,
   serverTimestamp,
-  query,
 } from "firebase/firestore";
+
+import PostCard from "./homeComponents/PostCard";
 import { FirebaseAuth, FirebaseDB } from "../../firebase.config";
 
 import {
@@ -36,10 +35,7 @@ const AppliedPostCard = ({ data, updateList }) => {
   const [isApproved, setIsApproved] = useState(false);
   const [isdeleted, setIsDeleted] = useState(false);
   const [ownerData, setOwnerData] = useState(null);
-
   const { messageState } = useContext(MessageStateContext);
-  // const [ownerMessagesData, setOwnerMessagesData] = useState();
-  // const [ownerMessages, setOwnerMessages] = useState();
 
   const navigation = useNavigation();
 
@@ -56,23 +52,12 @@ const AppliedPostCard = ({ data, updateList }) => {
     setScreenLoading(false);
   };
 
-  // console.log(ownerData);
-
   const getOwnerData = async () => {
     const ownerRef = doc(FirebaseDB, "Users", data.uid);
-    // const ownerMessagesInfoRef = doc(
-    //   FirebaseDB,
-    //   'UserMessages',
-    //   currentUser.uid
-    // );
-    // const ownerMessagesInfo = await getDoc(ownerMessagesInfoRef);
     const snapshot = await getDoc(ownerRef);
     if (snapshot.exists()) {
       setOwnerData(snapshot.data());
     }
-    // if (ownerMessagesInfo.data()) {
-    //   setOwnerMessagesData(ownerMessagesInfo.data());
-    // }
   };
 
   const isApplicantApproved = async () => {
@@ -83,7 +68,6 @@ const AppliedPostCard = ({ data, updateList }) => {
         FirebaseAuth.currentUser.uid
       );
       const docsnap = await getDoc(postRef);
-      // console.log("isApproved:", docsnap.exists());
       if (docsnap.exists()) {
         if (docsnap.data().isApproved) {
           setIsApproved(true);
@@ -138,7 +122,6 @@ const AppliedPostCard = ({ data, updateList }) => {
       updateList();
       await deleteDoc(postOwnerRef);
       await deleteDoc(postRef);
-      // console.log("CancelButton: canceled");
     } catch (err) {
       console.log(err.message);
     }
@@ -171,9 +154,8 @@ const AppliedPostCard = ({ data, updateList }) => {
           [combinedID + ".userInfo"]: {
             uid: ownerData.uid,
             firstName: ownerData.firstName,
-            lastName: ownerData.lastName, //'Kimly John Vergara', //ownerData.displayName,
+            lastName: ownerData.lastName,
             photoURL: ownerData.photoURL,
-            // 'https://firebasestorage.googleapis.com/v0/b/homies-ied-final-project.appspot.com/o/Users%2FphotoURL%2F1714273989060.jpg?alt=media&token=78cb3396-62d0-480e-baed-7acbf205a1f0', //ownerData.photoURL
           },
           [combinedID + ".date"]: serverTimestamp(),
         });
@@ -183,27 +165,13 @@ const AppliedPostCard = ({ data, updateList }) => {
           [combinedID + ".userInfo"]: {
             uid: currentUser.uid,
             firstName: currentUser.firstName,
-            lastName: currentUser.lastName, // currentUser.displayName,
+            lastName: currentUser.lastName,
             photoURL: currentUser.photoURL,
-            // 'https://firebasestorage.googleapis.com/v0/b/homies-ied-final-project.appspot.com/o/Users%2FphotoURL%2F1714273989060.jpg?alt=media&token=78cb3396-62d0-480e-baed-7acbf205a1f0', //ownerData.photoURL
           },
           [combinedID + ".date"]: serverTimestamp(),
         });
         console.log("applicant message set");
       }
-      // console.log(ownerMessageData);
-      // console.log('Owner Message Info Done');
-      // console.log('Owner Message Info Data Done');
-      // const ownerMessages = Object.entries(messages).map((user) => {
-      //   if (user[1].userInfo.uid === ownerData.uid) return user;
-      // })
-      // console.log(ownerMessagesData) &&
-      // Object.entries(ownerMessagesData)?.map((user) => {
-      //   if (user[1].userInfo.uid === ownerData.uid) {
-      //     setOwnerMessages(user);
-      //     console.log('wassup');
-      //   }
-      // });
       await handleSelect(ownerData);
       console.log(ownerData);
     } catch (error) {
@@ -229,7 +197,11 @@ const AppliedPostCard = ({ data, updateList }) => {
       <PostCard data={data} shadow={false} />
       <View style={styles.statusContainer}>
         {screenLoading ? (
-          <ActivityIndicator style={{alignSelf: "center", flex: 1}} size="small" color="midnightblue" />
+          <ActivityIndicator
+            style={{ alignSelf: "center", flex: 1 }}
+            size="small"
+            color="midnightblue"
+          />
         ) : (
           <>
             <View style={styles.buttonsContainer}>
@@ -352,7 +324,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     columnGap: 8,
     marginLeft: 12,
-    // backgroundColor: "red",
   },
   messageButton: {
     width: 112,

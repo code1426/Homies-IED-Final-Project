@@ -1,22 +1,20 @@
 import React, { useState, useEffect, useReducer } from "react";
-
-import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { FirebaseAuth, FirebaseDB } from "./firebase.config";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, query, onSnapshot } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 
-import NavBarRenters from "./app/components/NavBarRenters";
-import NavBarOwners from "./app/components/NavBarOwners";
-import SignInScreen from "./app/screens/SignInScreen";
-import SignUpScreen from "./app/screens/SignUpScreen";
-import PreferredRole from "./app/screens/PreferredRole";
+import NavBarRenters from "./app/screens/navigations/bottomTabs/NavBarRenters.jsx";
+import NavBarOwners from "./app/screens/navigations/bottomTabs/NavBarOwners.jsx";
+import SignInScreen from "./app/screens/auth/SignInScreen.jsx";
+import SignUpScreen from "./app/screens/auth/SignUpScreen.jsx";
+import PreferredRole from "./app/screens/auth/PreferredRole.jsx";
 import LogoScreen from "./app/screens/LogoScreen";
-import ForgotPasswordScreen from "./app/screens/ForgotPasswordScreen.jsx";
-import IntroSlide1 from "./app/screens/IntroSlide1.jsx";
-import IntroSlide2 from "./app/screens/IntroSlide2.jsx";
-import IntroSlide3 from "./app/screens/IntroSlide3.jsx";
+import ForgotPasswordScreen from "./app/screens/auth/ForgotPasswordScreen.jsx";
+import IntroSlide1 from "./app/screens/intro/IntroSlide1.jsx";
+import IntroSlide2 from "./app/screens/intro/IntroSlide2.jsx";
+import IntroSlide3 from "./app/screens/intro/IntroSlide3.jsx";
 
 import {
   UserContext,
@@ -27,7 +25,6 @@ import {
   MessageStateContext,
   ApplicantContext,
 } from "./Contexts.js";
-import ProfileDescriptionScreen from "./app/screens/ProfileDescriptionScreen.jsx";
 
 const Stack = createNativeStackNavigator();
 
@@ -62,7 +59,7 @@ export default function App() {
             setUser(null);
           }
         } catch (err) {
-          console.log("error onAuthStateChanged: ", err.message);
+          console.log("Error onAuthStateChanged: ", err.message);
         }
       });
     } catch (err) {
@@ -174,12 +171,3 @@ export default function App() {
     </ApplicantContext.Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#9CC6DE",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

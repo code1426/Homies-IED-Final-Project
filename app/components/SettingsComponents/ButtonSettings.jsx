@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { TouchableOpacity, View, Text, StyleSheet, Image } from 'react-native';
-
-import { useNavigation } from '@react-navigation/native';
-import { FirebaseAuth } from '../../../firebase.config';
+import React, { useState } from "react";
+import { TouchableOpacity, View, Text, StyleSheet, Image } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { FirebaseAuth } from "../../../firebase.config";
 
 function ButtonSettings({
   settingName,
@@ -12,50 +11,34 @@ function ButtonSettings({
 }) {
   const navigation = useNavigation();
   const [notificationsActive, setNotificationsActive] = useState(true);
-
   const [tailIconPlaced, setIconPlaced] = useState(tailIcon);
 
   const handleClick = () => {
-    //write conditions to trigger navigation
-    if (settingName === 'Notifications') {
-      // temporarily disable
+    if (settingName === "Notifications") {
       if (notificationsActive === true) {
         // icon = tailIconActive;
-        setIconPlaced(tailIconActive)
+        setIconPlaced(tailIconActive);
       } else {
-        setIconPlaced(tailIcon)
-      };
-      
+        setIconPlaced(tailIcon);
+      }
+
       setNotificationsActive(!notificationsActive);
 
-      
-
       // notifications should be manipulated here -----------------------------------------------------------------------
-    }
-    else if (settingName === 'Log Out') {
-      // temporarily disabled
-      FirebaseAuth.signOut()
-      // navigation.navigate("SignIn")
+    } else if (settingName === "Log Out") {
+      FirebaseAuth.signOut();
     } else {
       navigation.navigate(settingName);
     }
   };
 
   return (
-    <TouchableOpacity
-      onPress={() => handleClick()}
-      style={styles.container}>
+    <TouchableOpacity onPress={() => handleClick()} style={styles.container}>
       <View style={styles.content}>
-        <Image
-          style={styles.icon}
-          source={settingIcon}
-        />
+        <Image style={styles.icon} source={settingIcon} />
         <Text style={styles.settingTitle}>{settingName}</Text>
         <View style={styles.arrowContainer}>
-          <Image
-            style={styles.arrow}
-            source={tailIconPlaced}
-          />
+          <Image style={styles.arrow} source={tailIconPlaced} />
         </View>
       </View>
     </TouchableOpacity>
@@ -64,38 +47,32 @@ function ButtonSettings({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
-    // alignItems: 'stretch',
-    justifyContent: 'center',
-    width: '100%',
+    backgroundColor: "white",
+    justifyContent: "center",
+    width: "100%",
     height: 42,
     borderRadius: 25,
     marginBottom: 12,
-    // flexDirection: 'column',
-    // direction: 'ltr',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
     shadowColor: "black",
     shadowRadius: 2,
-
-    
   },
   content: {
-    // height: 'auto',
-    width: '100%',
-    flexDirection: 'row',
+    width: "100%",
+    flexDirection: "row",
     left: 36,
   },
   settingTitle: {
     left: 10,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   icon: {
     width: 18,
     height: 18,
   },
   arrowContainer: {
-    position: 'absolute',
+    position: "absolute",
     right: 53,
   },
   arrow: {

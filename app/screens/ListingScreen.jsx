@@ -10,19 +10,18 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import HeaderComponent from "../components/HeaderComponent";
-import PostQueueCard from "../components/PostQueueCard";
+import PostQueueCard from "../components/listingComponents/PostQueueCard";
 import { FirebaseAuth, FirebaseDB } from "../../firebase.config";
 import { getDocs, collection, query, where } from "firebase/firestore";
 import { AddPropertyContext } from "../../Contexts";
-import ViewProfileScreen from "./ViewProfileScreen";
+import ViewProfileScreen from "../components/homeComponents/ViewProfile";
 
 const ListingScreen = ({ navigation }) => {
   const [propertyList, setPropertyList] = useState([]);
   const [loading, setLoading] = useState(false);
-
   const { addState } = useContext(AddPropertyContext);
-
   const [refreshing, setRefreshing] = React.useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -56,25 +55,28 @@ const ListingScreen = ({ navigation }) => {
     }
   };
 
-  const [modalVisible, setModalVisible] = useState(false)
-
   return (
     <SafeAreaView>
       <HeaderComponent title="Listing" />
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-      >
+      <Modal animationType="fade" transparent={true} visible={modalVisible}>
         <ViewProfileScreen setModalVisible={setModalVisible} />
       </Modal>
 
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} style={styles.container}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        style={styles.container}
+      >
         {loading ? (
           <ActivityIndicator color="midnightblue" size="large" />
         ) : propertyList[0] ? (
           propertyList.map((property, index) => (
-            <PostQueueCard key={index} data={property} visible={setModalVisible} />
+            <PostQueueCard
+              key={index}
+              data={property}
+              visible={setModalVisible}
+            />
           ))
         ) : (
           <View style={styles.placeHolderContainer}>
@@ -84,9 +86,7 @@ const ListingScreen = ({ navigation }) => {
             </Text>
           </View>
         )}
-        <View style={{height: 140, width: "auto"}}>
-
-        </View>
+        <View style={{ height: 140, width: "auto" }}></View>
       </ScrollView>
     </SafeAreaView>
   );

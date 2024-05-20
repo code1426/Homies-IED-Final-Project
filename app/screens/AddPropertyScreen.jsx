@@ -373,11 +373,9 @@ function AddPropertyScreen({ navigation }) {
 
   const formInitialValues = {
     title: null,
-    // titleLowerCase: null
     description: null,
     rentPrice: "",
     propertyType: null,
-    // registrationPrice: "",
     thumbnail: null,
     images: {
       image1: null,
@@ -618,7 +616,6 @@ function AddPropertyScreen({ navigation }) {
                     value={values?.description}
                     onChangeText={handleChange("description")}
                     multiline={true}
-                    // numberOfLines={5}
                     maxLength={2000}
                     autoCapitalize="sentences"
                   />
@@ -681,7 +678,6 @@ function AddPropertyScreen({ navigation }) {
                       inputSearchStyle={{ borderRadius: 10 }}
                       selectedTextStyle={{ color: "white", fontSize: 14 }}
                       activeColor="#4285F4"
-                      // activeColor="limegreen"
                       dropdownPosition="auto"
                       searchPlaceholder="Search..."
                       maxHeight={450}
@@ -714,8 +710,6 @@ function AddPropertyScreen({ navigation }) {
                     placeholder="Enter Address"
                     value={values?.address}
                     onChangeText={handleChange("address")}
-                    // multiline={true}
-                    // numberOfLines={2}
                     maxLength={100}
                     autoCapitalize="sentences"
                     clearButtonMode="while-editing"

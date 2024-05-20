@@ -21,7 +21,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./app/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.vergara26.RealHomies"
     },
     "web": {
       "favicon": "./app/assets/favicon.png"
@@ -33,6 +37,11 @@
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "48f7b18e-0e69-4f86-866b-c23fd6572bd3"
+      }
+    }
   }
 }

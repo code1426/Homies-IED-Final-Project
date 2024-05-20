@@ -26,7 +26,6 @@ export default function LogoScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: "#CBE6F6",
     backgroundColor: '#B0DBF3',
     flex: 1,
     alignItems: 'center',
