@@ -16,13 +16,12 @@ const SearchContent = ({ hitComponent: Hit, ...props }) => {
   });
 
   const { searchTerm } = React.useContext(SearchTermContext);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
     setTimeout(() => {
       setLoading(false);
-    }, 375);
+    }, 500);
   }, []);
 
   return (
