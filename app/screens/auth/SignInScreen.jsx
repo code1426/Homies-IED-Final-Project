@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   Text,
@@ -83,11 +83,14 @@ export default function SignInScreen({ navigation }) {
     }
   };
 
+  const buttonRef = useRef(false);
+
   const handleSubmit = () => {
     setLoading(true);
     if (validateForm()) {
       handleAuth();
       resetForm();
+      buttonRef.current = true;
     } else setLoading(false);
   };
 
@@ -135,7 +138,11 @@ export default function SignInScreen({ navigation }) {
             )}
           </View>
 
-          <TouchableOpacity style={styles.formAction} onPress={handleSubmit}>
+          <TouchableOpacity
+            disabled={buttonRef.current}
+            style={styles.formAction}
+            onPress={handleSubmit}
+          >
             <View style={styles.btn}>
               {loading ? (
                 <ActivityIndicator color="white" />

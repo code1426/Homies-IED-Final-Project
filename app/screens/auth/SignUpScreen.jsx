@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   Text,
@@ -26,6 +26,8 @@ export default function SignUpScreen({ navigation }) {
     email: "",
     password: "",
   });
+
+  const buttonRef = useRef(false);
 
   const uploadUserDetails = async (uid) => {
     try {
@@ -125,6 +127,7 @@ export default function SignUpScreen({ navigation }) {
       handleCreateAccount();
       resetForm();
       setErrors({});
+      buttonRef.current = true;
     } else setLoading(false);
   };
 
@@ -208,7 +211,11 @@ export default function SignUpScreen({ navigation }) {
             )}
           </View>
 
-          <TouchableOpacity style={styles.formAction} onPress={handleSubmit}>
+          <TouchableOpacity
+            disabled={buttonRef.current}
+            style={styles.formAction}
+            onPress={handleSubmit}
+          >
             <View style={styles.btn}>
               {loading ? (
                 <ActivityIndicator color="white" />
